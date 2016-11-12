@@ -121,11 +121,55 @@
                     <connections>
                         <segue destination="4oU-Rv-yJi" kind="push" identifier="OWSMessagesViewControllerSeguePushConversationSettings" id="vOd-aS-6Wx"/>
                         <segue destination="urv-62-RsD" kind="modal" identifier="fingerprintSegue" id="tfr-ZV-qWs"/>
+                        <segue destination="Tyf-mN-gzf" kind="modal" identifier="initiateCallSegue" id="I6y-pT-nEd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yXZ-iE-5va" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2287" y="-1516"/>
+        </scene>
+        <!--Current Call-->
+        <scene sceneID="Xck-Ph-UlV">
+            <objects>
+                <viewController title="Current Call" id="Tyf-mN-gzf" customClass="OWSCallViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="0w2-kv-AfM"/>
+                        <viewControllerLayoutGuide type="bottom" id="d8M-LU-Hfa"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="fjB-Ns-OQs">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Emma Goldman" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UbL-8Z-oK1">
+                                <rect key="frame" x="16" y="60" width="343" height="33.5"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T5H-Xy-Y58" userLabel="Hang Up">
+                                <rect key="frame" x="137" y="283.5" width="100" height="100"/>
+                                <state key="normal" image="endcall.png"/>
+                                <connections>
+                                    <action selector="didPressHangup" destination="Tyf-mN-gzf" eventType="touchUpInside" id="NgR-nI-DDq"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.50196081400000003" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="UbL-8Z-oK1" firstAttribute="leading" secondItem="fjB-Ns-OQs" secondAttribute="leadingMargin" id="2bB-Xe-sZu"/>
+                            <constraint firstItem="T5H-Xy-Y58" firstAttribute="centerX" secondItem="fjB-Ns-OQs" secondAttribute="centerX" id="ErA-Lz-W4B"/>
+                            <constraint firstItem="UbL-8Z-oK1" firstAttribute="top" secondItem="0w2-kv-AfM" secondAttribute="bottom" constant="40" id="Gni-cy-ZG2"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="UbL-8Z-oK1" secondAttribute="trailing" id="jSj-iv-FOO"/>
+                            <constraint firstItem="T5H-Xy-Y58" firstAttribute="centerY" secondItem="fjB-Ns-OQs" secondAttribute="centerY" id="yHD-aF-0yK"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="contactName" destination="UbL-8Z-oK1" id="rR0-4L-DvX"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5mi-rT-gg5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1804" y="-1853"/>
         </scene>
         <!--Fingerprint View Controller-->
         <scene sceneID="ldP-mt-Vsq">
@@ -323,7 +367,7 @@
                     </connections>
                 </barButtonItem>
             </objects>
-            <point key="canvasLocation" x="-1087" y="-2423"/>
+            <point key="canvasLocation" x="-860" y="-1285"/>
         </scene>
         <!--Conversation Settings-->
         <scene sceneID="Flt-X5-Amc">

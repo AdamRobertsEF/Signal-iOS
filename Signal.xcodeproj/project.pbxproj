@@ -14,6 +14,8 @@
 		450873C41D9D5149006B54F2 /* OWSExpirationTimerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 450873C21D9D5149006B54F2 /* OWSExpirationTimerView.m */; };
 		450873C71D9D867B006B54F2 /* OWSIncomingMessageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 450873C61D9D867B006B54F2 /* OWSIncomingMessageCollectionViewCell.m */; };
 		450873C81D9D867B006B54F2 /* OWSIncomingMessageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 450873C61D9D867B006B54F2 /* OWSIncomingMessageCollectionViewCell.m */; };
+		4509E79A1DD653700025A59F /* WebRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4509E7991DD653700025A59F /* WebRTC.framework */; };
+		4509E79C1DD6545B0025A59F /* CallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4509E79B1DD6545B0025A59F /* CallViewController.swift */; };
 		4516E3FF1DD2193B00DC4206 /* OWS101ExistingUsersBlockOnIdentityChange.m in Sources */ = {isa = PBXBuildFile; fileRef = 4516E3FE1DD2193B00DC4206 /* OWS101ExistingUsersBlockOnIdentityChange.m */; };
 		451764271DE939F300EDB8B9 /* ContactsPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451764261DE939F300EDB8B9 /* ContactsPicker.swift */; };
 		4517642A1DE939FD00EDB8B9 /* ContactCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451764281DE939FD00EDB8B9 /* ContactCell.xib */; };
@@ -38,12 +40,15 @@
 		45666F7B1D9C0533008FE134 /* OWSDatabaseMigration.m in Sources */ = {isa = PBXBuildFile; fileRef = 45666F7A1D9C0533008FE134 /* OWSDatabaseMigration.m */; };
 		45666F7E1D9C0814008FE134 /* OWSDatabaseMigrationRunner.m in Sources */ = {isa = PBXBuildFile; fileRef = 45666F7D1D9C0814008FE134 /* OWSDatabaseMigrationRunner.m */; };
 		456C38961DC7B882007536A7 /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 451DE9F11DC1585F00810E42 /* PromiseKit.framework */; };
+		4574A5D61DD6704700C6B692 /* CallService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4574A5D51DD6704700C6B692 /* CallService.swift */; };
 		45843D1F1D2236B30013E85A /* OWSContactsSearcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 45843D1E1D2236B30013E85A /* OWSContactsSearcher.m */; };
 		45843D201D2236B30013E85A /* OWSContactsSearcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 45843D1E1D2236B30013E85A /* OWSContactsSearcher.m */; };
 		45843D221D223BA10013E85A /* OWSContactsSearcherTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 45843D211D223BA10013E85A /* OWSContactsSearcherTest.m */; };
 		45855F371D9498A40084F340 /* OWSContactAvatarBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 45855F361D9498A40084F340 /* OWSContactAvatarBuilder.m */; };
 		45855F381D9498A40084F340 /* OWSContactAvatarBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 45855F361D9498A40084F340 /* OWSContactAvatarBuilder.m */; };
 		458967111DC117CC00E9DD21 /* AccountManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458967101DC117CC00E9DD21 /* AccountManagerTest.swift */; };
+		458DE9D61DEE3FD00071BB03 /* PeerConnectionClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458DE9D51DEE3FD00071BB03 /* PeerConnectionClient.swift */; };
+		458DE9D91DEE7B360071BB03 /* OWSWebRTCDataProtos.pb.m in Sources */ = {isa = PBXBuildFile; fileRef = 458DE9D81DEE7B360071BB03 /* OWSWebRTCDataProtos.pb.m */; };
 		458E38311D6682450094BD24 /* OWSQRCodeScanningViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 458E38301D6682450094BD24 /* OWSQRCodeScanningViewController.m */; };
 		458E38341D66873D0094BD24 /* OWSLinkDeviceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 458E38331D66873D0094BD24 /* OWSLinkDeviceViewController.m */; };
 		458E38371D668EBF0094BD24 /* OWSDeviceProvisioningURLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 458E38361D668EBF0094BD24 /* OWSDeviceProvisioningURLParser.m */; };
@@ -64,6 +69,8 @@
 		45C681C71D305C9E0050903A /* OWSDisplayedMessageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 45C681C21D305C9E0050903A /* OWSDisplayedMessageCollectionViewCell.m */; };
 		45C681C81D305C9E0050903A /* OWSDisplayedMessageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45C681C31D305C9E0050903A /* OWSDisplayedMessageCollectionViewCell.xib */; };
 		45C681C91D305C9E0050903A /* OWSDisplayedMessageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45C681C31D305C9E0050903A /* OWSDisplayedMessageCollectionViewCell.xib */; };
+		45C9DEB81DF4E35A0065CA84 /* RTCCallMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C9DEB71DF4E35A0065CA84 /* RTCCallMessageHandler.swift */; };
+		45C9DEB91DF4E35A0065CA84 /* RTCCallMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C9DEB71DF4E35A0065CA84 /* RTCCallMessageHandler.swift */; };
 		45CB2FA81CB7146C00E1B343 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45CB2FA71CB7146C00E1B343 /* Launch Screen.storyboard */; };
 		45CD81A61DBFF8FC004C9430 /* Registration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45CD81A51DBFF8FC004C9430 /* Registration.storyboard */; };
 		45CD81EF1DC030E7004C9430 /* AccountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CD81EE1DC030E7004C9430 /* AccountManager.swift */; };
@@ -554,6 +561,8 @@
 		450873C51D9D867B006B54F2 /* OWSIncomingMessageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OWSIncomingMessageCollectionViewCell.h; sourceTree = "<group>"; };
 		450873C61D9D867B006B54F2 /* OWSIncomingMessageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OWSIncomingMessageCollectionViewCell.m; sourceTree = "<group>"; };
 		450873C91D9D86F4006B54F2 /* OWSExpirableMessageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OWSExpirableMessageView.h; sourceTree = "<group>"; };
+		4509E7991DD653700025A59F /* WebRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebRTC.framework; path = Carthage/Build/iOS/WebRTC.framework; sourceTree = "<group>"; };
+		4509E79B1DD6545B0025A59F /* CallViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallViewController.swift; sourceTree = "<group>"; };
 		4516E3FD1DD2193B00DC4206 /* OWS101ExistingUsersBlockOnIdentityChange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OWS101ExistingUsersBlockOnIdentityChange.h; path = Migrations/OWS101ExistingUsersBlockOnIdentityChange.h; sourceTree = "<group>"; };
 		4516E3FE1DD2193B00DC4206 /* OWS101ExistingUsersBlockOnIdentityChange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OWS101ExistingUsersBlockOnIdentityChange.m; path = Migrations/OWS101ExistingUsersBlockOnIdentityChange.m; sourceTree = "<group>"; };
 		451764261DE939F300EDB8B9 /* ContactsPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsPicker.swift; sourceTree = "<group>"; };
@@ -589,6 +598,7 @@
 		45666F7A1D9C0533008FE134 /* OWSDatabaseMigration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OWSDatabaseMigration.m; path = Migrations/OWSDatabaseMigration.m; sourceTree = "<group>"; };
 		45666F7C1D9C0814008FE134 /* OWSDatabaseMigrationRunner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OWSDatabaseMigrationRunner.h; path = Migrations/OWSDatabaseMigrationRunner.h; sourceTree = "<group>"; };
 		45666F7D1D9C0814008FE134 /* OWSDatabaseMigrationRunner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OWSDatabaseMigrationRunner.m; path = Migrations/OWSDatabaseMigrationRunner.m; sourceTree = "<group>"; };
+		4574A5D51DD6704700C6B692 /* CallService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CallService.swift; path = Services/CallService.swift; sourceTree = "<group>"; };
 		45843D1D1D2236B30013E85A /* OWSContactsSearcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OWSContactsSearcher.h; sourceTree = "<group>"; };
 		45843D1E1D2236B30013E85A /* OWSContactsSearcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OWSContactsSearcher.m; sourceTree = "<group>"; };
 		45843D211D223BA10013E85A /* OWSContactsSearcherTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OWSContactsSearcherTest.m; sourceTree = "<group>"; };
@@ -596,6 +606,9 @@
 		45855F361D9498A40084F340 /* OWSContactAvatarBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OWSContactAvatarBuilder.m; sourceTree = "<group>"; };
 		4589670F1DC117CC00E9DD21 /* SignalTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SignalTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		458967101DC117CC00E9DD21 /* AccountManagerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AccountManagerTest.swift; path = Models/AccountManagerTest.swift; sourceTree = "<group>"; };
+		458DE9D51DEE3FD00071BB03 /* PeerConnectionClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeerConnectionClient.swift; sourceTree = "<group>"; };
+		458DE9D71DEE7B360071BB03 /* OWSWebRTCDataProtos.pb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OWSWebRTCDataProtos.pb.h; sourceTree = "<group>"; };
+		458DE9D81DEE7B360071BB03 /* OWSWebRTCDataProtos.pb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OWSWebRTCDataProtos.pb.m; sourceTree = "<group>"; };
 		458E382F1D6682450094BD24 /* OWSQRCodeScanningViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OWSQRCodeScanningViewController.h; sourceTree = "<group>"; };
 		458E38301D6682450094BD24 /* OWSQRCodeScanningViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OWSQRCodeScanningViewController.m; sourceTree = "<group>"; };
 		458E38321D66873D0094BD24 /* OWSLinkDeviceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OWSLinkDeviceViewController.h; sourceTree = "<group>"; };
@@ -621,6 +634,7 @@
 		45C681C11D305C9E0050903A /* OWSDisplayedMessageCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OWSDisplayedMessageCollectionViewCell.h; sourceTree = "<group>"; };
 		45C681C21D305C9E0050903A /* OWSDisplayedMessageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OWSDisplayedMessageCollectionViewCell.m; sourceTree = "<group>"; };
 		45C681C31D305C9E0050903A /* OWSDisplayedMessageCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OWSDisplayedMessageCollectionViewCell.xib; sourceTree = "<group>"; };
+		45C9DEB71DF4E35A0065CA84 /* RTCCallMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTCCallMessageHandler.swift; sourceTree = "<group>"; };
 		45CB2FA71CB7146C00E1B343 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "Signal/src/util/Launch Screen.storyboard"; sourceTree = SOURCE_ROOT; };
 		45CD81A51DBFF8FC004C9430 /* Registration.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Registration.storyboard; path = Storyboards/Registration.storyboard; sourceTree = "<group>"; };
 		45CD81EE1DC030E7004C9430 /* AccountManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountManager.swift; sourceTree = "<group>"; };
@@ -1160,6 +1174,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4509E79A1DD653700025A59F /* WebRTC.framework in Frameworks */,
 				456C38961DC7B882007536A7 /* PromiseKit.framework in Frameworks */,
 				4520D8D51D417D8E00123472 /* Photos.framework in Frameworks */,
 				B6B226971BE4B7D200860F4D /* ContactsUI.framework in Frameworks */,
@@ -1227,6 +1242,14 @@
 				4516E3FE1DD2193B00DC4206 /* OWS101ExistingUsersBlockOnIdentityChange.m */,
 			);
 			name = Migrations;
+			sourceTree = "<group>";
+		};
+		4574A5D41DD6701D00C6B692 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				4574A5D51DD6704700C6B692 /* CallService.swift */,
+			);
+			name = Services;
 			sourceTree = "<group>";
 		};
 		457F3AC01D14A0F700C51351 /* Models */ = {
@@ -1348,6 +1371,7 @@
 				B60959791C2C0FA9004E8797 /* rating */,
 				76EB04C818170B33006006FC /* util */,
 				45D231751DC7E8C50034FA89 /* Jobs */,
+				4574A5D41DD6701D00C6B692 /* Services */,
 				457F3AC01D14A0F700C51351 /* Models */,
 				76EB052B18170B33006006FC /* Views */,
 				76EB04FE18170B33006006FC /* View Controllers */,
@@ -1378,10 +1402,14 @@
 		76EB03FE18170B33006006FC /* call */ = {
 			isa = PBXGroup;
 			children = (
+				458DE9D71DEE7B360071BB03 /* OWSWebRTCDataProtos.pb.h */,
+				458DE9D81DEE7B360071BB03 /* OWSWebRTCDataProtos.pb.m */,
 				76EB03FF18170B33006006FC /* RecentCall.h */,
 				76EB040018170B33006006FC /* RecentCall.m */,
 				76EB040118170B33006006FC /* RecentCallManager.h */,
 				76EB040218170B33006006FC /* RecentCallManager.m */,
+				458DE9D51DEE3FD00071BB03 /* PeerConnectionClient.swift */,
+				45C9DEB71DF4E35A0065CA84 /* RTCCallMessageHandler.swift */,
 			);
 			path = call;
 			sourceTree = "<group>";
@@ -2251,6 +2279,7 @@
 			isa = PBXGroup;
 			children = (
 				45BD60811DE9547E00A8F436 /* Contacts.framework */,
+				4509E7991DD653700025A59F /* WebRTC.framework */,
 				451DE9F11DC1585F00810E42 /* PromiseKit.framework */,
 				4520D8D41D417D8E00123472 /* Photos.framework */,
 				B6B226961BE4B7D200860F4D /* ContactsUI.framework */,
@@ -2417,6 +2446,7 @@
 		FC3196321A08142D0094C78E /* Signals */ = {
 			isa = PBXGroup;
 			children = (
+				4509E79B1DD6545B0025A59F /* CallViewController.swift */,
 				FC3196281A067D8F0094C78E /* MessageComposeTableViewController.h */,
 				FC3196291A067D8F0094C78E /* MessageComposeTableViewController.m */,
 				FCAC963A19FEF9280046DFC5 /* SignalsViewController.h */,
@@ -2746,6 +2776,7 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/WebRTC.framework",
 			);
 			name = "[Carthage] Copy Frameworks";
 			outputPaths = (
@@ -2840,6 +2871,7 @@
 				B640BFA81C257843006038B3 /* RPAccountManager.m in Sources */,
 				A5509ECD1A69B1D600ABA4BC /* CountryCodeTableViewCell.m in Sources */,
 				76EB05F618170B33006006FC /* CallConnectUtil.m in Sources */,
+				45C9DEB81DF4E35A0065CA84 /* RTCCallMessageHandler.swift in Sources */,
 				76EB061218170B33006006FC /* LoggingUtil.m in Sources */,
 				76EB060E18170B33006006FC /* DecayingSampleEstimator.m in Sources */,
 				76EB05BA18170B33006006FC /* CommitPacket.m in Sources */,
@@ -2873,6 +2905,7 @@
 				B6B9ECFC198B31BA00C620D3 /* PushManager.m in Sources */,
 				45DF5DF21DDB843F00C936C7 /* CompareSafetyNumbersActivity.swift in Sources */,
 				76EB05D618170B33006006FC /* ZrtpResponder.m in Sources */,
+				458DE9D91DEE7B360071BB03 /* OWSWebRTCDataProtos.pb.m in Sources */,
 				B62D53F71A23CCAD009AAF82 /* TSMessageAdapter.m in Sources */,
 				FCD274EB1A5AFDDB00202277 /* AboutTableViewController.m in Sources */,
 				E197B61618BBEC1A00F073E5 /* StretchFactorController.m in Sources */,
@@ -2881,6 +2914,7 @@
 				76EB062218170B33006006FC /* CyclicalBuffer.m in Sources */,
 				76EB063C18170B33006006FC /* NumberUtil.m in Sources */,
 				B6A3EB4B1A423B3800B2236B /* TSPhotoAdapter.m in Sources */,
+				4509E79C1DD6545B0025A59F /* CallViewController.swift in Sources */,
 				76EB063A18170B33006006FC /* FunctionalUtil.m in Sources */,
 				76EB060A18170B33006006FC /* SignalUtil.m in Sources */,
 				E197B61718BBEC1A00F073E5 /* AnonymousAudioCallbackHandler.m in Sources */,
@@ -2990,6 +3024,7 @@
 				76EB05CE18170B33006006FC /* ZrtpHandshakeResult.m in Sources */,
 				45EB32CF1D7465C900735B2E /* OWSLinkedDevicesTableViewController.m in Sources */,
 				B63761EE19E1FBE8005735D1 /* HttpRequestUtil.m in Sources */,
+				458DE9D61DEE3FD00071BB03 /* PeerConnectionClient.swift in Sources */,
 				451DE9FD1DC1A28200810E42 /* SyncPushTokensJob.swift in Sources */,
 				76EB05B618170B33006006FC /* MasterSecret.m in Sources */,
 				76EB05F418170B33006006FC /* CallConnectResult.m in Sources */,
@@ -3008,6 +3043,7 @@
 				B68EF9BA1C0B1EBD009C3DCD /* FLAnimatedImage.m in Sources */,
 				B68112EA1A4D9EC400BA82FF /* UIImage+normalizeImage.m in Sources */,
 				B609597C1C2C0FC6004E8797 /* iRate.m in Sources */,
+				4574A5D61DD6704700C6B692 /* CallService.swift in Sources */,
 				76EB05C818170B33006006FC /* HelloPacket.m in Sources */,
 				BFB074C719A5611000F2947C /* FutureUtil.m in Sources */,
 				45E1F3A51DEF20A100852CF1 /* NoSignalContactsView.swift in Sources */,
@@ -3219,6 +3255,7 @@
 				B660F6C71C29868000687D6E /* ShortAuthenticationStringGeneratorTest.m in Sources */,
 				B660F6DA1C29868000687D6E /* ExceptionsTest.m in Sources */,
 				B660F6CC1C29868000687D6E /* SecureEndPointTest.m in Sources */,
+				45C9DEB91DF4E35A0065CA84 /* RTCCallMessageHandler.swift in Sources */,
 				B660F6BA1C29868000687D6E /* RecentCallTest.m in Sources */,
 				B660F6DB1C29868000687D6E /* FunctionalUtilTest.m in Sources */,
 				B660F6CF1C29868000687D6E /* SessionDescriptorTest.m in Sources */,

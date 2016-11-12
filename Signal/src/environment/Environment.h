@@ -24,6 +24,7 @@ static NSString *const kCallSegue = @"2.0_6.0_Call_Segue";
     @"LegacyAndroidInterop_1"
 #define TESTING_OPTION_USE_DH_FOR_HANDSHAKE @"DhKeyAgreementOnly"
 
+@class UINavigationController;
 @class RecentCallManager;
 @class OWSContactsManager;
 @class PhoneManager;
