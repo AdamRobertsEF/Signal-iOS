@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nonnull NSArray *)getContactsFromAddressBook:(nonnull ABAddressBookRef)addressBook;
 - (nullable Contact *)latestContactForPhoneNumber:(nullable PhoneNumber *)phoneNumber;
+- (nullable Contact *)contactForPhoneIdentifier:(nullable NSString *)identifier;
 
 - (void)verifyABPermission;
 

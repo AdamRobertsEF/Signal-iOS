@@ -17,7 +17,7 @@ class CallViewController : UIViewController {
     @IBOutlet weak var contactName: UILabel!
 
     required init?(coder aDecoder: NSCoder) {
-        accountManager = AccountManager(textSecureAccountManager:TSAccountManager.sharedInstance(), redPhoneAccountManager:RPAccountManager.sharedInstance())
+        accountManager = Environment.getCurrent().accountManager
         messageSender = Environment.getCurrent().messageSender
         super.init(coder: aDecoder)
     }

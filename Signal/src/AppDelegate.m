@@ -123,12 +123,8 @@ static NSString *const kURLHostVerifyPrefix             = @"verify";
             DDLogWarn(@"The app was launched in an unknown way");
         }
 
-        OWSAccountManager *accountManager =
-            [[OWSAccountManager alloc] initWithTextSecureAccountManager:[TSAccountManager sharedInstance]
-                                                 redPhoneAccountManager:[RPAccountManager sharedInstance]];
-
         [OWSSyncPushTokensJob runWithPushManager:[PushManager sharedManager]
-                                  accountManager:accountManager
+                                  accountManager:[Environment getCurrent].accountManager
                                      preferences:[Environment preferences]].then(^{
             DDLogDebug(@"%@ Successfully ran syncPushTokensJob.", self.tag);
         }).catch(^(NSError *_Nonnull error) {
@@ -155,8 +151,9 @@ static NSString *const kURLHostVerifyPrefix             = @"verify";
 }
 
 - (void)setupTSKitEnv {
+
     TextSecureKitEnv *sharedEnv =
-        [[TextSecureKitEnv alloc] initWithCallMessageHandler:[OWSWebRTCCallMessageHandler new]
+        [[TextSecureKitEnv alloc] initWithCallMessageHandler:[Environment getCurrent].callMessageHandler
                                              contactsManager:[Environment getCurrent].contactsManager
                                         notificationsManager:[Environment getCurrent].notificationsManager];
     [TextSecureKitEnv setSharedEnv:sharedEnv];

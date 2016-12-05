@@ -34,7 +34,10 @@ struct TurnServerInfo {
 
 }
 
-@objc(OWSAccountManager)
+/**
+ * Signal is actually two services - textSecure for messages and red phone (for calls). 
+ * AccountManager delegates to both.
+ */
 class AccountManager : NSObject {
     let TAG = "[AccountManager]"
     let textSecureAccountManager: TSAccountManager

@@ -6,6 +6,7 @@
 #import "KeyAgreementProtocol.h"
 #import "MessagesViewController.h"
 #import "RecentCallManager.h"
+#import "Signal-Swift.h"
 #import "SignalKeyingStorage.h"
 #import "SignalsViewController.h"
 #import "TSContactThread.h"
@@ -17,6 +18,9 @@
 static Environment *environment = nil;
 
 @implementation Environment
+
+@synthesize accountManager = _accountManager;
+@synthesize callMessageHandler = _callMessageHandler;
 
 + (Environment *)getCurrent {
     NSAssert((environment != nil), @"Environment is not defined.");
@@ -119,6 +123,31 @@ static Environment *environment = nil;
     }
 
     return self;
+}
+
+- (AccountManager *)accountManager
+{
+    @synchronized (self) {
+        if (!_accountManager) {
+            _accountManager = [[AccountManager alloc] initWithTextSecureAccountManager:[TSAccountManager sharedInstance]
+                                                                redPhoneAccountManager:[RPAccountManager sharedInstance]];
+        }
+    }
+
+    return _accountManager;
+}
+
+- (OWSWebRTCCallMessageHandler *)callMessageHandler
+{
+    @synchronized (self) {
+        if (!_callMessageHandler) {
+            _callMessageHandler = [[OWSWebRTCCallMessageHandler alloc] initWithAccountManager:self.accountManager
+                                                                              contactsManager:self.contactsManager
+                                                                                messageSender:self.messageSender];
+        }
+    }
+
+    return _callMessageHandler;
 }
 
 + (PhoneManager *)phoneManager {

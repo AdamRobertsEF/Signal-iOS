@@ -41,9 +41,10 @@
 @property (nonatomic) long inboxCount;
 @property (nonatomic, retain) UISegmentedControl *segmentedControl;
 @property (nonatomic, strong) id previewingContext;
+@property (nonatomic, readonly, strong) AccountManager *accountManager;
 @property (nonatomic, readonly) OWSContactsManager *contactsManager;
 @property (nonatomic, readonly) TSMessagesManager *messagesManager;
-@property (nonatomic, readonly) OWSMessageSender *messageSender;
+@property (nonatomic, readonly, strong) OWSMessageSender *messageSender;
 
 @end
 
@@ -56,12 +57,7 @@
         return self;
     }
 
-    _contactsManager = [Environment getCurrent].contactsManager;
-    _messagesManager = [TSMessagesManager sharedManager];
-    _messageSender = [[OWSMessageSender alloc] initWithNetworkManager:[Environment getCurrent].networkManager
-                                                       storageManager:[TSStorageManager sharedManager]
-                                                      contactsManager:_contactsManager
-                                                      contactsUpdater:[Environment getCurrent].contactsUpdater];
+    [self commonInit];
 
     return self;
 }
@@ -73,14 +69,17 @@
         return self;
     }
 
-    _contactsManager = [Environment getCurrent].contactsManager;
-    _messagesManager = [TSMessagesManager sharedManager];
-    _messageSender = [[OWSMessageSender alloc] initWithNetworkManager:[Environment getCurrent].networkManager
-                                                       storageManager:[TSStorageManager sharedManager]
-                                                      contactsManager:_contactsManager
-                                                      contactsUpdater:[Environment getCurrent].contactsUpdater];
+    [self commonInit];
 
     return self;
+}
+
+- (void)commonInit
+{
+    _accountManager = [Environment getCurrent].accountManager;
+    _contactsManager = [Environment getCurrent].contactsManager;
+    _messagesManager = [TSMessagesManager sharedManager];
+    _messageSender = [Environment getCurrent].messageSender;
 }
 
 - (void)awakeFromNib
@@ -224,13 +223,9 @@
 
 - (void)ensureNotificationsUpToDate
 {
-    OWSAccountManager *accountManager =
-        [[OWSAccountManager alloc] initWithTextSecureAccountManager:[TSAccountManager sharedInstance]
-                                             redPhoneAccountManager:[RPAccountManager sharedInstance]];
-
     OWSSyncPushTokensJob *syncPushTokensJob =
         [[OWSSyncPushTokensJob alloc] initWithPushManager:[PushManager sharedManager]
-                                           accountManager:accountManager
+                                           accountManager:self.accountManager
                                               preferences:[Environment preferences]];
     [syncPushTokensJob run];
 }
