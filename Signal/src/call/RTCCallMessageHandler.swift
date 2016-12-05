@@ -8,8 +8,19 @@ class WebRTCCallMessageHandler: NSObject, OWSCallMessageHandler {
 
     let TAG = "[WebRTCCallMessageHandler]"
 
-    public func receivedCallOffer(_ callMessage: OWSSignalServiceProtosCallMessage) {
-        Logger.info("\(TAG) Received call offer message: \(callMessage)")
+    public func receivedOffer(_ offer: OWSSignalServiceProtosCallMessageOffer) {
+        Logger.verbose("\(TAG) handling offer")
     }
 
+    public func receivedAnswer(_ answer: OWSSignalServiceProtosCallMessageAnswer) {
+        Logger.verbose("\(TAG) handling answer")
+    }
+
+    public func receivedIceUpdates(_ iceUpdates: [OWSSignalServiceProtosCallMessageIceUpdate]) {
+        Logger.verbose("\(TAG) handling iceUpdates")
+    }
+
+    public func receivedHangup(_ hangup: OWSSignalServiceProtosCallMessageHangup) {
+        Logger.verbose("\(TAG) handling hangup")
+    }
 }

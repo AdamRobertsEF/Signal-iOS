@@ -67,6 +67,7 @@ static Environment *environment = nil;
                 contactsManager:(OWSContactsManager *)contactsManager
                 contactsUpdater:(ContactsUpdater *)contactsUpdater
                  networkManager:(TSNetworkManager *)networkManager
+           notificationsManager:(NotificationsManager *)notificationsManager
                   messageSender:(OWSMessageSender *)messageSender
 {
     ows_require(errorNoter != nil);
@@ -107,6 +108,7 @@ static Environment *environment = nil;
     _contactsManager = contactsManager;
     _contactsUpdater = contactsUpdater;
     _networkManager = networkManager;
+    _notificationsManager = notificationsManager;
     _messageSender = messageSender;
 
     if (recentCallManager != nil) {

@@ -158,7 +158,7 @@ static NSString *const kURLHostVerifyPrefix             = @"verify";
     TextSecureKitEnv *sharedEnv =
         [[TextSecureKitEnv alloc] initWithCallMessageHandler:[OWSWebRTCCallMessageHandler new]
                                              contactsManager:[Environment getCurrent].contactsManager
-                                        notificationsManager:[NotificationsManager new]];
+                                        notificationsManager:[Environment getCurrent].notificationsManager];
     [TextSecureKitEnv setSharedEnv:sharedEnv];
     [[TSStorageManager sharedManager] setupDatabase];
 

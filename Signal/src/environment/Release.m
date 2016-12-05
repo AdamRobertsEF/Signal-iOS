@@ -1,5 +1,6 @@
 #import "Release.h"
 #import "DiscardingLog.h"
+#import "NotificationsManager.h"
 #import "PhoneManager.h"
 #import "PhoneNumberUtil.h"
 #import "RecentCallManager.h"
@@ -52,6 +53,8 @@ static unsigned char DH3K_PRIME[] = {
                                                                         storageManager:[TSStorageManager sharedManager]
                                                                        contactsManager:contactsManager
                                                                        contactsUpdater:contactsUpdater];
+    NotificationsManager *notificationsManager = [[NotificationsManager alloc] initWithContactsManager:contactsManager];
+
     return [[Environment alloc] initWithLogging:logging
                                      errorNoter:errorNoter
                                      serverPort:31337
@@ -68,6 +71,7 @@ static unsigned char DH3K_PRIME[] = {
                                 contactsManager:contactsManager
                                 contactsUpdater:contactsUpdater
                                  networkManager:networkManager
+                           notificationsManager:notificationsManager
                                   messageSender:messageSender];
 }
 
@@ -83,6 +87,8 @@ static unsigned char DH3K_PRIME[] = {
                                                                         storageManager:[TSStorageManager sharedManager]
                                                                        contactsManager:contactsManager
                                                                        contactsUpdater:contactsUpdater];
+    NotificationsManager *notificationsManager = [[NotificationsManager alloc] initWithContactsManager:contactsManager];
+
     return [[Environment alloc] initWithLogging:logging
                                      errorNoter:errorNoter
                                      serverPort:31337
@@ -99,6 +105,7 @@ static unsigned char DH3K_PRIME[] = {
                                 contactsManager:contactsManager
                                 contactsUpdater:contactsUpdater
                                  networkManager:networkManager
+                           notificationsManager:notificationsManager
                                   messageSender:messageSender];
 }
 
@@ -115,6 +122,8 @@ static unsigned char DH3K_PRIME[] = {
                                                                         storageManager:[TSStorageManager sharedManager]
                                                                        contactsManager:contactsManager
                                                                        contactsUpdater:contactsUpdater];
+    NotificationsManager *notificationsManager = [[NotificationsManager alloc] initWithContactsManager:contactsManager];
+
 
     return [[Environment alloc] initWithLogging:[DiscardingLog discardingLog]
                                      errorNoter:^(id error, id relatedInfo, bool causedTermination) {
@@ -133,6 +142,7 @@ static unsigned char DH3K_PRIME[] = {
                                 contactsManager:nil
                                 contactsUpdater:contactsUpdater
                                  networkManager:networkManager
+                           notificationsManager:notificationsManager
                                   messageSender:messageSender];
 }
 

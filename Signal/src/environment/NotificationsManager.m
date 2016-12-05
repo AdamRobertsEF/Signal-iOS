@@ -8,6 +8,7 @@
 
 #import "NotificationsManager.h"
 #import "Environment.h"
+#import "OWSContactsManager.h"
 #import "PropertyListPreferences.h"
 #import "PushManager.h"
 #import <AudioToolbox/AudioServices.h>
@@ -20,13 +21,13 @@
 @interface NotificationsManager ()
 
 @property SystemSoundID newMessageSound;
-@property (nonatomic, readonly) id<ContactsManagerProtocol> contactsManager;
+@property (nonatomic, readonly) OWSContactsManager *contactsManager;
 
 @end
 
 @implementation NotificationsManager
 
-- (instancetype)init
+- (instancetype)initWithContactsManager:(OWSContactsManager *)contactsManager
 {
     self = [super init];
 
@@ -34,7 +35,7 @@
         return self;
     }
 
-    _contactsManager = [TextSecureKitEnv sharedEnv].contactsManager;
+    _contactsManager = contactsManager;
 
     NSURL *newMessageURL = [[NSBundle mainBundle] URLForResource:@"NewMessage" withExtension:@"aifc"];
     AudioServicesCreateSystemSoundID((__bridge CFURLRef)newMessageURL, &_newMessageSound);

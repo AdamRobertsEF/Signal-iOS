@@ -33,6 +33,7 @@ static NSString *const kCallSegue = @"2.0_6.0_Call_Segue";
 @class ContactsUpdater;
 @class TSNetworkManager;
 @class OWSMessageSender;
+@class NotificationsManager;
 @class UINavigationController;
 
 @interface Environment : NSObject
@@ -53,6 +54,7 @@ static NSString *const kCallSegue = @"2.0_6.0_Call_Segue";
                 contactsManager:(OWSContactsManager *)contactsManager
                 contactsUpdater:(ContactsUpdater *)contactsUpdater
                  networkManager:(TSNetworkManager *)networkManager
+           notificationsManager:(NotificationsManager *)notificationsManager
                   messageSender:(OWSMessageSender *)messageSender;
 
 @property (nonatomic, readonly) in_port_t serverPort;
@@ -71,6 +73,7 @@ static NSString *const kCallSegue = @"2.0_6.0_Call_Segue";
 @property (nonatomic, readonly) OWSContactsManager *contactsManager;
 @property (nonatomic, readonly) ContactsUpdater *contactsUpdater;
 @property (nonatomic, readonly) TSNetworkManager *networkManager;
+@property (nonatomic, readonly) NotificationsManager *notificationsManager;
 @property (nonatomic, readonly) OWSMessageSender *messageSender;
 
 @property (nonatomic, readonly) SignalsViewController *signalsViewController;
