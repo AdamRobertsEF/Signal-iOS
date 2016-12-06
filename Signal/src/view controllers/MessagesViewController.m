@@ -1644,12 +1644,12 @@ typedef enum : NSUInteger {
 
         OWSCallViewController *callViewController = (OWSCallViewController *)segue.destinationViewController;
 
-        PhoneNumber *number = [self phoneNumberForThread];
-        Contact *contact = [self.contactsManager latestContactForPhoneNumber:number];
-        if (!contact) {
-            DDLogError(@"%@ Failed to find calling contact for number:%@", self.tag, number);
+        if (![self.thread isKindOfClass:[TSContactThread class]]) {
+            DDLogError(@"%@ Unexpectedly trying to call in group thread:%@. This isn't supported.", self.thread, self.tag);
+            return;
         }
-        callViewController.contact = contact;
+        callViewController.thread = (TSContactThread *)self.thread;
+        [callViewController setOutgoingCallDirection];
     }
 }
 

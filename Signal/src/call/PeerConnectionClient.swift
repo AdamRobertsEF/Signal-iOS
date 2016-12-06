@@ -183,7 +183,7 @@ class PeerConnectionClient: NSObject, RTCPeerConnectionDelegate {
                     return
                 }
 
-                let secureSessionDescription = self.makeSecure(sessionDescription: sdp!)
+                let secureSessionDescription = self.hardenSecurity(sessionDescription: sdp!)
 
                 fulfill(secureSessionDescription)
             })
@@ -192,8 +192,11 @@ class PeerConnectionClient: NSObject, RTCPeerConnectionDelegate {
 
     func setLocalSessionDescription(_ sessionDescription: RTCSessionDescription) -> Promise<Void> {
         return Promise { fulfill, reject in
-            Logger.debug("\(self.TAG) setting local session description: \(sessionDescription)")
-            peerConnection.setLocalDescription(sessionDescription, completionHandler: { (error) in
+            Logger.verbose("\(self.TAG) setting local session description: \(sessionDescription)")
+
+            // TODO should we harden here too as a fallback in case of getting sent a degraded description?
+
+            peerConnection.setLocalDescription(sessionDescription, completionHandler: { (error: Error?) in
                 guard error == nil else {
                     reject(error!)
                     return
@@ -204,10 +207,60 @@ class PeerConnectionClient: NSObject, RTCPeerConnectionDelegate {
         }
     }
 
+    func negotiateSessionDescription(remoteDescription: RTCSessionDescription, constraints: RTCMediaConstraints) -> Promise<RTCSessionDescription> {
+        return firstly {
+            return self.setRemoteSessionDescription(remoteDescription)
+        }.then {
+            return self.negotiateAnswerSessionDescription(constraints: constraints)
+        }
+    }
+
+    func setRemoteSessionDescription(_ sessionDescription: RTCSessionDescription) -> Promise<Void> {
+        return Promise { fulfill, reject in
+            Logger.verbose("\(self.TAG) setting remote description: \(sessionDescription)")
+            peerConnection.setRemoteDescription(sessionDescription, completionHandler: { (error: Error?) in
+                guard error == nil else {
+                    reject(error!)
+                    return
+                }
+
+                fulfill()
+            })
+        }
+    }
+
+    func negotiateAnswerSessionDescription(constraints: RTCMediaConstraints) -> Promise<RTCSessionDescription> {
+        return Promise { fulfill, reject in
+            Logger.verbose("\(self.TAG) negotating answer session.")
+
+            peerConnection.answer(for: constraints, completionHandler: { (sessionDescription: RTCSessionDescription?, error: Error?) in
+                guard error == nil else {
+                    reject(error!)
+                    return
+                }
+
+                guard sessionDescription != nil else {
+                    Logger.error("\(self.TAG) unexpected empty session description, even though no error was reported.")
+                    let error = OWSErrorMakeUnableToProcessServerResponseError()
+                    reject(error)
+                    return
+                }
+
+                let secureSessionDescription = self.hardenSecurity(sessionDescription: sessionDescription!)
+
+                self.setLocalSessionDescription(secureSessionDescription).then {
+                    fulfill(secureSessionDescription)
+                }.catch { error in
+                    reject(error)
+                }
+            })
+        }
+    }
+
     /**
      * Set some more secure parameters for the session description
      */
-    func makeSecure(sessionDescription: RTCSessionDescription) -> RTCSessionDescription {
+    func hardenSecurity(sessionDescription: RTCSessionDescription) -> RTCSessionDescription {
         let description = sessionDescription.sdp
 
         // Enforce Constant bit rate.

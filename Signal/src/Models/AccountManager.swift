@@ -24,7 +24,6 @@ struct TurnServerInfo {
             return nil;
         }
 
-
         if let urlsAttribute = attributes["urls"] as? [String] {
             urls = urlsAttribute
         } else {

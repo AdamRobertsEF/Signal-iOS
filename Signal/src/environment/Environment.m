@@ -127,7 +127,7 @@ static Environment *environment = nil;
 
 - (AccountManager *)accountManager
 {
-    @synchronized (self) {
+    @synchronized(self) {
         if (!_accountManager) {
             _accountManager = [[AccountManager alloc] initWithTextSecureAccountManager:[TSAccountManager sharedInstance]
                                                                 redPhoneAccountManager:[RPAccountManager sharedInstance]];
@@ -139,7 +139,7 @@ static Environment *environment = nil;
 
 - (OWSWebRTCCallMessageHandler *)callMessageHandler
 {
-    @synchronized (self) {
+    @synchronized(self) {
         if (!_callMessageHandler) {
             _callMessageHandler = [[OWSWebRTCCallMessageHandler alloc] initWithAccountManager:self.accountManager
                                                                               contactsManager:self.contactsManager
