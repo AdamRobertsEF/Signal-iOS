@@ -26,6 +26,7 @@ class Call {
 
 enum CallErrors: Error {
     case AlreadyInCall
+    case NoCurrentContactThread
 }
 
 class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
@@ -49,7 +50,8 @@ class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
 
     var dataChannel: RTCDataChannel?
     var thread: TSContactThread!
-    var call = Call(uniqueId: 0)
+    var call: Call?
+    var pendingIceUpdates: [OWSOutgoingCallMessage]?
 
 //    var iceUpdatesPromise: Promise<Void>
 
@@ -60,12 +62,12 @@ class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
 
     // MARK: - Call Lifecyle
 
-    func placeOutgoingCall(thread aThread: TSContactThread, stateChangeHandler: (CallState) -> ()) -> Promise<Void> {
+    func handleOutgoingCall(thread aThread: TSContactThread) -> Promise<Void> {
         thread = aThread
         Logger.verbose("\(TAG) receivedCallOffer for thread:\(thread)")
 
         call = Call(uniqueId: UInt64.ows_random())
-        stateChangeHandler(call.state);
+        pendingIceUpdates = []
 
         return getIceServers().then { iceServers -> Promise<RTCSessionDescription> in
             Logger.debug("\(self.TAG) got ice servers:\(iceServers)")
@@ -77,8 +79,8 @@ class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
             return self.peerConnectionClient!.createOffer()
         }.then { sessionDescription -> Promise<Void> in
             return self.peerConnectionClient!.setLocalSessionDescription(sessionDescription).then {
-                let offerMessage = OWSCallOfferMessage(callId: self.call.uniqueId, sessionDescription: sessionDescription.sdp)
-                let callMessage = OWSOutgoingCallMessage(offerMessage: offerMessage, thread: self.thread)
+                let offerMessage = OWSCallOfferMessage(callId: self.call!.uniqueId, sessionDescription: sessionDescription.sdp)
+                let callMessage = OWSOutgoingCallMessage(thread: self.thread, offerMessage: offerMessage)
                 return self.sendMessage(callMessage)
             }
         }.then {
@@ -88,13 +90,18 @@ class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
         }
     }
 
+    func handleReceivedAnswer(thread: TSContactThread, callId: UInt64, sessionDescription: String) {
+        // TODO 
+        //SEND pendingIceUpdates
+        // etc.
+    }
+
     func handleReceivedOffer(thread aThread: TSContactThread, callId: UInt64, sessionDescription sdpString: String) -> Promise<Void> {
         thread = aThread
         Logger.verbose("\(TAG) receivedCallOffer for thread:\(thread)")
 
-        // TODO call kit inegration + ios9 adapter.
-        guard call.state == .idle else {
-            Logger.error("\(TAG) refusing to receiveOffer, since call state is: \(call.state)")
+        guard call == nil else {
+            Logger.error("\(TAG) refusing to receiveOffer, since there is an existing call: \(call)")
             return Promise { fulfill, reject in
                 reject(CallErrors.AlreadyInCall)
             }
@@ -113,8 +120,8 @@ class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
             // TODO? WebRtcCallService.this.lockManager.updatePhoneState(LockManager.PhoneState.PROCESSING);
             Logger.debug("\(self.TAG) set the remote description")
 
-            let answerMessage = OWSCallAnswerMessage(callId: self.call.uniqueId, sessionDescription: negotiatedSessionDescription.sdp)
-            let callAnswerMessage = OWSOutgoingCallMessage(answerMessage: answerMessage, thread: self.thread)
+            let answerMessage = OWSCallAnswerMessage(callId: self.call!.uniqueId, sessionDescription: negotiatedSessionDescription.sdp)
+            let callAnswerMessage = OWSOutgoingCallMessage(thread: self.thread, answerMessage: answerMessage)
 
             return self.sendMessage(callAnswerMessage)
         }.then { () in
@@ -130,15 +137,20 @@ class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
         }
     }
 
-    public func handleReceivedRemoteIceCandidate(thread aThread: TSContactThread, callId aCallId: UInt64, sdp: String, lineIndex: Int32, mid: String) {
+    public func handleRemoteAddedIceCandidate(thread aThread: TSContactThread, callId aCallId: UInt64, sdp: String, lineIndex: Int32, mid: String) {
         Logger.debug("\(TAG) received ice update")
         guard thread == aThread else {
             Logger.error("\(TAG) ignoring remote ice update for thread: \(aThread) since the current call is for thread: \(thread)")
             return
         }
 
-        guard call.uniqueId == aCallId else {
-            Logger.error("\(TAG) ignoring remote ice update for call: \(aCallId) since the current call is: \(call.uniqueId)")
+        guard let currentCall = call else {
+            Logger.error("\(TAG) ignoring remote ice update for callId: \(aCallId), since there is no current call.")
+            return
+        }
+
+        guard currentCall.uniqueId == aCallId else {
+            Logger.error("\(TAG) ignoring remote ice update for call: \(aCallId) since the current call is: \(currentCall.uniqueId)")
             return
         }
 
@@ -148,6 +160,39 @@ class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
         }
 
         peerConnectionClient!.addIceCandidate(RTCIceCandidate(sdp: sdp, sdpMLineIndex: lineIndex, sdpMid: mid))
+    }
+
+    public func handleLocalAddedIceCandidate(_ iceCandidate: RTCIceCandidate) {
+        guard let currentCall = call else {
+            Logger.warn("\(TAG) ignoring local ice candidate, since there is no current call.")
+            return
+        }
+
+        guard currentCall.state != .idle else {
+            Logger.warn("\(TAG) ignoring local ice candidate, since call is now idle.")
+            return
+        }
+
+        guard let currentThread = thread else {
+            Logger.warn("\(TAG) ignoring local ice candidate, because there was no currentThread.")
+            return
+        }
+
+        let iceUpdateMessage = OWSCallIceUpdateMessage(callId: currentCall.uniqueId, sdp: iceCandidate.sdp, sdpMLineIndex: iceCandidate.sdpMLineIndex, sdpMid: iceCandidate.sdpMid)
+        let callMessage = OWSOutgoingCallMessage(thread: self.thread, iceUpdateMessage: iceUpdateMessage)
+
+        if pendingIceUpdates != nil {
+            // For outgoing messages, we wait to send ice updates until we're sure client received our call message.
+            // e.g. if the client has blocked our message due to an identity change, we'd otherwise
+            // bombard them with a bunch *more* undecipherable messages.
+            pendingIceUpdates!.append(callMessage)
+            return
+        }
+
+        _ = sendMessage(callMessage).then {
+            Logger.debug("\(self.TAG) successfully sent single ice update message.")
+        }
+        // TODO catch and display server failure?
     }
 
     fileprivate func getIceServers() -> Promise<[RTCIceServer]> {
@@ -263,6 +308,7 @@ class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
     /** New ice candidate has been found. */
     public func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
         Logger.debug("\(TAG) didGenerate IceCandidate:\(candidate)")
+        self.handleLocalAddedIceCandidate(candidate)
     }
 
     /** Called when a group of local Ice candidates have been removed. */

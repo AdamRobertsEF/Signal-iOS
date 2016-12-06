@@ -19,6 +19,7 @@
 #import <SignalServiceKit/OWSCallMessageHandler.h>
 #import <SignalServiceKit/OWSCallOfferMessage.h>
 #import <SignalServiceKit/OWSCallAnswerMessage.h>
+#import <SignalServiceKit/OWSCallIceUpdateMessage.h>
 #import <SignalServiceKit/OWSEndSessionMessage.h>
 #import <SignalServiceKit/OWSError.h>
 #import <SignalServiceKit/OWSMessageSender.h>

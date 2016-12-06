@@ -59,9 +59,7 @@ class CallViewController : UIViewController {
         case .outgoing:
             self.contactName.text = self.contactsManager.displayName(forPhoneIdentifier: thread.contactIdentifier());
             callService = CallService(accountManager: self.accountManager, messageSender: self.messageSender)
-            _ = callService.placeOutgoingCall(thread: thread, stateChangeHandler: { (newState: CallState) in
-                self.updateCallStatus(newState)
-            })
+            _ = callService.handleOutgoingCall(thread: thread)
         case .incoming:
             guard callService != nil else {
                 Logger.error("\(TAG) expected call service to already be set for incoming call")

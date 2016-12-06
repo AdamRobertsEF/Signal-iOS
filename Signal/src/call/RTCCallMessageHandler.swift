@@ -38,9 +38,8 @@ class WebRTCCallMessageHandler: NSObject, OWSCallMessageHandler {
     public func receivedAnswer(_ answer: OWSSignalServiceProtosCallMessageAnswer, from callerId: String) {
         Logger.verbose("\(TAG) handling answer from caller:\(callerId)")
 
-//        let thread = TSContactThread.getOrCreateThread(withContactId: callerId)
-        // TODO
-//        callService.handleReceivedAnswer(thread: thread, callId: answer.id, sessionDescription: answer.sessionDescription)
+        let thread = TSContactThread.getOrCreateThread(withContactId: callerId)
+        callService.handleReceivedAnswer(thread: thread, callId: answer.id, sessionDescription: answer.sessionDescription)
     }
 
     public func receivedIceUpdate(_ iceUpdate: OWSSignalServiceProtosCallMessageIceUpdate, from callerId: String) {
@@ -52,7 +51,7 @@ class WebRTCCallMessageHandler: NSObject, OWSCallMessageHandler {
         // while the RTC iOS API requires a signed int.
         let lineIndex = Int32(iceUpdate.sdpMlineIndex)
 
-        callService.handleReceivedRemoteIceCandidate(thread: thread, callId: iceUpdate.id, sdp: iceUpdate.sdp, lineIndex: lineIndex, mid: iceUpdate.sdpMid)
+        callService.handleRemoteAddedIceCandidate(thread: thread, callId: iceUpdate.id, sdp: iceUpdate.sdp, lineIndex: lineIndex, mid: iceUpdate.sdpMid)
     }
 
     public func receivedHangup(_ hangup: OWSSignalServiceProtosCallMessageHangup, from callerId: String) {
