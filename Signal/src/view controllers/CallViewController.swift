@@ -58,8 +58,8 @@ class CallViewController : UIViewController {
             showCallFailed(error: OWSErrorMakeAssertionError())
         case .outgoing:
             self.contactName.text = self.contactsManager.displayName(forPhoneIdentifier: thread.contactIdentifier());
-            callService = CallService(thread: thread, accountManager: self.accountManager, messageSender: self.messageSender)
-            _ = callService.placeOutgoingCall(stateChangeHandler: { (newState: CallState) in
+            callService = CallService(accountManager: self.accountManager, messageSender: self.messageSender)
+            _ = callService.placeOutgoingCall(thread: thread, stateChangeHandler: { (newState: CallState) in
                 self.updateCallStatus(newState)
             })
         case .incoming:

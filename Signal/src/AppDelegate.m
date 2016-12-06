@@ -24,6 +24,8 @@
 #import <SignalServiceKit/OWSMessageSender.h>
 #import <SignalServiceKit/TSAccountManager.h>
 
+@import WebRTC;
+
 NSString *const AppDelegateStoryboardMain = @"Main";
 NSString *const AppDelegateStoryboardRegistration = @"Registration";
 
@@ -123,6 +125,8 @@ static NSString *const kURLHostVerifyPrefix             = @"verify";
             DDLogWarn(@"The app was launched in an unknown way");
         }
 
+        RTCInitializeSSL();
+
         [OWSSyncPushTokensJob runWithPushManager:[PushManager sharedManager]
                                   accountManager:[Environment getCurrent].accountManager
                                      preferences:[Environment preferences]].then(^{
@@ -145,6 +149,7 @@ static NSString *const kURLHostVerifyPrefix             = @"verify";
             gesture.numberOfTapsRequired = 8;
             [self.window addGestureRecognizer:gesture];
         });
+        RTCInitializeSSL();
     }];
 
     return YES;

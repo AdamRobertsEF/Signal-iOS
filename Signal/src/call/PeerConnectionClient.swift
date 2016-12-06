@@ -58,7 +58,7 @@ class DeviceFinderiOS10: DeviceFinderAdaptee {
     }
 }
 
-class PeerConnectionClient: NSObject, RTCPeerConnectionDelegate {
+class PeerConnectionClient: NSObject {
 
     let TAG = "[PeerConnectionClient]"
     enum Identifiers: String {
@@ -86,7 +86,7 @@ class PeerConnectionClient: NSObject, RTCPeerConnectionDelegate {
     var videoSender: RTCRtpSender?
     var cameraConstraints: RTCMediaConstraints
 
-    init(iceServers someIceServers: [RTCIceServer]) {
+    init(iceServers someIceServers: [RTCIceServer], peerConnectionDelegate: RTCPeerConnectionDelegate) {
         iceServers = someIceServers
 
         configuration.iceServers = iceServers
@@ -94,20 +94,18 @@ class PeerConnectionClient: NSObject, RTCPeerConnectionDelegate {
         configuration.rtcpMuxPolicy = .require
 
         let connectionConstraintsDict = ["DtlsSrtpKeyAgreement": "true"]
-        connectionConstraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints:connectionConstraintsDict)
-        peerConnection = factory.peerConnection(with: configuration, constraints: connectionConstraints, delegate: nil)
+        connectionConstraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: connectionConstraintsDict)
+        peerConnection = factory.peerConnection(with: configuration, constraints: connectionConstraints, delegate: peerConnectionDelegate)
 
         audioConstraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints:nil)
         cameraConstraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
-
 
         // TODO is this next line necessary? Does the stream need to be explicitly created?
         // It doesn't seem to be in the example.
         mediaStream = factory.mediaStream(withStreamId: Identifiers.mediaStream.rawValue)
         super.init()
 
-        peerConnection.delegate = self
-        audioSender = createAudioSender()        
+        audioSender = createAudioSender()
         videoSender = createVideoSender()
     }
 
@@ -257,6 +255,11 @@ class PeerConnectionClient: NSObject, RTCPeerConnectionDelegate {
         }
     }
 
+    func addIceCandidate(_ candidate: RTCIceCandidate) {
+        Logger.debug("\(TAG) adding candidate")
+        self.peerConnection.add(candidate)
+    }
+
     /**
      * Set some more secure parameters for the session description
      */
@@ -280,51 +283,4 @@ class PeerConnectionClient: NSObject, RTCPeerConnectionDelegate {
     func terminate() {
         peerConnection.close()
     }
-    // MARK: - RTCPeerConnectionDelegate
-
-    /** Called when the SignalingState changed. */
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
-        Logger.debug("\(TAG) didChange signalingState:\(stateChanged)")
-    }
-
-    /** Called when media is received on a new stream from remote peer. */
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream) {
-        Logger.debug("\(TAG) didAdd stream:\(stream)")
-    }
-
-    /** Called when a remote peer closes a stream. */
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream) {
-        Logger.debug("\(TAG) didRemove Stream:\(stream)")
-    }
-
-    /** Called when negotiation is needed, for example ICE has restarted. */
-    public func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection) {
-        Logger.debug("\(TAG) shouldNegotiate")
-    }
-
-    /** Called any time the IceConnectionState changes. */
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
-        Logger.debug("\(TAG) didChange IceConnectionState:\(newState)")
-    }
-
-    /** Called any time the IceGatheringState changes. */
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceGatheringState) {
-        Logger.debug("\(TAG) didChange IceGatheringState:\(newState)")
-    }
-
-    /** New ice candidate has been found. */
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
-        Logger.debug("\(TAG) didGenerate IceCandidate:\(candidate)")
-    }
-
-    /** Called when a group of local Ice candidates have been removed. */
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]) {
-        Logger.debug("\(TAG) didRemove IceCandidates:\(candidates)")
-    }
-
-    /** New data channel has been opened. */
-    public func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
-        Logger.debug("\(TAG) didOpen dataChannel:\(dataChannel)")
-    }
-
 }

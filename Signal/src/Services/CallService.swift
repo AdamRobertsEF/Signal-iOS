@@ -5,13 +5,13 @@ import Foundation
 import PromiseKit
 import WebRTC
 
-enum CallState {
-    case Idle
-    case Dialing
-    case Answering
-    case RemoteRinging
-    case LocalRinging
-    case Connected
+enum CallState: String {
+    case idle
+    case dialing
+    case answering
+    case remoteRinging
+    case localRinging
+    case connected
 }
 
 class Call {
@@ -19,44 +19,57 @@ class Call {
     var uniqueId: UInt64
 
     init(uniqueId: UInt64) {
-        self.state = CallState.Idle
+        self.state = .idle
         self.uniqueId = uniqueId
     }
 }
 
-class CallService: NSObject, RTCDataChannelDelegate {
+enum CallErrors: Error {
+    case AlreadyInCall
+}
+
+class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
 
     // MARK: - Properties
 
+    let TAG = "[CallService]"
+
     // MARK: Dependencies
+
     let accountManager: AccountManager
     let messageSender: MessageSender
     var peerConnectionClient: PeerConnectionClient?
 
     // MARK: Class
-    let TAG = "[CallService]"
+
     static let DataChannelLabel = "signaling"
     static let fallbackIceServer = RTCIceServer(urlStrings: ["stun:stun1.l.google.com:19302"])
 
     // MARK: Ivars
-    var dataChannel: RTCDataChannel?
-    let thread: TSContactThread
 
-    required init(thread aThread: TSContactThread, accountManager anAccountManager: AccountManager, messageSender aMessageSender: MessageSender) {
-        thread = aThread
+    var dataChannel: RTCDataChannel?
+    var thread: TSContactThread!
+    var call = Call(uniqueId: 0)
+
+//    var iceUpdatesPromise: Promise<Void>
+
+    required init(accountManager anAccountManager: AccountManager, messageSender aMessageSender: MessageSender) {
         accountManager = anAccountManager
         messageSender = aMessageSender
     }
 
     // MARK: - Call Lifecyle
 
-    func placeOutgoingCall(stateChangeHandler: (CallState) -> ()) -> Promise<Void> {
-        let call = Call(uniqueId: UInt64.ows_random())
+    func placeOutgoingCall(thread aThread: TSContactThread, stateChangeHandler: (CallState) -> ()) -> Promise<Void> {
+        thread = aThread
+        Logger.verbose("\(TAG) receivedCallOffer for thread:\(thread)")
+
+        call = Call(uniqueId: UInt64.ows_random())
         stateChangeHandler(call.state);
 
         return getIceServers().then { iceServers -> Promise<RTCSessionDescription> in
             Logger.debug("\(self.TAG) got ice servers:\(iceServers)")
-            self.peerConnectionClient = PeerConnectionClient(iceServers: iceServers)
+            self.peerConnectionClient = PeerConnectionClient(iceServers: iceServers, peerConnectionDelegate: self)
 
             // TODO Would dataChannel be better created within PeerConnectionClient class? Seems like it's only created on outgoing.
             self.dataChannel = self.peerConnectionClient!.createDataChannel(label: CallService.DataChannelLabel, delegate: self)
@@ -64,7 +77,7 @@ class CallService: NSObject, RTCDataChannelDelegate {
             return self.peerConnectionClient!.createOffer()
         }.then { sessionDescription -> Promise<Void> in
             return self.peerConnectionClient!.setLocalSessionDescription(sessionDescription).then {
-                let offerMessage = OWSCallOfferMessage(callId: call.uniqueId, sessionDescription: sessionDescription.sdp)
+                let offerMessage = OWSCallOfferMessage(callId: self.call.uniqueId, sessionDescription: sessionDescription.sdp)
                 let callMessage = OWSOutgoingCallMessage(offerMessage: offerMessage, thread: self.thread)
                 return self.sendMessage(callMessage)
             }
@@ -75,50 +88,21 @@ class CallService: NSObject, RTCDataChannelDelegate {
         }
     }
 
-    func handleReceivedOffer(callId: UInt64, sessionDescription sdpString: String) -> Promise<Void> {
-        Logger.verbose("\(TAG) receivedCallOffer")
+    func handleReceivedOffer(thread aThread: TSContactThread, callId: UInt64, sessionDescription sdpString: String) -> Promise<Void> {
+        thread = aThread
+        Logger.verbose("\(TAG) receivedCallOffer for thread:\(thread)")
 
         // TODO call kit inegration + ios9 adapter.
-//        guard (callState == CallState.STATE_IDLE) else {
-//            Logger.error("\(TAG) expected call state to be idle, but found: \(callState.rawValue)")
-//            // TODO throw new IllegalStateException("Incoming on non-idle");
-//        }
-//
-//        final String offer = intent.getStringExtra(EXTRA_REMOTE_DESCRIPTION);
-//
-//        this.callState = CallState.STATE_ANSWERING;
-//        this.callId    = intent.getLongExtra(EXTRA_CALL_ID, -1);
-//        this.recipient = getRemoteRecipient(intent);
-//
-//        initializeVideo();
-//        retrieveTurnServers().addListener(new SuccessOnlyListener<List<PeerConnection.IceServer>>(this.callState, this.callId) {
-//        public void onSuccessContinue(List<PeerConnection.IceServer> result) {
-//            try {
-//            WebRtcCallService.this.peerConnection = new PeerConnectionWrapper(WebRtcCallService.this, peerConnectionFactory, WebRtcCallService.this, localRenderer, result);
-//            WebRtcCallService.this.peerConnection.setRemoteDescription(new SessionDescription(SessionDescription.Type.OFFER, offer));
-//            WebRtcCallService.this.lockManager.updatePhoneState(LockManager.PhoneState.PROCESSING);
-//
-//            SessionDescription sdp = WebRtcCallService.this.peerConnection.createAnswer(new MediaConstraints());
-//            Log.w(TAG, "Answer SDP: " + sdp.description);
-//            WebRtcCallService.this.peerConnection.setLocalDescription(sdp);
-//
-//            ListenableFutureTask<Boolean> listenableFutureTask = sendMessage(recipient, SignalServiceCallMessage.forAnswer(new AnswerMessage(WebRtcCallService.this.callId, sdp.description)));
-//
-//            listenableFutureTask.addListener(new FailureListener<Boolean>(WebRtcCallService.this.callState, WebRtcCallService.this.callId) {
-//            @Override
-//            public void onFailureContinue(Throwable error) {
-//            Log.w(TAG, error);
-//            terminate();
-//            }
-//            });
-//            } catch (PeerConnectionException e) {
-//            Log.w(TAG, e);
-//            terminate();
-//            }
+        guard call.state == .idle else {
+            Logger.error("\(TAG) refusing to receiveOffer, since call state is: \(call.state)")
+            return Promise { fulfill, reject in
+                reject(CallErrors.AlreadyInCall)
+            }
+        }
 
-        let call = Call(uniqueId: callId)
-        return getIceServers().then { iceServers -> Promise<RTCSessionDescription> in
-            self.peerConnectionClient = PeerConnectionClient(iceServers: iceServers)
+        call = Call(uniqueId: callId)
+        return getIceServers().then { (iceServers: [RTCIceServer]) -> Promise<RTCSessionDescription> in
+            self.peerConnectionClient = PeerConnectionClient(iceServers: iceServers, peerConnectionDelegate: self)
 
             let sessionDescription = RTCSessionDescription(type: .offer, sdp: sdpString)
             let constraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
@@ -129,11 +113,41 @@ class CallService: NSObject, RTCDataChannelDelegate {
             // TODO? WebRtcCallService.this.lockManager.updatePhoneState(LockManager.PhoneState.PROCESSING);
             Logger.debug("\(self.TAG) set the remote description")
 
-            let answerMessage = OWSCallAnswerMessage(callId: call.uniqueId, sessionDescription: negotiatedSessionDescription.sdp)
-            let callMessage = OWSOutgoingCallMessage(answerMessage: answerMessage, thread: self.thread)
+            let answerMessage = OWSCallAnswerMessage(callId: self.call.uniqueId, sessionDescription: negotiatedSessionDescription.sdp)
+            let callAnswerMessage = OWSOutgoingCallMessage(answerMessage: answerMessage, thread: self.thread)
 
-            return self.sendMessage(callMessage)
+            return self.sendMessage(callAnswerMessage)
+        }.then { () in
+            return self.waitForIceUpdates()
+        }.then { () in
+            Logger.debug("\(self.TAG) received ICE updates")
         }
+    }
+
+    fileprivate func waitForIceUpdates() -> Promise<Void> {
+        return Promise { fulfill, reject in
+            // TODO, how to get handler to resolve this?
+        }
+    }
+
+    public func handleReceivedRemoteIceCandidate(thread aThread: TSContactThread, callId aCallId: UInt64, sdp: String, lineIndex: Int32, mid: String) {
+        Logger.debug("\(TAG) received ice update")
+        guard thread == aThread else {
+            Logger.error("\(TAG) ignoring remote ice update for thread: \(aThread) since the current call is for thread: \(thread)")
+            return
+        }
+
+        guard call.uniqueId == aCallId else {
+            Logger.error("\(TAG) ignoring remote ice update for call: \(aCallId) since the current call is: \(call.uniqueId)")
+            return
+        }
+
+        guard peerConnectionClient != nil else {
+            Logger.error("\(TAG) ignoring remote ice update for thread: \(aThread) since the current call hasn't initialized it's peerConnectionClient")
+            return
+        }
+
+        peerConnectionClient!.addIceCandidate(RTCIceCandidate(sdp: sdp, sdpMLineIndex: lineIndex, sdpMid: mid))
     }
 
     fileprivate func getIceServers() -> Promise<[RTCIceServer]> {
@@ -157,6 +171,10 @@ class CallService: NSObject, RTCDataChannelDelegate {
         }
     }
 
+    fileprivate func waitForIceUpdates() {
+
+    }
+
     public func terminateCall() {
         peerConnectionClient?.terminate()
     }
@@ -173,7 +191,7 @@ class CallService: NSObject, RTCDataChannelDelegate {
         Logger.debug("\(TAG) dataChannel didReceiveMessageWith buffer:\(buffer)")
 
         guard let dataMessage = OWSWebRTCProtosData.parse(from:buffer.data) else {
-            // TODO can't this throw an exception? Is it just being lost in the Objc->Swift?
+            // TODO can't proto parsings throw an exception? Is it just being lost in the Objc->Swift?
             Logger.error("\(TAG) failed to parse dataProto")
             return
         }
@@ -209,6 +227,54 @@ class CallService: NSObject, RTCDataChannelDelegate {
     public func dataChannel(_ dataChannel: RTCDataChannel, didChangeBufferedAmount amount: UInt64) {
         Logger.debug("\(TAG) didChangeBufferedAmount: \(amount)")
     }
+
+    // MARK: - RTCPeerConnectionDelegate
+
+    /** Called when the SignalingState changed. */
+    public func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
+        Logger.debug("\(TAG) didChange signalingState:\(stateChanged)")
+    }
+
+    /** Called when media is received on a new stream from remote peer. */
+    public func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream) {
+        Logger.debug("\(TAG) didAdd stream:\(stream)")
+    }
+
+    /** Called when a remote peer closes a stream. */
+    public func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream) {
+        Logger.debug("\(TAG) didRemove Stream:\(stream)")
+    }
+
+    /** Called when negotiation is needed, for example ICE has restarted. */
+    public func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection) {
+        Logger.debug("\(TAG) shouldNegotiate")
+    }
+
+    /** Called any time the IceConnectionState changes. */
+    public func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
+        Logger.debug("\(TAG) didChange IceConnectionState:\(newState)")
+    }
+
+    /** Called any time the IceGatheringState changes. */
+    public func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceGatheringState) {
+        Logger.debug("\(TAG) didChange IceGatheringState:\(newState)")
+    }
+
+    /** New ice candidate has been found. */
+    public func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
+        Logger.debug("\(TAG) didGenerate IceCandidate:\(candidate)")
+    }
+
+    /** Called when a group of local Ice candidates have been removed. */
+    public func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]) {
+        Logger.debug("\(TAG) didRemove IceCandidates:\(candidates)")
+    }
+
+    /** New data channel has been opened. */
+    public func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
+        Logger.debug("\(TAG) didOpen dataChannel:\(dataChannel)")
+    }
+
 }
 
 fileprivate extension UInt64 {
