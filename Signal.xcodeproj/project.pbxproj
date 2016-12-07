@@ -135,6 +135,8 @@
 		45FBC5CD1DF8575700E9B410 /* UIFont+Speakerbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC59C1DF8575700E9B410 /* UIFont+Speakerbox.swift */; };
 		45FBC5CE1DF8575700E9B410 /* URL+StartCallConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC59D1DF8575700E9B410 /* URL+StartCallConvertible.swift */; };
 		45FBC5CF1DF8575700E9B410 /* URL+StartCallConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC59D1DF8575700E9B410 /* URL+StartCallConvertible.swift */; };
+		45FBC5D11DF8592E00E9B410 /* SignalCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5D01DF8592E00E9B410 /* SignalCall.swift */; };
+		45FBC5D21DF8592E00E9B410 /* SignalCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5D01DF8592E00E9B410 /* SignalCall.swift */; };
 		4CE0E3771B954546007210CF /* TSAnimatedAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CE0E3761B954546007210CF /* TSAnimatedAdapter.m */; };
 		701231B518ECAA4500D456C4 /* EvpMessageDigest.m in Sources */ = {isa = PBXBuildFile; fileRef = 701231B418ECAA4500D456C4 /* EvpMessageDigest.m */; };
 		70377AAB1918450100CAF501 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70377AAA1918450100CAF501 /* MobileCoreServices.framework */; };
@@ -648,7 +650,7 @@
 		45666F7A1D9C0533008FE134 /* OWSDatabaseMigration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OWSDatabaseMigration.m; path = Migrations/OWSDatabaseMigration.m; sourceTree = "<group>"; };
 		45666F7C1D9C0814008FE134 /* OWSDatabaseMigrationRunner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OWSDatabaseMigrationRunner.h; path = Migrations/OWSDatabaseMigrationRunner.h; sourceTree = "<group>"; };
 		45666F7D1D9C0814008FE134 /* OWSDatabaseMigrationRunner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OWSDatabaseMigrationRunner.m; path = Migrations/OWSDatabaseMigrationRunner.m; sourceTree = "<group>"; };
-		4574A5D51DD6704700C6B692 /* CallService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CallService.swift; path = Services/CallService.swift; sourceTree = "<group>"; };
+		4574A5D51DD6704700C6B692 /* CallService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CallService.swift; path = ../Services/CallService.swift; sourceTree = "<group>"; };
 		45843D1D1D2236B30013E85A /* OWSContactsSearcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OWSContactsSearcher.h; sourceTree = "<group>"; };
 		45843D1E1D2236B30013E85A /* OWSContactsSearcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OWSContactsSearcher.m; sourceTree = "<group>"; };
 		45843D211D223BA10013E85A /* OWSContactsSearcherTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OWSContactsSearcherTest.m; sourceTree = "<group>"; };
@@ -733,6 +735,7 @@
 		45FBC59B1DF8575700E9B410 /* StartCallConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartCallConvertible.swift; sourceTree = "<group>"; };
 		45FBC59C1DF8575700E9B410 /* UIFont+Speakerbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+Speakerbox.swift"; sourceTree = "<group>"; };
 		45FBC59D1DF8575700E9B410 /* URL+StartCallConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+StartCallConvertible.swift"; sourceTree = "<group>"; };
+		45FBC5D01DF8592E00E9B410 /* SignalCall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignalCall.swift; sourceTree = "<group>"; };
 		4CE0E3751B95453C007210CF /* TSAnimatedAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSAnimatedAdapter.h; sourceTree = "<group>"; };
 		4CE0E3761B954546007210CF /* TSAnimatedAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSAnimatedAdapter.m; sourceTree = "<group>"; };
 		701231B318ECAA4500D456C4 /* EvpMessageDigest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EvpMessageDigest.h; sourceTree = "<group>"; };
@@ -1325,14 +1328,6 @@
 			name = Migrations;
 			sourceTree = "<group>";
 		};
-		4574A5D41DD6701D00C6B692 /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				4574A5D51DD6704700C6B692 /* CallService.swift */,
-			);
-			name = Services;
-			sourceTree = "<group>";
-		};
 		457F3AC01D14A0F700C51351 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -1498,7 +1493,6 @@
 				B60959791C2C0FA9004E8797 /* rating */,
 				76EB04C818170B33006006FC /* util */,
 				45D231751DC7E8C50034FA89 /* Jobs */,
-				4574A5D41DD6701D00C6B692 /* Services */,
 				457F3AC01D14A0F700C51351 /* Models */,
 				76EB052B18170B33006006FC /* Views */,
 				76EB04FE18170B33006006FC /* View Controllers */,
@@ -1533,11 +1527,13 @@
 				458DE9D71DEE7B360071BB03 /* OWSWebRTCDataProtos.pb.h */,
 				458DE9D81DEE7B360071BB03 /* OWSWebRTCDataProtos.pb.m */,
 				76EB03FF18170B33006006FC /* RecentCall.h */,
+				45FBC5D01DF8592E00E9B410 /* SignalCall.swift */,
 				76EB040018170B33006006FC /* RecentCall.m */,
 				76EB040118170B33006006FC /* RecentCallManager.h */,
 				76EB040218170B33006006FC /* RecentCallManager.m */,
 				458DE9D51DEE3FD00071BB03 /* PeerConnectionClient.swift */,
 				45C9DEB71DF4E35A0065CA84 /* RTCCallMessageHandler.swift */,
+				4574A5D51DD6704700C6B692 /* CallService.swift */,
 			);
 			path = call;
 			sourceTree = "<group>";
@@ -3155,6 +3151,7 @@
 				76EB058C18170B33006006FC /* DnsManager.m in Sources */,
 				45FBC5C81DF8575700E9B410 /* SpeakerboxCallManager.swift in Sources */,
 				45FBC5B81DF8575700E9B410 /* CallsViewController.swift in Sources */,
+				45FBC5D11DF8592E00E9B410 /* SignalCall.swift in Sources */,
 				B671B2461A93B238002BBD9D /* GroupContactsResult.m in Sources */,
 				B66B9F721AEA6D1100E2E609 /* NotificationSettingsViewController.m in Sources */,
 				76EB059018170B33006006FC /* IgnoredPacketFailure.m in Sources */,
@@ -3360,6 +3357,7 @@
 				B660F75B1C29988E00687D6E /* CallProgress.m in Sources */,
 				B660F75C1C29988E00687D6E /* CallState.m in Sources */,
 				B660F75D1C29988E00687D6E /* CallTermination.m in Sources */,
+				45FBC5D21DF8592E00E9B410 /* SignalCall.swift in Sources */,
 				45FBC5B71DF8575700E9B410 /* CallSummaryTableViewCell.swift in Sources */,
 				45FBC5A51DF8575700E9B410 /* AudioController.mm in Sources */,
 				B660F75E1C29988E00687D6E /* PhoneManager.m in Sources */,
