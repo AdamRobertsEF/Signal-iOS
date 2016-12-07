@@ -15,26 +15,38 @@ enum CallState: String {
 }
 
 protocol CallUIAdaptee {
-    func startCall(_ call: SignalCall);
+    func startOutgoingCall(_ call: SignalCall);
+    func reportIncomingCall(_ call: SignalCall) -> Promise<Void>;
 }
 
 class CallUIiOS8Adaptee: CallUIAdaptee {
-    func startCall(_ call: SignalCall) {}
+    func startOutgoingCall(_ call: SignalCall) {}
+    func reportIncomingCall(_ call: SignalCall) -> Promise<Void> {
+        return Promise { _ in
+            // TODO
+        }
+    }
 }
 
 @available(iOS 10.0, *)
 class CallUICallKitAdaptee: CallUIAdaptee {
-    let speakerboxCallManager = SpeakerboxCallManager()
+    let providerDelegate = ProviderDelegate(callManager: SpeakerboxCallManager())
 
-    func startCall(_ call: SignalCall) {
+    func startOutgoingCall(_ call: SignalCall) {
         // TODO initiate video call
-        speakerboxCallManager.startCall(handle: call.remotePhoneNumber, video: false)
+        providerDelegate.callManager.startCall(handle: call.remotePhoneNumber, video: call.hasVideo)
     }
 
+    func reportIncomingCall(_ call: SignalCall) -> Promise<Void> {
+        return PromiseKit.wrap {
+            providerDelegate.reportIncomingCall(uuid: call.localId, handle: call.remotePhoneNumber, hasVideo: call.hasVideo, completion: $0)
+        }
+    }
 }
 
 class CallManagerAdapter {
 
+    let TAG = "[CallManagerAdapter]"
     let adaptee: CallUIAdaptee
 
     init() {
@@ -45,13 +57,17 @@ class CallManagerAdapter {
         }
     }
 
-    func addIncomingCall(_ call: SignalCall, thread: TSContactThread) {
-        Logger.info("TODO show incoming call.")
-        adaptee.startCall(call)
+    func reportIncomingCall(_ call: SignalCall, thread: TSContactThread) {
+        adaptee.reportIncomingCall(call).then {
+            Logger.info("\(self.TAG) successfully reported incoming call")
+        }.catch { error in
+            // TODO UI
+            Logger.error("\(self.TAG) reporting incoming call failed with error \(error)")
+        }
     }
 
     func addOutgoingCall(_ call: SignalCall, thread: TSContactThread) {
-        Logger.info("TODO show outgoing call.")
+        adaptee.startOutgoingCall(call)
     }
 
 }
@@ -88,9 +104,9 @@ enum CallErrors: Error {
 
 //    var iceUpdatesPromise: Promise<Void>
 
-    required init(accountManager anAccountManager: AccountManager, messageSender aMessageSender: MessageSender) {
-        accountManager = anAccountManager
-        messageSender = aMessageSender
+    required init(accountManager: AccountManager, messageSender: MessageSender) {
+        self.accountManager = accountManager
+        self.messageSender = messageSender
     }
 
     // MARK: - Service Actions
@@ -131,6 +147,7 @@ enum CallErrors: Error {
 
     func handleReceivedAnswer(thread: TSContactThread, callId: UInt64, sessionDescription: String) {
         Logger.debug("\(TAG) received call answer for call: \(callId) thread: \(thread)")
+        Logger.error("FIXME TODO")
         // TODO
         // - SEND pendingIceUpdates
         // - set remote description
@@ -138,6 +155,8 @@ enum CallErrors: Error {
     }
 
     func handleBusyCall(thread aThread: TSContactThread, callId: UInt64) {
+        Logger.debug("\(TAG) received 'busy' for call: \(callId) thread: \(thread)")
+        Logger.error("FIXME TODO")
         // TODO
 //        let busyMessage = OWSCallBusyMessage(callId: callId)
 //        let callMessage = OWSOutgoingCallMessage(thread: thread, busyMessage: busyMessage)
@@ -263,7 +282,7 @@ enum CallErrors: Error {
         switch (call.state) {
         case .answering:
             call.state = .localRinging
-            self.callManagerAdapter.addIncomingCall(call, thread: thread)
+            self.callManagerAdapter.reportIncomingCall(call, thread: thread)
         case .dialing:
             call.state = .remoteRinging
             self.callManagerAdapter.addOutgoingCall(call, thread: thread)
@@ -273,7 +292,8 @@ enum CallErrors: Error {
     }
 
     func handleRemoteHangup() {
-
+        Logger.debug("\(TAG) handling remote hangup")
+        Logger.error("\(TAG) TODO")
     }
 
     // MARK: Helpers

@@ -4,13 +4,17 @@
 import Foundation
 
 class SignalCall {
+
     var state: CallState
     let signalingId: UInt64
-    var remotePhoneNumber: String
+    let remotePhoneNumber: String
+    let localId: UUID
+    let hasVideo = false
 
     init(signalingId: UInt64, state: CallState, remotePhoneNumber: String) {
         self.signalingId = signalingId
         self.state = state
         self.remotePhoneNumber = remotePhoneNumber
-    }    
+        self.localId = UUID()
+    }
 }
