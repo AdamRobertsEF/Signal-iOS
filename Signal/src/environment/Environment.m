@@ -21,6 +21,7 @@ static Environment *environment = nil;
 
 @synthesize accountManager = _accountManager;
 @synthesize callMessageHandler = _callMessageHandler;
+@synthesize callService = _callService;
 
 + (Environment *)getCurrent {
     NSAssert((environment != nil), @"Environment is not defined.");
@@ -127,7 +128,7 @@ static Environment *environment = nil;
 
 - (AccountManager *)accountManager
 {
-    @synchronized(self) {
+    @synchronized (self) {
         if (!_accountManager) {
             _accountManager = [[AccountManager alloc] initWithTextSecureAccountManager:[TSAccountManager sharedInstance]
                                                                 redPhoneAccountManager:[RPAccountManager sharedInstance]];
@@ -139,15 +140,29 @@ static Environment *environment = nil;
 
 - (OWSWebRTCCallMessageHandler *)callMessageHandler
 {
-    @synchronized(self) {
+    @synchronized (self) {
         if (!_callMessageHandler) {
             _callMessageHandler = [[OWSWebRTCCallMessageHandler alloc] initWithAccountManager:self.accountManager
                                                                               contactsManager:self.contactsManager
-                                                                                messageSender:self.messageSender];
+                                                                                messageSender:self.messageSender
+                                                                                  callService:self.callService];
         }
     }
 
     return _callMessageHandler;
+}
+
+- (CallService *)callService
+{
+    @synchronized (self) {
+        if (!_callService) {
+            _callService = [[CallService alloc] initWithAccountManager:self.accountManager
+                                                         messageSender:self.messageSender];
+
+        }
+    }
+
+    return _callService;
 }
 
 + (PhoneManager *)phoneManager {

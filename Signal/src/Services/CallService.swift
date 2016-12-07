@@ -13,33 +13,41 @@ enum CallState: String {
     case localRinging
     case connected
 }
-//
-//protocol CallUIAdaptee {
-//
-//    func showIncomingCall(_ call: Call, thread: TSContactThread)
-//    func showOutgoingCall(_ call: Call, thread: TSContactThread)
-//
-//}
-//
-//class CallKitCallUIAdaptee: CallUIAdaptee {
-//
-//}
 
-// TODO
-//class iOS8CallDisplayAdaptee: CallUIAdaptee {
-//
-//}
+protocol CallUIAdaptee {
+    func startCall(_ call: SignalCall);
+}
+
+class CallUIiOS8Adaptee: CallUIAdaptee {
+    func startCall(_ call: SignalCall) {}
+}
+
+@available(iOS 10.0, *)
+class CallUICallKitAdaptee: CallUIAdaptee {
+    let speakerboxCallManager = SpeakerboxCallManager()
+
+    func startCall(_ call: SignalCall) {
+        // TODO initiate video call
+        speakerboxCallManager.startCall(handle: call.remotePhoneNumber, video: false)
+    }
+
+}
 
 class CallManagerAdapter {
-//    let adaptee: CallUIAdaptee
+
+    let adaptee: CallUIAdaptee
 
     init() {
-        // TODO if iOS10+
-//        adaptee = CallKitCallUIAdaptee()
+        if #available(iOS 10.0, *) {
+            adaptee = CallUICallKitAdaptee()
+        } else {
+            adaptee = CallUIiOS8Adaptee()
+        }
     }
 
     func addIncomingCall(_ call: SignalCall, thread: TSContactThread) {
         Logger.info("TODO show incoming call.")
+        adaptee.startCall(call)
     }
 
     func addOutgoingCall(_ call: SignalCall, thread: TSContactThread) {
@@ -53,7 +61,7 @@ enum CallErrors: Error {
     case NoCurrentContactThread
 }
 
-class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
+@objc class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
 
     // MARK: - Properties
 
@@ -87,11 +95,11 @@ class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
 
     // MARK: - Service Actions
 
-    func handleOutgoingCall(thread aThread: TSContactThread) -> Promise<Void> {
-        thread = aThread
-        Logger.verbose("\(TAG) receivedCallOffer for thread:\(thread)")
+    func handleOutgoingCall(thread: TSContactThread) -> Promise<Void> {
+        self.thread = thread
+        Logger.verbose("\(TAG) handling outgoing call to thread:\(thread)")
 
-        let currentCall = SignalCall(signalingId: UInt64.ows_random(), state: .dialing)
+        let currentCall = SignalCall(signalingId: UInt64.ows_random(), state: .dialing, remotePhoneNumber: thread.contactIdentifier())
         call = currentCall
         pendingIceUpdates = []
 
@@ -106,20 +114,27 @@ class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
         }.then { sessionDescription -> Promise<Void> in
             return self.peerConnectionClient!.setLocalSessionDescription(sessionDescription).then {
                 let offerMessage = OWSCallOfferMessage(callId: currentCall.signalingId, sessionDescription: sessionDescription.sdp)
-                let callMessage = OWSOutgoingCallMessage(thread: aThread, offerMessage: offerMessage)
+                let callMessage = OWSOutgoingCallMessage(thread: thread, offerMessage: offerMessage)
                 return self.sendMessage(callMessage)
             }
         }.then {
             Logger.debug("\(self.TAG) sent CallOffer message in \(self.thread)")
+            // TODO... timeout.
+            return self.waitForIceUpdates()
+        }.then {
+            // TODO... timeouts
+            Logger.debug("\(self.TAG) got ice updates in \(self.thread)")
         }.catch { error in
             Logger.error("\(self.TAG) placing call failed with error: \(error)")
         }
     }
 
     func handleReceivedAnswer(thread: TSContactThread, callId: UInt64, sessionDescription: String) {
-        // TODO 
-        //SEND pendingIceUpdates
-        // etc.
+        Logger.debug("\(TAG) received call answer for call: \(callId) thread: \(thread)")
+        // TODO
+        // - SEND pendingIceUpdates
+        // - set remote description
+        // - etc.
     }
 
     func handleBusyCall(thread aThread: TSContactThread, callId: UInt64) {
@@ -148,7 +163,7 @@ class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
             return
         }
 
-        let currentCall = SignalCall(signalingId: callId, state: .answering)
+        let currentCall = SignalCall(signalingId: callId, state: .answering, remotePhoneNumber: aThread.contactIdentifier())
         call = currentCall
 
         _ = getIceServers().then { (iceServers: [RTCIceServer]) -> Promise<RTCSessionDescription> in
@@ -174,25 +189,25 @@ class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
         }
     }
 
-    public func handleRemoteAddedIceCandidate(thread aThread: TSContactThread, callId aCallId: UInt64, sdp: String, lineIndex: Int32, mid: String) {
+    public func handleRemoteAddedIceCandidate(thread: TSContactThread, callId: UInt64, sdp: String, lineIndex: Int32, mid: String) {
         Logger.debug("\(TAG) received ice update")
-        guard thread == aThread else {
-            Logger.error("\(TAG) ignoring remote ice update for thread: \(aThread) since the current call is for thread: \(thread)")
+        guard thread == self.thread else {
+            Logger.error("\(TAG) ignoring remote ice update for thread: \(thread) since the current call is for thread: \(self.thread)")
             return
         }
 
-        guard let currentCall = call else {
-            Logger.error("\(TAG) ignoring remote ice update for callId: \(aCallId), since there is no current call.")
+        guard let call = self.call else {
+            Logger.error("\(TAG) ignoring remote ice update for callId: \(callId), since there is no current call.")
             return
         }
 
-        guard currentCall.signalingId == aCallId else {
-            Logger.error("\(TAG) ignoring remote ice update for call: \(aCallId) since the current call is: \(currentCall.signalingId)")
+        guard call.signalingId == callId else {
+            Logger.error("\(TAG) ignoring remote ice update for call: \(callId) since the current call is: \(call.signalingId)")
             return
         }
 
-        guard peerConnectionClient != nil else {
-            Logger.error("\(TAG) ignoring remote ice update for thread: \(aThread) since the current call hasn't initialized it's peerConnectionClient")
+        guard self.peerConnectionClient != nil else {
+            Logger.error("\(TAG) ignoring remote ice update for thread: \(thread) since the current call hasn't initialized it's peerConnectionClient")
             return
         }
 
@@ -200,28 +215,29 @@ class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
     }
 
     public func handleLocalAddedIceCandidate(_ iceCandidate: RTCIceCandidate) {
-        guard let currentCall = call else {
+        guard let call = self.call else {
             Logger.warn("\(TAG) ignoring local ice candidate, since there is no current call.")
             return
         }
 
-        guard currentCall.state != .idle else {
+        guard call.state != .idle else {
             Logger.warn("\(TAG) ignoring local ice candidate, since call is now idle.")
             return
         }
 
-        guard let currentThread = thread else {
-            Logger.warn("\(TAG) ignoring local ice candidate, because there was no currentThread.")
+        guard let thread = self.thread else {
+            Logger.warn("\(TAG) ignoring local ice candidate, because there was no current TSContactThread.")
             return
         }
 
-        let iceUpdateMessage = OWSCallIceUpdateMessage(callId: currentCall.signalingId, sdp: iceCandidate.sdp, sdpMLineIndex: iceCandidate.sdpMLineIndex, sdpMid: iceCandidate.sdpMid)
-        let callMessage = OWSOutgoingCallMessage(thread: currentThread, iceUpdateMessage: iceUpdateMessage)
+        let iceUpdateMessage = OWSCallIceUpdateMessage(callId: call.signalingId, sdp: iceCandidate.sdp, sdpMLineIndex: iceCandidate.sdpMLineIndex, sdpMid: iceCandidate.sdpMid)
+        let callMessage = OWSOutgoingCallMessage(thread: thread, iceUpdateMessage: iceUpdateMessage)
 
         if pendingIceUpdates != nil {
             // For outgoing messages, we wait to send ice updates until we're sure client received our call message.
             // e.g. if the client has blocked our message due to an identity change, we'd otherwise
             // bombard them with a bunch *more* undecipherable messages.
+            Logger.debug("\(TAG) enqueuing iceUpdate until we receive call answer")
             pendingIceUpdates!.append(callMessage)
             return
         }
@@ -234,29 +250,25 @@ class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
 
     func handleIceConnected() {
 
-        guard let currentCall = call else {
+        guard let call = self.call else {
             Logger.warn("\(TAG) ignoring handleIceConnected since there is no current call.")
             return
         }
 
-        guard let currentThread = thread else {
+        guard let thread = self.thread else {
             Logger.warn("\(TAG) ignoring handleIceConnected since there is no current thread.")
             return
         }
 
-        switch (currentCall.state) {
+        switch (call.state) {
         case .answering:
-            assert(thread != nil)
-
-            currentCall.state = .localRinging
-            self.callManagerAdapter.addIncomingCall(currentCall, thread: currentThread)
+            call.state = .localRinging
+            self.callManagerAdapter.addIncomingCall(call, thread: thread)
         case .dialing:
-            assert(thread != nil)
-
-            currentCall.state = .remoteRinging
-            self.callManagerAdapter.addOutgoingCall(currentCall, thread: currentThread)
+            call.state = .remoteRinging
+            self.callManagerAdapter.addOutgoingCall(call, thread: thread)
         default:
-            Logger.debug("\(TAG) unexpected call state for handleIceConnected: \(currentCall.state)")
+            Logger.debug("\(TAG) unexpected call state for handleIceConnected: \(call.state)")
         }
     }
 

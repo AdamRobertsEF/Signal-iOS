@@ -3,6 +3,7 @@
 
 import Foundation
 import WebRTC
+import PromiseKit
 
 @objc(OWSCallViewController)
 class CallViewController : UIViewController {
@@ -14,33 +15,30 @@ class CallViewController : UIViewController {
     let TAG = "[CallViewController]"
 
     // Dependencies
-    let accountManager: AccountManager
-    let messageSender: MessageSender
+
+    let callService: CallService
     let contactsManager: OWSContactsManager
 
-    // MARK: Properties
 
-    var callService: CallService!
+    // MARK: Properties
     var peerConnectionClient: PeerConnectionClient?
     var callDirection: CallDirection = .unspecified
     var thread: TSContactThread!
+    var callPromise: Promise<Void>?
+
     @IBOutlet weak var contactName: UILabel!
 
     // MARK: Initializers
 
     required init?(coder aDecoder: NSCoder) {
-        accountManager = Environment.getCurrent().accountManager
-        messageSender = Environment.getCurrent().messageSender
         contactsManager = Environment.getCurrent().contactsManager
-
+        callService = Environment.getCurrent().callService
         super.init(coder: aDecoder)
     }
 
     required init() {
-        accountManager = Environment.getCurrent().accountManager
-        messageSender = Environment.getCurrent().messageSender
         contactsManager = Environment.getCurrent().contactsManager
-
+        callService = Environment.getCurrent().callService
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -58,14 +56,10 @@ class CallViewController : UIViewController {
             showCallFailed(error: OWSErrorMakeAssertionError())
         case .outgoing:
             self.contactName.text = self.contactsManager.displayName(forPhoneIdentifier: thread.contactIdentifier());
-            callService = CallService(accountManager: self.accountManager, messageSender: self.messageSender)
-            _ = callService.handleOutgoingCall(thread: thread)
+            self.callPromise = callService.handleOutgoingCall(thread: thread)
         case .incoming:
-            guard callService != nil else {
-                Logger.error("\(TAG) expected call service to already be set for incoming call")
-                showCallFailed(error: OWSErrorMakeAssertionError())
-                return
-            }
+            Logger.error("\(TAG) TODO incoming call handling not implemented")
+            // TODO for ios8 maybe? do we need our own UI for callkit?
         }
     }
 

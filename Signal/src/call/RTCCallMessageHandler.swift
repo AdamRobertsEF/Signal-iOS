@@ -19,11 +19,11 @@ class WebRTCCallMessageHandler: NSObject, OWSCallMessageHandler {
 
     // MARK: Initializers
 
-    required init(accountManager anAccountManager: AccountManager, contactsManager aContactsManager: OWSContactsManager, messageSender aMessageSender: MessageSender) {
-        accountManager = anAccountManager
-        contactsManager = aContactsManager
-        messageSender = aMessageSender
-        callService = CallService(accountManager: accountManager, messageSender: messageSender)
+    required init(accountManager: AccountManager, contactsManager: OWSContactsManager, messageSender: MessageSender, callService: CallService) {
+        self.accountManager = accountManager
+        self.contactsManager = contactsManager
+        self.messageSender = messageSender
+        self.callService = callService
     }
 
     // MARK: - Call Handlers
@@ -55,7 +55,13 @@ class WebRTCCallMessageHandler: NSObject, OWSCallMessageHandler {
     }
 
     public func receivedHangup(_ hangup: OWSSignalServiceProtosCallMessageHangup, from callerId: String) {
-        Logger.verbose("\(TAG) handling hangup from caller:\(callerId)")
-        // TODO
+        Logger.verbose("\(TAG) handling 'hangup' from caller:\(callerId)")
+        Logger.error("TODO")
     }
+
+    public func receivedBusy(_ busy: OWSSignalServiceProtosCallMessageBusy, from callerId: String) {
+        Logger.verbose("\(TAG) handling 'busy' from caller:\(callerId)")
+        Logger.error("TODO")
+    }
+
 }
