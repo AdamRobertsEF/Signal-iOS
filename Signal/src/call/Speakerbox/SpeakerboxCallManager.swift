@@ -9,6 +9,7 @@
 import UIKit
 import CallKit
 
+@available(iOS 10.0, *)
 final class SpeakerboxCallManager: NSObject {
 
     let callController = CXCallController()

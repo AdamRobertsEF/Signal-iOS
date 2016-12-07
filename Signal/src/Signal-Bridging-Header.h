@@ -13,6 +13,7 @@
 #import "PushManager.h"
 #import "RPAccountManager.h"
 #import "UIFont+OWS.h"
+#import "AudioController.h"
 #import "UIUtil.h"
 #import <SignalServiceKit/Contact.h>
 #import <SignalServiceKit/NSDate+millisecondTimeStamp.h>

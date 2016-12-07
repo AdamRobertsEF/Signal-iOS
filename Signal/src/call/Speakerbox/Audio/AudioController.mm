@@ -294,9 +294,4 @@ static OSStatus	performRender (void                         *inRefCon,
     return _audioChainIsBeingReconstructed;
 }
 
-- (void)dealloc
-{
-    [super dealloc];
-}
-
 @end

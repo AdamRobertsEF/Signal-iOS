@@ -85,12 +85,8 @@
 		45F2B1941D9C9F48000D2C69 /* OWSOutgoingMessageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F2B1931D9C9F48000D2C69 /* OWSOutgoingMessageCollectionViewCell.m */; };
 		45F2B1971D9CA207000D2C69 /* OWSIncomingMessageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45F2B1951D9CA207000D2C69 /* OWSIncomingMessageCollectionViewCell.xib */; };
 		45F2B1981D9CA207000D2C69 /* OWSOutgoingMessageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45F2B1961D9CA207000D2C69 /* OWSOutgoingMessageCollectionViewCell.xib */; };
-		45FBC59E1DF8575700E9B410 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC57B1DF8575700E9B410 /* AppDelegate.swift */; };
-		45FBC59F1DF8575700E9B410 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC57B1DF8575700E9B410 /* AppDelegate.swift */; };
 		45FBC5A01DF8575700E9B410 /* Array+Speakerbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC57C1DF8575700E9B410 /* Array+Speakerbox.swift */; };
 		45FBC5A11DF8575700E9B410 /* Array+Speakerbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC57C1DF8575700E9B410 /* Array+Speakerbox.swift */; };
-		45FBC5A21DF8575700E9B410 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC57D1DF8575700E9B410 /* Assets.xcassets */; };
-		45FBC5A31DF8575700E9B410 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC57D1DF8575700E9B410 /* Assets.xcassets */; };
 		45FBC5A41DF8575700E9B410 /* AudioController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5801DF8575700E9B410 /* AudioController.mm */; };
 		45FBC5A51DF8575700E9B410 /* AudioController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5801DF8575700E9B410 /* AudioController.mm */; };
 		45FBC5A61DF8575700E9B410 /* CADebugMacros.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5811DF8575700E9B410 /* CADebugMacros.cpp */; };
@@ -99,32 +95,16 @@
 		45FBC5A91DF8575700E9B410 /* CAStreamBasicDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5841DF8575700E9B410 /* CAStreamBasicDescription.cpp */; };
 		45FBC5AA1DF8575700E9B410 /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5861DF8575700E9B410 /* CAXException.cpp */; };
 		45FBC5AB1DF8575700E9B410 /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5861DF8575700E9B410 /* CAXException.cpp */; };
-		45FBC5AC1DF8575700E9B410 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC5881DF8575700E9B410 /* LaunchScreen.storyboard */; };
-		45FBC5AD1DF8575700E9B410 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC5881DF8575700E9B410 /* LaunchScreen.storyboard */; };
-		45FBC5AE1DF8575700E9B410 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC58A1DF8575700E9B410 /* Localizable.strings */; };
-		45FBC5AF1DF8575700E9B410 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC58A1DF8575700E9B410 /* Localizable.strings */; };
-		45FBC5B01DF8575700E9B410 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC58C1DF8575700E9B410 /* Main.storyboard */; };
-		45FBC5B11DF8575700E9B410 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC58C1DF8575700E9B410 /* Main.storyboard */; };
 		45FBC5B21DF8575700E9B410 /* CallAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC58E1DF8575700E9B410 /* CallAudio.swift */; };
 		45FBC5B31DF8575700E9B410 /* CallAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC58E1DF8575700E9B410 /* CallAudio.swift */; };
 		45FBC5B41DF8575700E9B410 /* CallDurationFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC58F1DF8575700E9B410 /* CallDurationFormatter.swift */; };
 		45FBC5B51DF8575700E9B410 /* CallDurationFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC58F1DF8575700E9B410 /* CallDurationFormatter.swift */; };
-		45FBC5B61DF8575700E9B410 /* CallSummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5901DF8575700E9B410 /* CallSummaryTableViewCell.swift */; };
-		45FBC5B71DF8575700E9B410 /* CallSummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5901DF8575700E9B410 /* CallSummaryTableViewCell.swift */; };
-		45FBC5B81DF8575700E9B410 /* CallsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5911DF8575700E9B410 /* CallsViewController.swift */; };
-		45FBC5B91DF8575700E9B410 /* CallsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5911DF8575700E9B410 /* CallsViewController.swift */; };
-		45FBC5BA1DF8575700E9B410 /* DialOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5921DF8575700E9B410 /* DialOptionsViewController.swift */; };
-		45FBC5BB1DF8575700E9B410 /* DialOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5921DF8575700E9B410 /* DialOptionsViewController.swift */; };
-		45FBC5BC1DF8575700E9B410 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC5931DF8575700E9B410 /* Info.plist */; };
-		45FBC5BD1DF8575700E9B410 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC5931DF8575700E9B410 /* Info.plist */; };
 		45FBC5BE1DF8575700E9B410 /* NSUserActivity+StartCallConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5941DF8575700E9B410 /* NSUserActivity+StartCallConvertible.swift */; };
 		45FBC5BF1DF8575700E9B410 /* NSUserActivity+StartCallConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5941DF8575700E9B410 /* NSUserActivity+StartCallConvertible.swift */; };
 		45FBC5C01DF8575700E9B410 /* ProviderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5951DF8575700E9B410 /* ProviderDelegate.swift */; };
 		45FBC5C11DF8575700E9B410 /* ProviderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5951DF8575700E9B410 /* ProviderDelegate.swift */; };
 		45FBC5C21DF8575700E9B410 /* Ringtone.caf in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC5961DF8575700E9B410 /* Ringtone.caf */; };
 		45FBC5C31DF8575700E9B410 /* Ringtone.caf in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC5961DF8575700E9B410 /* Ringtone.caf */; };
-		45FBC5C41DF8575700E9B410 /* SimulateIncomingCallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5971DF8575700E9B410 /* SimulateIncomingCallViewController.swift */; };
-		45FBC5C51DF8575700E9B410 /* SimulateIncomingCallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5971DF8575700E9B410 /* SimulateIncomingCallViewController.swift */; };
 		45FBC5C61DF8575700E9B410 /* SpeakerboxCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5991DF8575700E9B410 /* SpeakerboxCall.swift */; };
 		45FBC5C71DF8575700E9B410 /* SpeakerboxCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5991DF8575700E9B410 /* SpeakerboxCall.swift */; };
 		45FBC5C81DF8575700E9B410 /* SpeakerboxCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC59A1DF8575700E9B410 /* SpeakerboxCallManager.swift */; };
@@ -704,9 +684,7 @@
 		45F2B1931D9C9F48000D2C69 /* OWSOutgoingMessageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OWSOutgoingMessageCollectionViewCell.m; sourceTree = "<group>"; };
 		45F2B1951D9CA207000D2C69 /* OWSIncomingMessageCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OWSIncomingMessageCollectionViewCell.xib; sourceTree = "<group>"; };
 		45F2B1961D9CA207000D2C69 /* OWSOutgoingMessageCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OWSOutgoingMessageCollectionViewCell.xib; sourceTree = "<group>"; };
-		45FBC57B1DF8575700E9B410 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		45FBC57C1DF8575700E9B410 /* Array+Speakerbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Speakerbox.swift"; sourceTree = "<group>"; };
-		45FBC57D1DF8575700E9B410 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		45FBC57F1DF8575700E9B410 /* AudioController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioController.h; sourceTree = "<group>"; };
 		45FBC5801DF8575700E9B410 /* AudioController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioController.mm; sourceTree = "<group>"; };
 		45FBC5811DF8575700E9B410 /* CADebugMacros.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CADebugMacros.cpp; sourceTree = "<group>"; };
@@ -716,20 +694,11 @@
 		45FBC5851DF8575700E9B410 /* CAStreamBasicDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAStreamBasicDescription.h; sourceTree = "<group>"; };
 		45FBC5861DF8575700E9B410 /* CAXException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAXException.cpp; sourceTree = "<group>"; };
 		45FBC5871DF8575700E9B410 /* CAXException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAXException.h; sourceTree = "<group>"; };
-		45FBC5891DF8575700E9B410 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		45FBC58B1DF8575700E9B410 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
-		45FBC58D1DF8575700E9B410 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		45FBC58E1DF8575700E9B410 /* CallAudio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallAudio.swift; sourceTree = "<group>"; };
 		45FBC58F1DF8575700E9B410 /* CallDurationFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallDurationFormatter.swift; sourceTree = "<group>"; };
-		45FBC5901DF8575700E9B410 /* CallSummaryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallSummaryTableViewCell.swift; sourceTree = "<group>"; };
-		45FBC5911DF8575700E9B410 /* CallsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallsViewController.swift; sourceTree = "<group>"; };
-		45FBC5921DF8575700E9B410 /* DialOptionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialOptionsViewController.swift; sourceTree = "<group>"; };
-		45FBC5931DF8575700E9B410 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		45FBC5941DF8575700E9B410 /* NSUserActivity+StartCallConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSUserActivity+StartCallConvertible.swift"; sourceTree = "<group>"; };
 		45FBC5951DF8575700E9B410 /* ProviderDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProviderDelegate.swift; sourceTree = "<group>"; };
 		45FBC5961DF8575700E9B410 /* Ringtone.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ringtone.caf; sourceTree = "<group>"; };
-		45FBC5971DF8575700E9B410 /* SimulateIncomingCallViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimulateIncomingCallViewController.swift; sourceTree = "<group>"; };
-		45FBC5981DF8575700E9B410 /* Speakerbox-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Speakerbox-Bridging-Header.h"; sourceTree = "<group>"; };
 		45FBC5991DF8575700E9B410 /* SpeakerboxCall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeakerboxCall.swift; sourceTree = "<group>"; };
 		45FBC59A1DF8575700E9B410 /* SpeakerboxCallManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeakerboxCallManager.swift; sourceTree = "<group>"; };
 		45FBC59B1DF8575700E9B410 /* StartCallConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartCallConvertible.swift; sourceTree = "<group>"; };
@@ -1401,24 +1370,13 @@
 		45FBC57A1DF8575700E9B410 /* Speakerbox */ = {
 			isa = PBXGroup;
 			children = (
-				45FBC57B1DF8575700E9B410 /* AppDelegate.swift */,
 				45FBC57C1DF8575700E9B410 /* Array+Speakerbox.swift */,
-				45FBC57D1DF8575700E9B410 /* Assets.xcassets */,
 				45FBC57E1DF8575700E9B410 /* Audio */,
-				45FBC5881DF8575700E9B410 /* LaunchScreen.storyboard */,
-				45FBC58A1DF8575700E9B410 /* Localizable.strings */,
-				45FBC58C1DF8575700E9B410 /* Main.storyboard */,
 				45FBC58E1DF8575700E9B410 /* CallAudio.swift */,
 				45FBC58F1DF8575700E9B410 /* CallDurationFormatter.swift */,
-				45FBC5901DF8575700E9B410 /* CallSummaryTableViewCell.swift */,
-				45FBC5911DF8575700E9B410 /* CallsViewController.swift */,
-				45FBC5921DF8575700E9B410 /* DialOptionsViewController.swift */,
-				45FBC5931DF8575700E9B410 /* Info.plist */,
 				45FBC5941DF8575700E9B410 /* NSUserActivity+StartCallConvertible.swift */,
 				45FBC5951DF8575700E9B410 /* ProviderDelegate.swift */,
 				45FBC5961DF8575700E9B410 /* Ringtone.caf */,
-				45FBC5971DF8575700E9B410 /* SimulateIncomingCallViewController.swift */,
-				45FBC5981DF8575700E9B410 /* Speakerbox-Bridging-Header.h */,
 				45FBC5991DF8575700E9B410 /* SpeakerboxCall.swift */,
 				45FBC59A1DF8575700E9B410 /* SpeakerboxCallManager.swift */,
 				45FBC59B1DF8575700E9B410 /* StartCallConvertible.swift */,
@@ -2806,14 +2764,11 @@
 				A5509ECA1A69AB8B00ABA4BC /* Main.storyboard in Resources */,
 				A507A3B11A6C60E300BEED0D /* InboxTableViewCell.xib in Resources */,
 				45F2B1971D9CA207000D2C69 /* OWSIncomingMessageCollectionViewCell.xib in Resources */,
-				45FBC5B01DF8575700E9B410 /* Main.storyboard in Resources */,
 				AD83FF421A73426500B5C81A /* audio_play_button.png in Resources */,
 				45F2B1981D9CA207000D2C69 /* OWSOutgoingMessageCollectionViewCell.xib in Resources */,
 				45C681C41D305C9E0050903A /* OWSCallCollectionViewCell.xib in Resources */,
 				B633C5C41A1D190B0059AC12 /* mute_on@2x.png in Resources */,
 				B633C5CE1A1D190B0059AC12 /* quit@2x.png in Resources */,
-				45FBC5BC1DF8575700E9B410 /* Info.plist in Resources */,
-				45FBC5AC1DF8575700E9B410 /* LaunchScreen.storyboard in Resources */,
 				AD83FF441A73426500B5C81A /* audio_pause_button.png in Resources */,
 				B6F509971AA53F760068F56A /* Localizable.strings in Resources */,
 				AD41D7B51A6F6F0600241130 /* play_button.png in Resources */,
@@ -2838,7 +2793,6 @@
 				E1370BE218A0686C00826894 /* failure.mp3 in Resources */,
 				E1370BE318A0686C00826894 /* handshake.mp3 in Resources */,
 				B625CD561ABB589C00E8B23C /* NewMessage.aifc in Resources */,
-				45FBC5AE1DF8575700E9B410 /* Localizable.strings in Resources */,
 				B633C58D1A1D190B0059AC12 /* contact_default_feed.png in Resources */,
 				B10C9B621A7049EC00ECA2BF /* play_icon@2x.png in Resources */,
 				B633C5861A1D190B0059AC12 /* call@2x.png in Resources */,
@@ -2851,7 +2805,6 @@
 				E1370BE618A0686C00826894 /* sonarping.mp3 in Resources */,
 				B10C9B5F1A7049EC00ECA2BF /* pause_icon.png in Resources */,
 				AD83FF471A73428300B5C81A /* audio_play_button_blue.png in Resources */,
-				45FBC5A21DF8575700E9B410 /* Assets.xcassets in Resources */,
 				AD83FF451A73426500B5C81A /* audio_pause_button@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2863,13 +2816,8 @@
 				45FBC5C31DF8575700E9B410 /* Ringtone.caf in Resources */,
 				B660F6D41C29868000687D6E /* whisperFake.cer in Resources */,
 				76EB060118170B33006006FC /* InitiateSignal.proto in Resources */,
-				45FBC5BD1DF8575700E9B410 /* Info.plist in Resources */,
 				45C681C91D305C9E0050903A /* OWSDisplayedMessageCollectionViewCell.xib in Resources */,
-				45FBC5B11DF8575700E9B410 /* Main.storyboard in Resources */,
-				45FBC5AF1DF8575700E9B410 /* Localizable.strings in Resources */,
-				45FBC5AD1DF8575700E9B410 /* LaunchScreen.storyboard in Resources */,
 				45C681C51D305C9E0050903A /* OWSCallCollectionViewCell.xib in Resources */,
-				45FBC5A31DF8575700E9B410 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3051,7 +2999,6 @@
 				B62D53F71A23CCAD009AAF82 /* TSMessageAdapter.m in Sources */,
 				FCD274EB1A5AFDDB00202277 /* AboutTableViewController.m in Sources */,
 				E197B61618BBEC1A00F073E5 /* StretchFactorController.m in Sources */,
-				45FBC59E1DF8575700E9B410 /* AppDelegate.swift in Sources */,
 				FCFD257F1A154B2C00F4C644 /* RegistrationViewController.m in Sources */,
 				701231B518ECAA4500D456C4 /* EvpMessageDigest.m in Sources */,
 				76EB062218170B33006006FC /* CyclicalBuffer.m in Sources */,
@@ -3088,7 +3035,6 @@
 				76EB05FE18170B33006006FC /* InitiateSignal.pb.m in Sources */,
 				76EB05CA18170B33006006FC /* RecipientUnavailable.m in Sources */,
 				E197B61418BBEC1A00F073E5 /* DropoutTracker.m in Sources */,
-				45FBC5BA1DF8575700E9B410 /* DialOptionsViewController.swift in Sources */,
 				FCAC963C19FEF9280046DFC5 /* SignalsViewController.m in Sources */,
 				76EB05DA18170B33006006FC /* LowLatencyConnector.m in Sources */,
 				76EB05EE18170B33006006FC /* CallTermination.m in Sources */,
@@ -3150,7 +3096,6 @@
 				7038632718F70C0700D4A43F /* CryptoTools.m in Sources */,
 				76EB058C18170B33006006FC /* DnsManager.m in Sources */,
 				45FBC5C81DF8575700E9B410 /* SpeakerboxCallManager.swift in Sources */,
-				45FBC5B81DF8575700E9B410 /* CallsViewController.swift in Sources */,
 				45FBC5D11DF8592E00E9B410 /* SignalCall.swift in Sources */,
 				B671B2461A93B238002BBD9D /* GroupContactsResult.m in Sources */,
 				B66B9F721AEA6D1100E2E609 /* NotificationSettingsViewController.m in Sources */,
@@ -3164,7 +3109,6 @@
 				453D28B71D32BA5F00D523F0 /* OWSDisplayedMessage.m in Sources */,
 				76EB05DC18170B33006006FC /* StreamPair.m in Sources */,
 				76EB064618170B33006006FC /* TimeUtil.m in Sources */,
-				45FBC5B61DF8575700E9B410 /* CallSummaryTableViewCell.swift in Sources */,
 				70BAFD5D190584BE00FA5E0B /* NotificationTracker.m in Sources */,
 				76EB05A418170B33006006FC /* PacketHandler.m in Sources */,
 				E197B62118BBF12700F073E5 /* AppAudioManager.m in Sources */,
@@ -3188,7 +3132,6 @@
 				76EB05D018170B33006006FC /* ZrtpHandshakeSocket.m in Sources */,
 				45F2B1941D9C9F48000D2C69 /* OWSOutgoingMessageCollectionViewCell.m in Sources */,
 				B63761EF19E1FBE8005735D1 /* HttpResponse.m in Sources */,
-				45FBC5C41DF8575700E9B410 /* SimulateIncomingCallViewController.swift in Sources */,
 				E197B61518BBEC1A00F073E5 /* JitterQueue.m in Sources */,
 				BFB074C919A5611000F2947C /* ObservableValue.m in Sources */,
 				B68EF9BA1C0B1EBD009C3DCD /* FLAnimatedImage.m in Sources */,
@@ -3247,7 +3190,6 @@
 				B660F7021C29988E00687D6E /* AudioPacker.m in Sources */,
 				B660F7031C29988E00687D6E /* AudioSocket.m in Sources */,
 				45FBC5B51DF8575700E9B410 /* CallDurationFormatter.swift in Sources */,
-				45FBC59F1DF8575700E9B410 /* AppDelegate.swift in Sources */,
 				B660F7041C29988E00687D6E /* CallAudioManager.m in Sources */,
 				B660F7051C29988E00687D6E /* EncodedAudioFrame.m in Sources */,
 				B660F7061C29988E00687D6E /* EncodedAudioPacket.m in Sources */,
@@ -3306,7 +3248,6 @@
 				B660F7331C29988E00687D6E /* RtpPacket.m in Sources */,
 				45BFFFA91D898AF0004A12A7 /* OWSStaleNotificationObserver.m in Sources */,
 				B660F7341C29988E00687D6E /* RtpSocket.m in Sources */,
-				45FBC5BB1DF8575700E9B410 /* DialOptionsViewController.swift in Sources */,
 				B660F7351C29988E00687D6E /* SequenceCounter.m in Sources */,
 				B660F7361C29988E00687D6E /* SrtpSocket.m in Sources */,
 				45C681C71D305C9E0050903A /* OWSDisplayedMessageCollectionViewCell.m in Sources */,
@@ -3358,7 +3299,6 @@
 				B660F75C1C29988E00687D6E /* CallState.m in Sources */,
 				B660F75D1C29988E00687D6E /* CallTermination.m in Sources */,
 				45FBC5D21DF8592E00E9B410 /* SignalCall.swift in Sources */,
-				45FBC5B71DF8575700E9B410 /* CallSummaryTableViewCell.swift in Sources */,
 				45FBC5A51DF8575700E9B410 /* AudioController.mm in Sources */,
 				B660F75E1C29988E00687D6E /* PhoneManager.m in Sources */,
 				B660F75F1C29988E00687D6E /* CallConnectResult.m in Sources */,
@@ -3391,7 +3331,6 @@
 				B660F7771C29988E00687D6E /* UIImage+normalizeImage.m in Sources */,
 				954AEE6A1DF33E01002E5410 /* ContactsPickerTest.swift in Sources */,
 				B660F7781C29988E00687D6E /* ArrayUtil.m in Sources */,
-				45FBC5B91DF8575700E9B410 /* CallsViewController.swift in Sources */,
 				45FBC5AB1DF8575700E9B410 /* CAXException.cpp in Sources */,
 				B660F7791C29988E00687D6E /* CyclicalBuffer.m in Sources */,
 				B660F77A1C29988E00687D6E /* PriorityQueue.m in Sources */,
@@ -3422,7 +3361,6 @@
 				B660F6B71C29868000687D6E /* AudioStretcherTest.m in Sources */,
 				45FBC5BF1DF8575700E9B410 /* NSUserActivity+StartCallConvertible.swift in Sources */,
 				B660F6DE1C29868000687D6E /* PriorityQueueTest.m in Sources */,
-				45FBC5C51DF8575700E9B410 /* SimulateIncomingCallViewController.swift in Sources */,
 				B660F6BE1C29868000687D6E /* IpAddressTest.m in Sources */,
 				B660F6E01C29868000687D6E /* UtilTest.m in Sources */,
 				B660F6D61C29868000687D6E /* ConversionsTest.m in Sources */,
@@ -3488,30 +3426,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		45FBC5881DF8575700E9B410 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				45FBC5891DF8575700E9B410 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-		45FBC58A1DF8575700E9B410 /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				45FBC58B1DF8575700E9B410 /* Base */,
-			);
-			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-		45FBC58C1DF8575700E9B410 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				45FBC58D1DF8575700E9B410 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		B6F509951AA53F760068F56A /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (

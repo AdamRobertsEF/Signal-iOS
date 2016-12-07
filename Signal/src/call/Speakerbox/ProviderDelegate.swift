@@ -9,7 +9,9 @@
 import Foundation
 import UIKit
 import CallKit
+import AVFoundation
 
+@available(iOS 10.0, *)
 final class ProviderDelegate: NSObject, CXProviderDelegate {
 
     let callManager: SpeakerboxCallManager

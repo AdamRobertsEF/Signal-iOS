@@ -9,6 +9,7 @@
 import Foundation
 import Intents
 
+@available(iOS 10.0, *)
 extension NSUserActivity: StartCallConvertible {
 
     var startCallHandle: String? {
@@ -36,9 +37,12 @@ extension NSUserActivity: StartCallConvertible {
     
 }
 
+@available(iOS 10.0, *)
 protocol SupportedStartCallIntent {
     var contacts: [INPerson]? { get }
 }
 
+@available(iOS 10.0, *)
 extension INStartAudioCallIntent: SupportedStartCallIntent {}
+@available(iOS 10.0, *)
 extension INStartVideoCallIntent: SupportedStartCallIntent {}

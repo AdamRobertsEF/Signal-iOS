@@ -6,11 +6,13 @@
 	Protocol defining a type from which a call may be started.
 */
 
+@available(iOS 10.0, *)
 protocol StartCallConvertible {
     var startCallHandle: String? { get }
     var video: Bool? { get }
 }
 
+@available(iOS 10.0, *)
 extension StartCallConvertible {
 
     var video: Bool? {
