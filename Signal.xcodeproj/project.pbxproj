@@ -85,6 +85,56 @@
 		45F2B1941D9C9F48000D2C69 /* OWSOutgoingMessageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F2B1931D9C9F48000D2C69 /* OWSOutgoingMessageCollectionViewCell.m */; };
 		45F2B1971D9CA207000D2C69 /* OWSIncomingMessageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45F2B1951D9CA207000D2C69 /* OWSIncomingMessageCollectionViewCell.xib */; };
 		45F2B1981D9CA207000D2C69 /* OWSOutgoingMessageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45F2B1961D9CA207000D2C69 /* OWSOutgoingMessageCollectionViewCell.xib */; };
+		45FBC59E1DF8575700E9B410 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC57B1DF8575700E9B410 /* AppDelegate.swift */; };
+		45FBC59F1DF8575700E9B410 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC57B1DF8575700E9B410 /* AppDelegate.swift */; };
+		45FBC5A01DF8575700E9B410 /* Array+Speakerbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC57C1DF8575700E9B410 /* Array+Speakerbox.swift */; };
+		45FBC5A11DF8575700E9B410 /* Array+Speakerbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC57C1DF8575700E9B410 /* Array+Speakerbox.swift */; };
+		45FBC5A21DF8575700E9B410 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC57D1DF8575700E9B410 /* Assets.xcassets */; };
+		45FBC5A31DF8575700E9B410 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC57D1DF8575700E9B410 /* Assets.xcassets */; };
+		45FBC5A41DF8575700E9B410 /* AudioController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5801DF8575700E9B410 /* AudioController.mm */; };
+		45FBC5A51DF8575700E9B410 /* AudioController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5801DF8575700E9B410 /* AudioController.mm */; };
+		45FBC5A61DF8575700E9B410 /* CADebugMacros.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5811DF8575700E9B410 /* CADebugMacros.cpp */; };
+		45FBC5A71DF8575700E9B410 /* CADebugMacros.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5811DF8575700E9B410 /* CADebugMacros.cpp */; };
+		45FBC5A81DF8575700E9B410 /* CAStreamBasicDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5841DF8575700E9B410 /* CAStreamBasicDescription.cpp */; };
+		45FBC5A91DF8575700E9B410 /* CAStreamBasicDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5841DF8575700E9B410 /* CAStreamBasicDescription.cpp */; };
+		45FBC5AA1DF8575700E9B410 /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5861DF8575700E9B410 /* CAXException.cpp */; };
+		45FBC5AB1DF8575700E9B410 /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5861DF8575700E9B410 /* CAXException.cpp */; };
+		45FBC5AC1DF8575700E9B410 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC5881DF8575700E9B410 /* LaunchScreen.storyboard */; };
+		45FBC5AD1DF8575700E9B410 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC5881DF8575700E9B410 /* LaunchScreen.storyboard */; };
+		45FBC5AE1DF8575700E9B410 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC58A1DF8575700E9B410 /* Localizable.strings */; };
+		45FBC5AF1DF8575700E9B410 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC58A1DF8575700E9B410 /* Localizable.strings */; };
+		45FBC5B01DF8575700E9B410 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC58C1DF8575700E9B410 /* Main.storyboard */; };
+		45FBC5B11DF8575700E9B410 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC58C1DF8575700E9B410 /* Main.storyboard */; };
+		45FBC5B21DF8575700E9B410 /* CallAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC58E1DF8575700E9B410 /* CallAudio.swift */; };
+		45FBC5B31DF8575700E9B410 /* CallAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC58E1DF8575700E9B410 /* CallAudio.swift */; };
+		45FBC5B41DF8575700E9B410 /* CallDurationFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC58F1DF8575700E9B410 /* CallDurationFormatter.swift */; };
+		45FBC5B51DF8575700E9B410 /* CallDurationFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC58F1DF8575700E9B410 /* CallDurationFormatter.swift */; };
+		45FBC5B61DF8575700E9B410 /* CallSummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5901DF8575700E9B410 /* CallSummaryTableViewCell.swift */; };
+		45FBC5B71DF8575700E9B410 /* CallSummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5901DF8575700E9B410 /* CallSummaryTableViewCell.swift */; };
+		45FBC5B81DF8575700E9B410 /* CallsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5911DF8575700E9B410 /* CallsViewController.swift */; };
+		45FBC5B91DF8575700E9B410 /* CallsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5911DF8575700E9B410 /* CallsViewController.swift */; };
+		45FBC5BA1DF8575700E9B410 /* DialOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5921DF8575700E9B410 /* DialOptionsViewController.swift */; };
+		45FBC5BB1DF8575700E9B410 /* DialOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5921DF8575700E9B410 /* DialOptionsViewController.swift */; };
+		45FBC5BC1DF8575700E9B410 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC5931DF8575700E9B410 /* Info.plist */; };
+		45FBC5BD1DF8575700E9B410 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC5931DF8575700E9B410 /* Info.plist */; };
+		45FBC5BE1DF8575700E9B410 /* NSUserActivity+StartCallConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5941DF8575700E9B410 /* NSUserActivity+StartCallConvertible.swift */; };
+		45FBC5BF1DF8575700E9B410 /* NSUserActivity+StartCallConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5941DF8575700E9B410 /* NSUserActivity+StartCallConvertible.swift */; };
+		45FBC5C01DF8575700E9B410 /* ProviderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5951DF8575700E9B410 /* ProviderDelegate.swift */; };
+		45FBC5C11DF8575700E9B410 /* ProviderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5951DF8575700E9B410 /* ProviderDelegate.swift */; };
+		45FBC5C21DF8575700E9B410 /* Ringtone.caf in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC5961DF8575700E9B410 /* Ringtone.caf */; };
+		45FBC5C31DF8575700E9B410 /* Ringtone.caf in Resources */ = {isa = PBXBuildFile; fileRef = 45FBC5961DF8575700E9B410 /* Ringtone.caf */; };
+		45FBC5C41DF8575700E9B410 /* SimulateIncomingCallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5971DF8575700E9B410 /* SimulateIncomingCallViewController.swift */; };
+		45FBC5C51DF8575700E9B410 /* SimulateIncomingCallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5971DF8575700E9B410 /* SimulateIncomingCallViewController.swift */; };
+		45FBC5C61DF8575700E9B410 /* SpeakerboxCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5991DF8575700E9B410 /* SpeakerboxCall.swift */; };
+		45FBC5C71DF8575700E9B410 /* SpeakerboxCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5991DF8575700E9B410 /* SpeakerboxCall.swift */; };
+		45FBC5C81DF8575700E9B410 /* SpeakerboxCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC59A1DF8575700E9B410 /* SpeakerboxCallManager.swift */; };
+		45FBC5C91DF8575700E9B410 /* SpeakerboxCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC59A1DF8575700E9B410 /* SpeakerboxCallManager.swift */; };
+		45FBC5CA1DF8575700E9B410 /* StartCallConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC59B1DF8575700E9B410 /* StartCallConvertible.swift */; };
+		45FBC5CB1DF8575700E9B410 /* StartCallConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC59B1DF8575700E9B410 /* StartCallConvertible.swift */; };
+		45FBC5CC1DF8575700E9B410 /* UIFont+Speakerbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC59C1DF8575700E9B410 /* UIFont+Speakerbox.swift */; };
+		45FBC5CD1DF8575700E9B410 /* UIFont+Speakerbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC59C1DF8575700E9B410 /* UIFont+Speakerbox.swift */; };
+		45FBC5CE1DF8575700E9B410 /* URL+StartCallConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC59D1DF8575700E9B410 /* URL+StartCallConvertible.swift */; };
+		45FBC5CF1DF8575700E9B410 /* URL+StartCallConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC59D1DF8575700E9B410 /* URL+StartCallConvertible.swift */; };
 		4CE0E3771B954546007210CF /* TSAnimatedAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CE0E3761B954546007210CF /* TSAnimatedAdapter.m */; };
 		701231B518ECAA4500D456C4 /* EvpMessageDigest.m in Sources */ = {isa = PBXBuildFile; fileRef = 701231B418ECAA4500D456C4 /* EvpMessageDigest.m */; };
 		70377AAB1918450100CAF501 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70377AAA1918450100CAF501 /* MobileCoreServices.framework */; };
@@ -652,6 +702,37 @@
 		45F2B1931D9C9F48000D2C69 /* OWSOutgoingMessageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OWSOutgoingMessageCollectionViewCell.m; sourceTree = "<group>"; };
 		45F2B1951D9CA207000D2C69 /* OWSIncomingMessageCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OWSIncomingMessageCollectionViewCell.xib; sourceTree = "<group>"; };
 		45F2B1961D9CA207000D2C69 /* OWSOutgoingMessageCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OWSOutgoingMessageCollectionViewCell.xib; sourceTree = "<group>"; };
+		45FBC57B1DF8575700E9B410 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		45FBC57C1DF8575700E9B410 /* Array+Speakerbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Speakerbox.swift"; sourceTree = "<group>"; };
+		45FBC57D1DF8575700E9B410 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		45FBC57F1DF8575700E9B410 /* AudioController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioController.h; sourceTree = "<group>"; };
+		45FBC5801DF8575700E9B410 /* AudioController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioController.mm; sourceTree = "<group>"; };
+		45FBC5811DF8575700E9B410 /* CADebugMacros.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CADebugMacros.cpp; sourceTree = "<group>"; };
+		45FBC5821DF8575700E9B410 /* CADebugMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CADebugMacros.h; sourceTree = "<group>"; };
+		45FBC5831DF8575700E9B410 /* CAMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAMath.h; sourceTree = "<group>"; };
+		45FBC5841DF8575700E9B410 /* CAStreamBasicDescription.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAStreamBasicDescription.cpp; sourceTree = "<group>"; };
+		45FBC5851DF8575700E9B410 /* CAStreamBasicDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAStreamBasicDescription.h; sourceTree = "<group>"; };
+		45FBC5861DF8575700E9B410 /* CAXException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAXException.cpp; sourceTree = "<group>"; };
+		45FBC5871DF8575700E9B410 /* CAXException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAXException.h; sourceTree = "<group>"; };
+		45FBC5891DF8575700E9B410 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		45FBC58B1DF8575700E9B410 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		45FBC58D1DF8575700E9B410 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		45FBC58E1DF8575700E9B410 /* CallAudio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallAudio.swift; sourceTree = "<group>"; };
+		45FBC58F1DF8575700E9B410 /* CallDurationFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallDurationFormatter.swift; sourceTree = "<group>"; };
+		45FBC5901DF8575700E9B410 /* CallSummaryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallSummaryTableViewCell.swift; sourceTree = "<group>"; };
+		45FBC5911DF8575700E9B410 /* CallsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CallsViewController.swift; sourceTree = "<group>"; };
+		45FBC5921DF8575700E9B410 /* DialOptionsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialOptionsViewController.swift; sourceTree = "<group>"; };
+		45FBC5931DF8575700E9B410 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		45FBC5941DF8575700E9B410 /* NSUserActivity+StartCallConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSUserActivity+StartCallConvertible.swift"; sourceTree = "<group>"; };
+		45FBC5951DF8575700E9B410 /* ProviderDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProviderDelegate.swift; sourceTree = "<group>"; };
+		45FBC5961DF8575700E9B410 /* Ringtone.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ringtone.caf; sourceTree = "<group>"; };
+		45FBC5971DF8575700E9B410 /* SimulateIncomingCallViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimulateIncomingCallViewController.swift; sourceTree = "<group>"; };
+		45FBC5981DF8575700E9B410 /* Speakerbox-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Speakerbox-Bridging-Header.h"; sourceTree = "<group>"; };
+		45FBC5991DF8575700E9B410 /* SpeakerboxCall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeakerboxCall.swift; sourceTree = "<group>"; };
+		45FBC59A1DF8575700E9B410 /* SpeakerboxCallManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeakerboxCallManager.swift; sourceTree = "<group>"; };
+		45FBC59B1DF8575700E9B410 /* StartCallConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartCallConvertible.swift; sourceTree = "<group>"; };
+		45FBC59C1DF8575700E9B410 /* UIFont+Speakerbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+Speakerbox.swift"; sourceTree = "<group>"; };
+		45FBC59D1DF8575700E9B410 /* URL+StartCallConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+StartCallConvertible.swift"; sourceTree = "<group>"; };
 		4CE0E3751B95453C007210CF /* TSAnimatedAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSAnimatedAdapter.h; sourceTree = "<group>"; };
 		4CE0E3761B954546007210CF /* TSAnimatedAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSAnimatedAdapter.m; sourceTree = "<group>"; };
 		701231B318ECAA4500D456C4 /* EvpMessageDigest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EvpMessageDigest.h; sourceTree = "<group>"; };
@@ -1322,6 +1403,52 @@
 			name = Jobs;
 			sourceTree = "<group>";
 		};
+		45FBC57A1DF8575700E9B410 /* Speakerbox */ = {
+			isa = PBXGroup;
+			children = (
+				45FBC57B1DF8575700E9B410 /* AppDelegate.swift */,
+				45FBC57C1DF8575700E9B410 /* Array+Speakerbox.swift */,
+				45FBC57D1DF8575700E9B410 /* Assets.xcassets */,
+				45FBC57E1DF8575700E9B410 /* Audio */,
+				45FBC5881DF8575700E9B410 /* LaunchScreen.storyboard */,
+				45FBC58A1DF8575700E9B410 /* Localizable.strings */,
+				45FBC58C1DF8575700E9B410 /* Main.storyboard */,
+				45FBC58E1DF8575700E9B410 /* CallAudio.swift */,
+				45FBC58F1DF8575700E9B410 /* CallDurationFormatter.swift */,
+				45FBC5901DF8575700E9B410 /* CallSummaryTableViewCell.swift */,
+				45FBC5911DF8575700E9B410 /* CallsViewController.swift */,
+				45FBC5921DF8575700E9B410 /* DialOptionsViewController.swift */,
+				45FBC5931DF8575700E9B410 /* Info.plist */,
+				45FBC5941DF8575700E9B410 /* NSUserActivity+StartCallConvertible.swift */,
+				45FBC5951DF8575700E9B410 /* ProviderDelegate.swift */,
+				45FBC5961DF8575700E9B410 /* Ringtone.caf */,
+				45FBC5971DF8575700E9B410 /* SimulateIncomingCallViewController.swift */,
+				45FBC5981DF8575700E9B410 /* Speakerbox-Bridging-Header.h */,
+				45FBC5991DF8575700E9B410 /* SpeakerboxCall.swift */,
+				45FBC59A1DF8575700E9B410 /* SpeakerboxCallManager.swift */,
+				45FBC59B1DF8575700E9B410 /* StartCallConvertible.swift */,
+				45FBC59C1DF8575700E9B410 /* UIFont+Speakerbox.swift */,
+				45FBC59D1DF8575700E9B410 /* URL+StartCallConvertible.swift */,
+			);
+			path = Speakerbox;
+			sourceTree = "<group>";
+		};
+		45FBC57E1DF8575700E9B410 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				45FBC57F1DF8575700E9B410 /* AudioController.h */,
+				45FBC5801DF8575700E9B410 /* AudioController.mm */,
+				45FBC5811DF8575700E9B410 /* CADebugMacros.cpp */,
+				45FBC5821DF8575700E9B410 /* CADebugMacros.h */,
+				45FBC5831DF8575700E9B410 /* CAMath.h */,
+				45FBC5841DF8575700E9B410 /* CAStreamBasicDescription.cpp */,
+				45FBC5851DF8575700E9B410 /* CAStreamBasicDescription.h */,
+				45FBC5861DF8575700E9B410 /* CAXException.cpp */,
+				45FBC5871DF8575700E9B410 /* CAXException.h */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
 		70B8009F190C529C0042E3F0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1402,6 +1529,7 @@
 		76EB03FE18170B33006006FC /* call */ = {
 			isa = PBXGroup;
 			children = (
+				45FBC57A1DF8575700E9B410 /* Speakerbox */,
 				458DE9D71DEE7B360071BB03 /* OWSWebRTCDataProtos.pb.h */,
 				458DE9D81DEE7B360071BB03 /* OWSWebRTCDataProtos.pb.m */,
 				76EB03FF18170B33006006FC /* RecentCall.h */,
@@ -2631,6 +2759,7 @@
 				mk,
 				sq,
 				bg,
+				Base,
 			);
 			mainGroup = D221A07E169C9E5E00537ABF;
 			productRefGroup = D221A08A169C9E5E00537ABF /* Products */;
@@ -2681,14 +2810,18 @@
 				A5509ECA1A69AB8B00ABA4BC /* Main.storyboard in Resources */,
 				A507A3B11A6C60E300BEED0D /* InboxTableViewCell.xib in Resources */,
 				45F2B1971D9CA207000D2C69 /* OWSIncomingMessageCollectionViewCell.xib in Resources */,
+				45FBC5B01DF8575700E9B410 /* Main.storyboard in Resources */,
 				AD83FF421A73426500B5C81A /* audio_play_button.png in Resources */,
 				45F2B1981D9CA207000D2C69 /* OWSOutgoingMessageCollectionViewCell.xib in Resources */,
 				45C681C41D305C9E0050903A /* OWSCallCollectionViewCell.xib in Resources */,
 				B633C5C41A1D190B0059AC12 /* mute_on@2x.png in Resources */,
 				B633C5CE1A1D190B0059AC12 /* quit@2x.png in Resources */,
+				45FBC5BC1DF8575700E9B410 /* Info.plist in Resources */,
+				45FBC5AC1DF8575700E9B410 /* LaunchScreen.storyboard in Resources */,
 				AD83FF441A73426500B5C81A /* audio_pause_button.png in Resources */,
 				B6F509971AA53F760068F56A /* Localizable.strings in Resources */,
 				AD41D7B51A6F6F0600241130 /* play_button.png in Resources */,
+				45FBC5C21DF8575700E9B410 /* Ringtone.caf in Resources */,
 				45CD81A61DBFF8FC004C9430 /* Registration.storyboard in Resources */,
 				B633C59D1A1D190B0059AC12 /* endcall@2x.png in Resources */,
 				FC5CDF391A3393DD00B47253 /* error_white@2x.png in Resources */,
@@ -2709,6 +2842,7 @@
 				E1370BE218A0686C00826894 /* failure.mp3 in Resources */,
 				E1370BE318A0686C00826894 /* handshake.mp3 in Resources */,
 				B625CD561ABB589C00E8B23C /* NewMessage.aifc in Resources */,
+				45FBC5AE1DF8575700E9B410 /* Localizable.strings in Resources */,
 				B633C58D1A1D190B0059AC12 /* contact_default_feed.png in Resources */,
 				B10C9B621A7049EC00ECA2BF /* play_icon@2x.png in Resources */,
 				B633C5861A1D190B0059AC12 /* call@2x.png in Resources */,
@@ -2721,6 +2855,7 @@
 				E1370BE618A0686C00826894 /* sonarping.mp3 in Resources */,
 				B10C9B5F1A7049EC00ECA2BF /* pause_icon.png in Resources */,
 				AD83FF471A73428300B5C81A /* audio_play_button_blue.png in Resources */,
+				45FBC5A21DF8575700E9B410 /* Assets.xcassets in Resources */,
 				AD83FF451A73426500B5C81A /* audio_pause_button@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2729,10 +2864,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45FBC5C31DF8575700E9B410 /* Ringtone.caf in Resources */,
 				B660F6D41C29868000687D6E /* whisperFake.cer in Resources */,
 				76EB060118170B33006006FC /* InitiateSignal.proto in Resources */,
+				45FBC5BD1DF8575700E9B410 /* Info.plist in Resources */,
 				45C681C91D305C9E0050903A /* OWSDisplayedMessageCollectionViewCell.xib in Resources */,
+				45FBC5B11DF8575700E9B410 /* Main.storyboard in Resources */,
+				45FBC5AF1DF8575700E9B410 /* Localizable.strings in Resources */,
+				45FBC5AD1DF8575700E9B410 /* LaunchScreen.storyboard in Resources */,
 				45C681C51D305C9E0050903A /* OWSCallCollectionViewCell.xib in Resources */,
+				45FBC5A31DF8575700E9B410 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2870,7 +3011,9 @@
 				76EB063E18170B33006006FC /* Operation.m in Sources */,
 				B640BFA81C257843006038B3 /* RPAccountManager.m in Sources */,
 				A5509ECD1A69B1D600ABA4BC /* CountryCodeTableViewCell.m in Sources */,
+				45FBC5BE1DF8575700E9B410 /* NSUserActivity+StartCallConvertible.swift in Sources */,
 				76EB05F618170B33006006FC /* CallConnectUtil.m in Sources */,
+				45FBC5B41DF8575700E9B410 /* CallDurationFormatter.swift in Sources */,
 				45C9DEB81DF4E35A0065CA84 /* RTCCallMessageHandler.swift in Sources */,
 				76EB061218170B33006006FC /* LoggingUtil.m in Sources */,
 				76EB060E18170B33006006FC /* DecayingSampleEstimator.m in Sources */,
@@ -2883,6 +3026,7 @@
 				B6BADBE71B88D1AC0086A80D /* LockInteractionController.m in Sources */,
 				76EB061A18170B33006006FC /* DiscardingLog.m in Sources */,
 				45CD81F21DC03A22004C9430 /* OWSLogger.m in Sources */,
+				45FBC5AA1DF8575700E9B410 /* CAXException.cpp in Sources */,
 				76EB05AC18170B33006006FC /* SrtpSocket.m in Sources */,
 				FCB11D931A12A4AA002F93FB /* FullImageViewController.m in Sources */,
 				B60C16651988999D00E97A6C /* VersionMigrations.m in Sources */,
@@ -2894,6 +3038,7 @@
 				4516E3FF1DD2193B00DC4206 /* OWS101ExistingUsersBlockOnIdentityChange.m in Sources */,
 				76EB05A818170B33006006FC /* RtpSocket.m in Sources */,
 				E197B61818BBEC1A00F073E5 /* RemoteIOAudio.m in Sources */,
+				45FBC5CC1DF8575700E9B410 /* UIFont+Speakerbox.swift in Sources */,
 				B67ADDC41989FF8700E1A773 /* RPServerRequestsManager.m in Sources */,
 				EF764C351DB67CC5000D9A87 /* UIViewController+CameraPermissions.m in Sources */,
 				76EB059418170B33006006FC /* HttpManager.m in Sources */,
@@ -2901,6 +3046,7 @@
 				76EB05EC18170B33006006FC /* CallState.m in Sources */,
 				76EB05D218170B33006006FC /* ZrtpInitiator.m in Sources */,
 				76EB05E018170B33006006FC /* NetworkStream.m in Sources */,
+				45FBC5A61DF8575700E9B410 /* CADebugMacros.cpp in Sources */,
 				FCFA64B71A24F6730007FB87 /* UIFont+OWS.m in Sources */,
 				B6B9ECFC198B31BA00C620D3 /* PushManager.m in Sources */,
 				45DF5DF21DDB843F00C936C7 /* CompareSafetyNumbersActivity.swift in Sources */,
@@ -2909,6 +3055,7 @@
 				B62D53F71A23CCAD009AAF82 /* TSMessageAdapter.m in Sources */,
 				FCD274EB1A5AFDDB00202277 /* AboutTableViewController.m in Sources */,
 				E197B61618BBEC1A00F073E5 /* StretchFactorController.m in Sources */,
+				45FBC59E1DF8575700E9B410 /* AppDelegate.swift in Sources */,
 				FCFD257F1A154B2C00F4C644 /* RegistrationViewController.m in Sources */,
 				701231B518ECAA4500D456C4 /* EvpMessageDigest.m in Sources */,
 				76EB062218170B33006006FC /* CyclicalBuffer.m in Sources */,
@@ -2916,6 +3063,7 @@
 				B6A3EB4B1A423B3800B2236B /* TSPhotoAdapter.m in Sources */,
 				4509E79C1DD6545B0025A59F /* CallViewController.swift in Sources */,
 				76EB063A18170B33006006FC /* FunctionalUtil.m in Sources */,
+				45FBC5C01DF8575700E9B410 /* ProviderDelegate.swift in Sources */,
 				76EB060A18170B33006006FC /* SignalUtil.m in Sources */,
 				E197B61718BBEC1A00F073E5 /* AnonymousAudioCallbackHandler.m in Sources */,
 				76EB05BC18170B33006006FC /* ConfirmAckPacket.m in Sources */,
@@ -2944,6 +3092,7 @@
 				76EB05FE18170B33006006FC /* InitiateSignal.pb.m in Sources */,
 				76EB05CA18170B33006006FC /* RecipientUnavailable.m in Sources */,
 				E197B61418BBEC1A00F073E5 /* DropoutTracker.m in Sources */,
+				45FBC5BA1DF8575700E9B410 /* DialOptionsViewController.swift in Sources */,
 				FCAC963C19FEF9280046DFC5 /* SignalsViewController.m in Sources */,
 				76EB05DA18170B33006006FC /* LowLatencyConnector.m in Sources */,
 				76EB05EE18170B33006006FC /* CallTermination.m in Sources */,
@@ -3004,6 +3153,8 @@
 				76EB05AA18170B33006006FC /* SequenceCounter.m in Sources */,
 				7038632718F70C0700D4A43F /* CryptoTools.m in Sources */,
 				76EB058C18170B33006006FC /* DnsManager.m in Sources */,
+				45FBC5C81DF8575700E9B410 /* SpeakerboxCallManager.swift in Sources */,
+				45FBC5B81DF8575700E9B410 /* CallsViewController.swift in Sources */,
 				B671B2461A93B238002BBD9D /* GroupContactsResult.m in Sources */,
 				B66B9F721AEA6D1100E2E609 /* NotificationSettingsViewController.m in Sources */,
 				76EB059018170B33006006FC /* IgnoredPacketFailure.m in Sources */,
@@ -3016,6 +3167,7 @@
 				453D28B71D32BA5F00D523F0 /* OWSDisplayedMessage.m in Sources */,
 				76EB05DC18170B33006006FC /* StreamPair.m in Sources */,
 				76EB064618170B33006006FC /* TimeUtil.m in Sources */,
+				45FBC5B61DF8575700E9B410 /* CallSummaryTableViewCell.swift in Sources */,
 				70BAFD5D190584BE00FA5E0B /* NotificationTracker.m in Sources */,
 				76EB05A418170B33006006FC /* PacketHandler.m in Sources */,
 				E197B62118BBF12700F073E5 /* AppAudioManager.m in Sources */,
@@ -3034,26 +3186,31 @@
 				E197B60E18BBEC1A00F073E5 /* CallAudioManager.m in Sources */,
 				FCC81A981A44558300DFEC7D /* UIDevice+TSHardwareVersion.m in Sources */,
 				76EB054018170B33006006FC /* AppDelegate.m in Sources */,
+				45FBC5A41DF8575700E9B410 /* AudioController.mm in Sources */,
 				341BB7491DB727EE001E2975 /* JSQMediaItem+OWS.m in Sources */,
 				76EB05D018170B33006006FC /* ZrtpHandshakeSocket.m in Sources */,
 				45F2B1941D9C9F48000D2C69 /* OWSOutgoingMessageCollectionViewCell.m in Sources */,
 				B63761EF19E1FBE8005735D1 /* HttpResponse.m in Sources */,
+				45FBC5C41DF8575700E9B410 /* SimulateIncomingCallViewController.swift in Sources */,
 				E197B61518BBEC1A00F073E5 /* JitterQueue.m in Sources */,
 				BFB074C919A5611000F2947C /* ObservableValue.m in Sources */,
 				B68EF9BA1C0B1EBD009C3DCD /* FLAnimatedImage.m in Sources */,
 				B68112EA1A4D9EC400BA82FF /* UIImage+normalizeImage.m in Sources */,
 				B609597C1C2C0FC6004E8797 /* iRate.m in Sources */,
 				4574A5D61DD6704700C6B692 /* CallService.swift in Sources */,
+				45FBC5B21DF8575700E9B410 /* CallAudio.swift in Sources */,
 				76EB05C818170B33006006FC /* HelloPacket.m in Sources */,
 				BFB074C719A5611000F2947C /* FutureUtil.m in Sources */,
 				45E1F3A51DEF20A100852CF1 /* NoSignalContactsView.swift in Sources */,
 				FCD274E21A5AFD8000202277 /* PrivacySettingsTableViewController.m in Sources */,
+				45FBC5C61DF8575700E9B410 /* SpeakerboxCall.swift in Sources */,
 				76EB057218170B33006006FC /* RecentCall.m in Sources */,
 				B97CBFA818860EA3008E0DE9 /* CountryCodeViewController.m in Sources */,
 				B6B1013C196D213F007E3930 /* SignalKeyingStorage.m in Sources */,
 				76EB059218170B33006006FC /* UnrecognizedRequestFailure.m in Sources */,
 				76EB05F818170B33006006FC /* CallConnectUtil_Initiator.m in Sources */,
 				B62F5E101C2980B4000D370C /* NSData+ows_StripToken.m in Sources */,
+				45FBC5CA1DF8575700E9B410 /* StartCallConvertible.swift in Sources */,
 				45666F7E1D9C0814008FE134 /* OWSDatabaseMigrationRunner.m in Sources */,
 				B63761E319E1F487005735D1 /* AFHTTPSessionManager+SignalMethods.m in Sources */,
 				76EB05CC18170B33006006FC /* ShortAuthenticationStringGenerator.m in Sources */,
@@ -3067,6 +3224,7 @@
 				76EB060818170B33006006FC /* ResponderSessionDescriptor.m in Sources */,
 				B90418E6183E9DD40038554A /* DateUtil.m in Sources */,
 				76EB05C618170B33006006FC /* HelloAckPacket.m in Sources */,
+				45FBC5CE1DF8575700E9B410 /* URL+StartCallConvertible.swift in Sources */,
 				76EB05E818170B33006006FC /* CallFailedServerMessage.m in Sources */,
 				76EB05FA18170B33006006FC /* CallConnectUtil_Responder.m in Sources */,
 				45B201761DAECBFE00C461E0 /* HighlightableLabel.swift in Sources */,
@@ -3078,6 +3236,8 @@
 				76EB05DE18170B33006006FC /* Certificate.m in Sources */,
 				76EB05B818170B33006006FC /* NegotiationFailed.m in Sources */,
 				76EB05D818170B33006006FC /* LowLatencyCandidate.m in Sources */,
+				45FBC5A01DF8575700E9B410 /* Array+Speakerbox.swift in Sources */,
+				45FBC5A81DF8575700E9B410 /* CAStreamBasicDescription.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3089,11 +3249,14 @@
 				B660F7011C29988E00687D6E /* AudioRouter.m in Sources */,
 				B660F7021C29988E00687D6E /* AudioPacker.m in Sources */,
 				B660F7031C29988E00687D6E /* AudioSocket.m in Sources */,
+				45FBC5B51DF8575700E9B410 /* CallDurationFormatter.swift in Sources */,
+				45FBC59F1DF8575700E9B410 /* AppDelegate.swift in Sources */,
 				B660F7041C29988E00687D6E /* CallAudioManager.m in Sources */,
 				B660F7051C29988E00687D6E /* EncodedAudioFrame.m in Sources */,
 				B660F7061C29988E00687D6E /* EncodedAudioPacket.m in Sources */,
 				B660F7071C29988E00687D6E /* AudioProcessor.m in Sources */,
 				459C3F0D1C9B3A1B003ACF51 /* TSMessageAdapterTest.m in Sources */,
+				45FBC5A71DF8575700E9B410 /* CADebugMacros.cpp in Sources */,
 				B660F7081C29988E00687D6E /* AudioStretcher.m in Sources */,
 				B660F7091C29988E00687D6E /* DesiredBufferDepthController.m in Sources */,
 				B660F70A1C29988E00687D6E /* DropoutTracker.m in Sources */,
@@ -3127,10 +3290,12 @@
 				B660F7251C29988E00687D6E /* IgnoredPacketFailure.m in Sources */,
 				458967111DC117CC00E9DD21 /* AccountManagerTest.swift in Sources */,
 				B660F7261C29988E00687D6E /* UnrecognizedRequestFailure.m in Sources */,
+				45FBC5C71DF8575700E9B410 /* SpeakerboxCall.swift in Sources */,
 				B660F7271C29988E00687D6E /* RPAPICall.m in Sources */,
 				B660F7281C29988E00687D6E /* RPServerRequestsManager.m in Sources */,
 				B660F7291C29988E00687D6E /* AFHTTPSessionManager+SignalMethods.m in Sources */,
 				B660F72A1C29988E00687D6E /* HttpRequest.m in Sources */,
+				45FBC5CD1DF8575700E9B410 /* UIFont+Speakerbox.swift in Sources */,
 				B660F72B1C29988E00687D6E /* HttpRequestOrResponse.m in Sources */,
 				B660F72C1C29988E00687D6E /* HttpRequestUtil.m in Sources */,
 				B660F72D1C29988E00687D6E /* HttpResponse.m in Sources */,
@@ -3144,6 +3309,7 @@
 				B660F7331C29988E00687D6E /* RtpPacket.m in Sources */,
 				45BFFFA91D898AF0004A12A7 /* OWSStaleNotificationObserver.m in Sources */,
 				B660F7341C29988E00687D6E /* RtpSocket.m in Sources */,
+				45FBC5BB1DF8575700E9B410 /* DialOptionsViewController.swift in Sources */,
 				B660F7351C29988E00687D6E /* SequenceCounter.m in Sources */,
 				B660F7361C29988E00687D6E /* SrtpSocket.m in Sources */,
 				45C681C71D305C9E0050903A /* OWSDisplayedMessageCollectionViewCell.m in Sources */,
@@ -3154,6 +3320,7 @@
 				B660F73B1C29988E00687D6E /* EC25KeyAgreementProtocol.m in Sources */,
 				B660F73C1C29988E00687D6E /* EvpKeyAgreement.m in Sources */,
 				451DE9FE1DC1A28200810E42 /* SyncPushTokensJob.swift in Sources */,
+				45FBC5CF1DF8575700E9B410 /* URL+StartCallConvertible.swift in Sources */,
 				B660F73D1C29988E00687D6E /* HashChain.m in Sources */,
 				B660F73E1C29988E00687D6E /* MasterSecret.m in Sources */,
 				B660F73F1C29988E00687D6E /* NegotiationFailed.m in Sources */,
@@ -3189,9 +3356,12 @@
 				B660F7581C29988E00687D6E /* RPAccountManager.m in Sources */,
 				B660F7591C29988E00687D6E /* CallController.m in Sources */,
 				B660F75A1C29988E00687D6E /* CallFailedServerMessage.m in Sources */,
+				45FBC5C11DF8575700E9B410 /* ProviderDelegate.swift in Sources */,
 				B660F75B1C29988E00687D6E /* CallProgress.m in Sources */,
 				B660F75C1C29988E00687D6E /* CallState.m in Sources */,
 				B660F75D1C29988E00687D6E /* CallTermination.m in Sources */,
+				45FBC5B71DF8575700E9B410 /* CallSummaryTableViewCell.swift in Sources */,
+				45FBC5A51DF8575700E9B410 /* AudioController.mm in Sources */,
 				B660F75E1C29988E00687D6E /* PhoneManager.m in Sources */,
 				B660F75F1C29988E00687D6E /* CallConnectResult.m in Sources */,
 				B660F7601C29988E00687D6E /* CallConnectUtil.m in Sources */,
@@ -3210,7 +3380,9 @@
 				B660F76B1C29988E00687D6E /* LoggingUtil.m in Sources */,
 				B660F76C1C29988E00687D6E /* AnonymousConditionLogger.m in Sources */,
 				45DF5DF31DDB843F00C936C7 /* CompareSafetyNumbersActivity.swift in Sources */,
+				45FBC5A11DF8575700E9B410 /* Array+Speakerbox.swift in Sources */,
 				B660F76D1C29988E00687D6E /* AnonymousOccurrenceLogger.m in Sources */,
+				45FBC5CB1DF8575700E9B410 /* StartCallConvertible.swift in Sources */,
 				B660F76E1C29988E00687D6E /* AnonymousValueLogger.m in Sources */,
 				B660F76F1C29988E00687D6E /* DiscardingLog.m in Sources */,
 				B660F7701C29988E00687D6E /* FLAnimatedImage.m in Sources */,
@@ -3221,6 +3393,8 @@
 				B660F7771C29988E00687D6E /* UIImage+normalizeImage.m in Sources */,
 				954AEE6A1DF33E01002E5410 /* ContactsPickerTest.swift in Sources */,
 				B660F7781C29988E00687D6E /* ArrayUtil.m in Sources */,
+				45FBC5B91DF8575700E9B410 /* CallsViewController.swift in Sources */,
+				45FBC5AB1DF8575700E9B410 /* CAXException.cpp in Sources */,
 				B660F7791C29988E00687D6E /* CyclicalBuffer.m in Sources */,
 				B660F77A1C29988E00687D6E /* PriorityQueue.m in Sources */,
 				B660F77B1C29988E00687D6E /* Queue.m in Sources */,
@@ -3237,6 +3411,7 @@
 				B660F7851C29988E00687D6E /* Operation.m in Sources */,
 				B660F7861C29988E00687D6E /* AnonymousTerminator.m in Sources */,
 				B660F7871C29988E00687D6E /* StringUtil.m in Sources */,
+				45FBC5C91DF8575700E9B410 /* SpeakerboxCallManager.swift in Sources */,
 				B660F7881C29988E00687D6E /* ThreadManager.m in Sources */,
 				B660F7891C29988E00687D6E /* TimeUtil.m in Sources */,
 				B660F78A1C29988E00687D6E /* UIUtil.m in Sources */,
@@ -3247,7 +3422,9 @@
 				B660F6D81C29868000687D6E /* CryptoToolsTest.m in Sources */,
 				B660F6BD1C29868000687D6E /* HttpRequestResponseTest.m in Sources */,
 				B660F6B71C29868000687D6E /* AudioStretcherTest.m in Sources */,
+				45FBC5BF1DF8575700E9B410 /* NSUserActivity+StartCallConvertible.swift in Sources */,
 				B660F6DE1C29868000687D6E /* PriorityQueueTest.m in Sources */,
+				45FBC5C51DF8575700E9B410 /* SimulateIncomingCallViewController.swift in Sources */,
 				B660F6BE1C29868000687D6E /* IpAddressTest.m in Sources */,
 				B660F6E01C29868000687D6E /* UtilTest.m in Sources */,
 				B660F6D61C29868000687D6E /* ConversionsTest.m in Sources */,
@@ -3263,6 +3440,7 @@
 				452E3C8F1D935C77002A45B0 /* OWSConversationSettingsTableViewController.m in Sources */,
 				B660F6BC1C29868000687D6E /* DnsManagerTest.m in Sources */,
 				B660F6B61C29868000687D6E /* AudioRemoteIOTest.m in Sources */,
+				45FBC5A91DF8575700E9B410 /* CAStreamBasicDescription.cpp in Sources */,
 				B660F6D71C29868000687D6E /* Crc32Test.m in Sources */,
 				B660F6C51C29868000687D6E /* HashChainTest.m in Sources */,
 				B660F6D01C29868000687D6E /* DecayingSampleEstimatorTest.m in Sources */,
@@ -3278,6 +3456,7 @@
 				B660F6DF1C29868000687D6E /* QueueTest.m in Sources */,
 				B660F6BB1C29868000687D6E /* OWSContactsManagerTest.m in Sources */,
 				B660F6CE1C29868000687D6E /* PhoneNumberTest.m in Sources */,
+				45FBC5B31DF8575700E9B410 /* CallAudio.swift in Sources */,
 				B660F6C41C29868000687D6E /* HandshakePacketTest.m in Sources */,
 				B660F6CD1C29868000687D6E /* UdpSocketTest.m in Sources */,
 				B660F6DD1C29868000687D6E /* ObservableTest.m in Sources */,
@@ -3311,6 +3490,30 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		45FBC5881DF8575700E9B410 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				45FBC5891DF8575700E9B410 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		45FBC58A1DF8575700E9B410 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				45FBC58B1DF8575700E9B410 /* Base */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		45FBC58C1DF8575700E9B410 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				45FBC58D1DF8575700E9B410 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
 		B6F509951AA53F760068F56A /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
