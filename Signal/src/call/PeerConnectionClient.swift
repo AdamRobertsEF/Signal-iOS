@@ -58,7 +58,26 @@ class DeviceFinderiOS10: DeviceFinderAdaptee {
     }
 }
 
-class PeerConnectionClient: NSObject {
+class PeerConnectionClient: NSObject, CallAudioManager {
+
+    
+    internal func configureAudioSession() {
+        Logger.warn("TODO: \(#function)")
+    }
+
+    internal func stopAudio() {
+        Logger.warn("TODO: \(#function)")
+    }
+
+    internal func startAudio() {
+        guard let audioSender = self.audioSender else {
+            Logger.error("\(TAG) ignoring \(#function) because audioSender was nil")
+            return
+        }
+
+        Logger.warn("TODO: \(#function)")
+    }
+
 
     let TAG = "[PeerConnectionClient]"
     enum Identifiers: String {

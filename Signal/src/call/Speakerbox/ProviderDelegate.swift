@@ -14,8 +14,16 @@ import AVFoundation
 @available(iOS 10.0, *)
 final class ProviderDelegate: NSObject, CXProviderDelegate {
 
+    let TAG = "[ProviderDelegate]"
     let callManager: SpeakerboxCallManager
     private let provider: CXProvider
+    // FIXME - I might be thinking about this the wrong way.
+    // It seems like the provider delegate wants to stop/start the audio recording
+    // process, but the ProviderDelegate is an app singleton
+    // and the audio recording process is currently controlled (I think) by
+    // the PeerConnectionClient instance, which is one per call (NOT a singleton).
+    // It seems like a mess to reconcile this difference in cardinality. But... here we are.
+    var audioManager: CallAudioManager?
 
     init(callManager: SpeakerboxCallManager) {
         self.callManager = callManager
@@ -75,7 +83,7 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
     // MARK: CXProviderDelegate
 
     func providerDidReset(_ provider: CXProvider) {
-        print("Provider did reset")
+        Logger.debug("Provider did reset")
 
         stopAudio()
 
@@ -190,20 +198,19 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
     }
 
     func provider(_ provider: CXProvider, timedOutPerforming action: CXAction) {
-        print("Timed out \(#function)")
+        Logger.debug("Timed out \(#function)")
 
         // React to the action timeout if necessary, such as showing an error UI.
     }
 
     func provider(_ provider: CXProvider, didActivate audioSession: AVAudioSession) {
-        print("Received \(#function)")
+        Logger.debug("Received \(#function)")
 
-        // Start call audio media, now that the audio session has been activated after having its priority boosted.
         startAudio()
     }
 
     func provider(_ provider: CXProvider, didDeactivate audioSession: AVAudioSession) {
-        print("Received \(#function)")
+        Logger.debug("Received \(#function)")
 
         /*
              Restart any non-call related audio now that the app's audio session has been
@@ -211,4 +218,32 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
          */
     }
 
+    // MARK: - Audio
+
+    func startAudio() {
+        guard let audioManager = self.audioManager else {
+            Logger.error("\(TAG) audioManager was unexpectedly nil while tryign to start audio")
+            return
+        }
+
+        audioManager.startAudio()
+    }
+
+    func stopAudio() {
+        guard let audioManager = self.audioManager else {
+            Logger.error("\(TAG) audioManager was unexpectedly nil while tryign to stop audio")
+            return
+        }
+
+        audioManager.stopAudio()
+    }
+
+    func configureAudioSession() {
+        guard let audioManager = self.audioManager else {
+            Logger.error("\(TAG) audioManager was unexpectedly nil while trying to: \(#function)")
+            return
+        }
+
+        audioManager.configureAudioSession()
+    }
 }
