@@ -16,7 +16,6 @@ struct Platform {
     }()
 }
 
-
 // TODO move this somewhere else
 // TODO do we still need this?
 protocol DeviceFinderAdaptee {
@@ -86,7 +85,7 @@ class PeerConnectionClient: NSObject, CallAudioManager {
              audioTrack = "ARDAMSa0"
     }
 
-    // Connection properties
+    // Connection
 
     let peerConnection: RTCPeerConnection
     let iceServers: [RTCIceServer]
@@ -95,12 +94,16 @@ class PeerConnectionClient: NSObject, CallAudioManager {
     let factory = RTCPeerConnectionFactory()
     let mediaStream: RTCMediaStream
 
-    // Audio properties
+    // DataChannel
+
+    var dataChannel: RTCDataChannel?
+
+    // Audio
 
     var audioSender: RTCRtpSender?
     var audioConstraints: RTCMediaConstraints
 
-    // Video properties
+    // Video
 
     var videoSender: RTCRtpSender?
     var cameraConstraints: RTCMediaConstraints
@@ -132,8 +135,11 @@ class PeerConnectionClient: NSObject, CallAudioManager {
 
     public func createDataChannel(label: String, delegate: RTCDataChannelDelegate) -> RTCDataChannel {
         let dataChannel = peerConnection.dataChannel(forLabel: label,
-                                                     configuration: RTCDataChannelConfiguration())
+                                                      configuration: RTCDataChannelConfiguration())
         dataChannel.delegate = delegate
+
+        self.dataChannel = dataChannel
+
         return dataChannel
     }
 
@@ -301,5 +307,17 @@ class PeerConnectionClient: NSObject, CallAudioManager {
 
     func terminate() {
         peerConnection.close()
+    }
+
+    // MARK: Data Channel
+
+    func sendDataChannelMessage(data: Data) -> Bool {
+        guard let dataChannel = self.dataChannel else {
+            Logger.error("\(TAG) ignoring \(#function) for nil dataChannel")
+            return false
+        }
+
+        let buffer = RTCDataBuffer(data: data, isBinary: false)
+        return dataChannel.sendData(buffer)
     }
 }

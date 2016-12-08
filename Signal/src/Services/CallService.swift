@@ -48,7 +48,7 @@ class CallUICallKitAdaptee: CallUIAdaptee {
             // But a peerconnectionclient is per call.
             // While this providerDelegate is an app singleton.
             providerDelegate.audioManager = audioManager
-            providerDelegate.reportIncomingCall(uuid: call.localId, handle: call.remotePhoneNumber, hasVideo: call.hasVideo, completion: $0)
+            providerDelegate.reportIncomingCall(call, completion: $0)
         }
     }
 }
@@ -97,7 +97,7 @@ class CallManagerAdapter {
 
     init(callService: CallService) {
         if #available(iOS 10.0, *) {
-            adaptee = CallUICallKitAdaptee(callService: CallService)
+            adaptee = CallUICallKitAdaptee(callService: callService)
         } else {
             adaptee = CallUIiOS8Adaptee()
         }
@@ -133,7 +133,7 @@ enum CallErrors: Error {
 
     let accountManager: AccountManager
     let messageSender: MessageSender
-    var callManagerAdapter = CallManagerAdapter!
+    var callManagerAdapter: CallManagerAdapter!
 
     // MARK: Class
 
@@ -152,7 +152,8 @@ enum CallErrors: Error {
     required init(accountManager: AccountManager, messageSender: MessageSender) {
         self.accountManager = accountManager
         self.messageSender = messageSender
-        self.callManagerAdapter = CallManagerAdapter(callService:self)
+        super.init()
+        self.callManagerAdapter = CallManagerAdapter(callService: self)
     }
 
     // MARK: - Service Actions
@@ -170,7 +171,6 @@ enum CallErrors: Error {
             let peerConnectionClient =  PeerConnectionClient(iceServers: iceServers, peerConnectionDelegate: self)
             self.peerConnectionClient = peerConnectionClient
 
-            // TODO Would dataChannel be better created within PeerConnectionClient class? Seems like it's only explicitly created on outgoing.
             self.dataChannel = self.peerConnectionClient!.createDataChannel(label: CallService.DataChannelLabel, delegate: self)
 
             return self.peerConnectionClient!.createOffer()
@@ -346,8 +346,51 @@ enum CallErrors: Error {
     }
 
     func handleRemoteHangup() {
-        Logger.debug("\(TAG) handling remote hangup")
+        Logger.debug("\(TAG) in \(#function)")
         Logger.error("\(TAG) TODO")
+    }
+
+    func handleAnswerCall(_ call: SignalCall) {
+        Logger.debug("\(TAG) in \(#function)")
+
+        guard self.call != nil else {
+            Logger.error("\(TAG) ignoring \(#function) since there is no current call")
+            return
+        }
+
+        guard call == self.call! else {
+            Logger.error("\(TAG) ignoring \(#function) for call other than current call")
+            return
+        }
+
+        guard let peerConnectionClient = self.peerConnectionClient else {
+            Logger.error("\(TAG) missing peerconnection client in \(#function)")
+            return
+        }
+
+//        incomingRinger.stop();
+
+        //FIXME TODO
+//        DatabaseFactory.getSmsDatabase(this).insertReceivedCall(recipient.getNumber());
+
+        //FIXME TODO
+//        peerConnectionClient.audioEnabled = true
+//        peerConnectionClient.videoEnabled = true
+
+        //        this.dataChannel.send(new DataChannel.Buffer(ByteBuffer.wrap(Data.newBuilder().setConnected(Connected.newBuilder().setId(this.callId)).build().toByteArray()), false));
+        let message = DataChannelMessage.forConnected(callId: call.signalingId)
+        if peerConnectionClient.sendDataChannelMessage(data: message.asData()) {
+            Logger.debug("\(TAG) sendDataChannelMessage returned true")
+        } else {
+            Logger.warn("\(TAG) sendDataChannelMessage returned false")
+        }
+
+        handleConnectedCall(call);
+    }
+
+    func handleConnectedCall(_ call: SignalCall) {
+        Logger.debug("\(TAG) in \(#function)")
+
     }
 
     // MARK: Helpers
@@ -490,6 +533,13 @@ enum CallErrors: Error {
     /** New data channel has been opened. */
     public func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
         Logger.debug("\(TAG) didOpen dataChannel:\(dataChannel)")
+
+        guard let peerConnectionClient = self.peerConnectionClient else {
+            Logger.error("\(TAG) surprised to find no peerConnectionCLient in \(#function)")
+            return
+        }
+
+        peerConnectionClient.dataChannel = dataChannel
     }
 
 }

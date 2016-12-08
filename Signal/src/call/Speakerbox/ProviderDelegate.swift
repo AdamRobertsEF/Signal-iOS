@@ -28,8 +28,9 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
     var audioManager: CallAudioManager?
 
 
-    init(callManager: SpeakerboxCallManager) {
+    init(callManager: SpeakerboxCallManager, callService: CallService) {
         self.callManager = callManager
+        self.callService = callService
         provider = CXProvider(configuration: type(of: self).providerConfiguration)
 
         super.init()
@@ -60,22 +61,19 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
     // MARK: Incoming Calls
 
     /// Use CXProvider to report the incoming call to the system
-    func reportIncomingCall(uuid: UUID, handle: String, hasVideo: Bool = false, completion: ((NSError?) -> Void)? = nil) {
+    func reportIncomingCall(_ call: SignalCall, completion: ((NSError?) -> Void)? = nil) {
         // Construct a CXCallUpdate describing the incoming call, including the caller.
         let update = CXCallUpdate()
-        update.remoteHandle = CXHandle(type: .phoneNumber, value: handle)
-        update.hasVideo = hasVideo
+        update.remoteHandle = CXHandle(type: .phoneNumber, value: call.remotePhoneNumber)
+        update.hasVideo = call.hasVideo
 
         // Report the incoming call to the system
-        provider.reportNewIncomingCall(with: uuid, update: update) { error in
+        provider.reportNewIncomingCall(with: call.localId, update: update) { error in
             /*
                 Only add incoming call to the app's list of calls if the call was allowed (i.e. there was no error)
                 since calls may be "denied" for various legitimate reasons. See CXErrorCodeIncomingCallError.
              */
             if error == nil {
-                let call = SpeakerboxCall(uuid: uuid)
-                call.handle = handle
-
                 self.callManager.addCall(call)
             }
             
@@ -95,7 +93,8 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
             since they are no longer valid.
          */
         for call in callManager.calls {
-            call.endSpeakerboxCall()
+            // FIXME TODO forward to CallService.
+//            call.endSpeakerboxCall()
         }
 
         // Remove all calls from the app's list of calls.
@@ -124,38 +123,38 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
             self?.provider.reportOutgoingCall(with: call.uuid, connectedAt: call.connectDate)
         }
 
+        // TODO FIXME
         // Trigger the call to be started via the underlying network service.
-        call.startSpeakerboxCall { success in
-            if success {
-                // Signal to the system that the action has been successfully performed.
-                action.fulfill()
-
-                // Add the new outgoing call to the app's list of calls.
-                self.callManager.addCall(call)
-            } else {
-                // Signal to the system that the action was unable to be performed.
-                action.fail()
-            }
-        }
+//        call.startSpeakerboxCall { success in
+//            if success {
+//                // Signal to the system that the action has been successfully performed.
+//                action.fulfill()
+//
+//                // Add the new outgoing call to the app's list of calls.
+//                self.callManager.addCall(call)
+//            } else {
+//                // Signal to the system that the action was unable to be performed.
+//                action.fail()
+//            }
+//        }
     }
 
     func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) {
         // Retrieve the SpeakerboxCall instance corresponding to the action's call UUID
-        guard let call = callManager.callWithUUID(uuid: action.callUUID) else {
+        guard let call = callManager.callWithLocalId(action.callUUID) else {
             action.fail()
             return
         }
 
-        /*
-            Configure the audio session, but do not start call audio here, since it must be done once
-            the audio session has been activated by the system after having its priority elevated.
-         */
-        configureAudioSession()
+//        /*
+//            Configure the audio session, but do not start call audio here, since it must be done once
+//            the audio session has been activated by the system after having its priority elevated.
+//         */
+//        configureAudioSession()
+//
+//        // Trigger the call to be answered via the underlying network service.
+//        call.answerSpeakerboxCall()
 
-        // Trigger the call to be answered via the underlying network service.
-        call.answerSpeakerboxCall()
-
-        // TODO this shoudl be a SignalCall, and it should belong_to thread.
         callService.handleAnswerCall(call)
 
         // Signal to the system that the action has been successfully performed.
@@ -164,7 +163,7 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
 
     func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
         // Retrieve the SpeakerboxCall instance corresponding to the action's call UUID
-        guard let call = callManager.callWithUUID(uuid: action.callUUID) else {
+        guard let call = callManager.callWithLocalId(action.callUUID) else {
             action.fail()
             return
         }
@@ -172,8 +171,9 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
         // Stop call audio whenever ending the call.
         stopAudio()
 
-        // Trigger the call to be ended via the underlying network service.
-        call.endSpeakerboxCall()
+        //TODO FIXME
+//        // Trigger the call to be ended via the underlying network service.
+//        call.endSpeakerboxCall()
 
         // Signal to the system that the action has been successfully performed.
         action.fulfill()
@@ -184,20 +184,21 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
 
     func provider(_ provider: CXProvider, perform action: CXSetHeldCallAction) {
         // Retrieve the SpeakerboxCall instance corresponding to the action's call UUID
-        guard let call = callManager.callWithUUID(uuid: action.callUUID) else {
+        guard let call = callManager.callWithLocalId(action.callUUID) else {
             action.fail()
             return
         }
 
-        // Update the SpeakerboxCall's underlying hold state.
-        call.isOnHold = action.isOnHold
-
-        // Stop or start audio in response to holding or unholding the call.
-        if call.isOnHold {
-            stopAudio()
-        } else {
-            startAudio()
-        }
+        // TODO FIXME
+//        // Update the SpeakerboxCall's underlying hold state.
+//        call.isOnHold = action.isOnHold
+//
+//        // Stop or start audio in response to holding or unholding the call.
+//        if call.isOnHold {
+//            stopAudio()
+//        } else {
+//            startAudio()
+//        }
 
         // Signal to the system that the action has been successfully performed.
         action.fulfill()

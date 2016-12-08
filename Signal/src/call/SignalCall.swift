@@ -17,4 +17,11 @@ class SignalCall {
         self.remotePhoneNumber = remotePhoneNumber
         self.localId = UUID()
     }
+
+    // MARK: Equatable 
+    
+    static func ==(lhs: SignalCall, rhs: SignalCall) -> Bool {
+        return lhs.localId == rhs.localId
+    }
+
 }

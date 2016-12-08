@@ -28,16 +28,16 @@ final class SpeakerboxCallManager: NSObject {
         requestTransaction(transaction)
     }
 
-    func end(call: SpeakerboxCall) {
-        let endCallAction = CXEndCallAction(call: call.uuid)
+    func end(call: SignalCall) {
+        let endCallAction = CXEndCallAction(call: call.localId)
         let transaction = CXTransaction()
         transaction.addAction(endCallAction)
 
         requestTransaction(transaction)
     }
 
-    func setHeld(call: SpeakerboxCall, onHold: Bool) {
-        let setHeldCallAction = CXSetHeldCallAction(call: call.uuid, onHold: onHold)
+    func setHeld(call: SignalCall, onHold: Bool) {
+        let setHeldCallAction = CXSetHeldCallAction(call: call.localId, onHold: onHold)
         let transaction = CXTransaction()
         transaction.addAction(setHeldCallAction)
 
@@ -58,26 +58,26 @@ final class SpeakerboxCallManager: NSObject {
 
     static let CallsChangedNotification = Notification.Name("CallManagerCallsChangedNotification") 
 
-    private(set) var calls = [SpeakerboxCall]()
+    private(set) var calls = [SignalCall]()
 
-    func callWithUUID(uuid: UUID) -> SpeakerboxCall? {
-        guard let index = calls.index(where: { $0.uuid == uuid }) else {
+    func callWithLocalId(_ localId: UUID) -> SignalCall? {
+        guard let index = calls.index(where: { $0.localId == localId }) else {
             return nil
         }
         return calls[index]
     }
 
-    func addCall(_ call: SpeakerboxCall) {
+    func addCall(_ call: SignalCall) {
         calls.append(call)
 
-        call.stateDidChange = { [weak self] in
-            self?.postCallsChangedNotification()
-        }
+//        call.stateDidChange = { [weak self] in
+//            self?.postCallsChangedNotification()
+//        }
 
         postCallsChangedNotification()
     }
 
-    func removeCall(_ call: SpeakerboxCall) {
+    func removeCall(_ call: SignalCall) {
         calls.removeFirst(where: { $0 === call })
         postCallsChangedNotification()
     }
@@ -93,7 +93,7 @@ final class SpeakerboxCallManager: NSObject {
 
     // MARK: SpeakerboxCallDelegate
 
-    func speakerboxCallDidChangeState(_ call: SpeakerboxCall) {
+    func speakerboxCallDidChangeState(_ call: SignalCall) {
         postCallsChangedNotification()
     }
 
