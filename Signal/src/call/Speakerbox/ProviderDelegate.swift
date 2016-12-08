@@ -16,7 +16,9 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
 
     let TAG = "[ProviderDelegate]"
     let callManager: SpeakerboxCallManager
+    let callService: CallService
     private let provider: CXProvider
+
     // FIXME - I might be thinking about this the wrong way.
     // It seems like the provider delegate wants to stop/start the audio recording
     // process, but the ProviderDelegate is an app singleton
@@ -24,6 +26,7 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
     // the PeerConnectionClient instance, which is one per call (NOT a singleton).
     // It seems like a mess to reconcile this difference in cardinality. But... here we are.
     var audioManager: CallAudioManager?
+
 
     init(callManager: SpeakerboxCallManager) {
         self.callManager = callManager
@@ -151,6 +154,9 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
 
         // Trigger the call to be answered via the underlying network service.
         call.answerSpeakerboxCall()
+
+        // TODO this shoudl be a SignalCall, and it should belong_to thread.
+        callService.handleAnswerCall(call)
 
         // Signal to the system that the action has been successfully performed.
         action.fulfill()

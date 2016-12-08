@@ -30,7 +30,11 @@ class CallUIiOS8Adaptee: CallUIAdaptee {
 
 @available(iOS 10.0, *)
 class CallUICallKitAdaptee: CallUIAdaptee {
-    let providerDelegate = ProviderDelegate(callManager: SpeakerboxCallManager())
+    let providerDelegate: ProviderDelegate
+
+    init(callService: CallService) {
+        self.providerDelegate = ProviderDelegate(callManager: SpeakerboxCallManager(), callService: callService)
+    }
 
     func startOutgoingCall(_ call: SignalCall) {
         // TODO initiate video call
@@ -91,9 +95,9 @@ class CallManagerAdapter {
     let TAG = "[CallManagerAdapter]"
     let adaptee: CallUIAdaptee
 
-    init() {
+    init(callService: CallService) {
         if #available(iOS 10.0, *) {
-            adaptee = CallUICallKitAdaptee()
+            adaptee = CallUICallKitAdaptee(callService: CallService)
         } else {
             adaptee = CallUIiOS8Adaptee()
         }
@@ -129,7 +133,7 @@ enum CallErrors: Error {
 
     let accountManager: AccountManager
     let messageSender: MessageSender
-    let callManagerAdapter = CallManagerAdapter()
+    var callManagerAdapter = CallManagerAdapter!
 
     // MARK: Class
 
@@ -145,10 +149,10 @@ enum CallErrors: Error {
     var pendingIceUpdates: [OWSOutgoingCallMessage]?
 
 //    var iceUpdatesPromise: Promise<Void>
-
     required init(accountManager: AccountManager, messageSender: MessageSender) {
         self.accountManager = accountManager
         self.messageSender = messageSender
+        self.callManagerAdapter = CallManagerAdapter(callService:self)
     }
 
     // MARK: - Service Actions
