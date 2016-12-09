@@ -118,9 +118,16 @@ class CallManagerAdapter {
 
 }
 
-enum CallErrors: Error {
-    case AlreadyInCall
-    case NoCurrentContactThread
+class CallError: Error {
+    let description: String
+
+    init(description: String) {
+        self.description = description
+    }
+}
+
+class ClientFailure: CallError {
+
 }
 
 @objc class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
@@ -146,7 +153,7 @@ enum CallErrors: Error {
     // TODO move thread into SignalCall
     var thread: TSContactThread?
     var call: SignalCall?
-    var pendingIceUpdates: [OWSOutgoingCallMessage]?
+    var pendingIceUpdateMessages: [OWSCallIceUpdateMessage]?
 
 //    var iceUpdatesPromise: Promise<Void>
     required init(accountManager: AccountManager, messageSender: MessageSender) {
@@ -158,15 +165,15 @@ enum CallErrors: Error {
 
     // MARK: - Service Actions
 
-    func handleOutgoingCall(thread: TSContactThread) -> Promise<Void> {
+    func handleOutgoingCall(thread: TSContactThread) -> SignalCall {
         self.thread = thread
         Logger.verbose("\(TAG) handling outgoing call to thread:\(thread)")
 
-        let currentCall = SignalCall(signalingId: UInt64.ows_random(), state: .dialing, remotePhoneNumber: thread.contactIdentifier())
-        call = currentCall
-        pendingIceUpdates = []
+        let newCall = SignalCall(signalingId: UInt64.ows_random(), state: .dialing, remotePhoneNumber: thread.contactIdentifier())
+        call = newCall
+        pendingIceUpdateMessages = []
 
-        return getIceServers().then { iceServers -> Promise<RTCSessionDescription> in
+        _ = getIceServers().then { iceServers -> Promise<RTCSessionDescription> in
             Logger.debug("\(self.TAG) got ice servers:\(iceServers)")
             let peerConnectionClient =  PeerConnectionClient(iceServers: iceServers, peerConnectionDelegate: self)
             self.peerConnectionClient = peerConnectionClient
@@ -176,29 +183,39 @@ enum CallErrors: Error {
             return self.peerConnectionClient!.createOffer()
         }.then { sessionDescription -> Promise<Void> in
             return self.peerConnectionClient!.setLocalSessionDescription(sessionDescription).then {
-                let offerMessage = OWSCallOfferMessage(callId: currentCall.signalingId, sessionDescription: sessionDescription.sdp)
+                let offerMessage = OWSCallOfferMessage(callId: newCall.signalingId, sessionDescription: sessionDescription.sdp)
                 let callMessage = OWSOutgoingCallMessage(thread: thread, offerMessage: offerMessage)
                 return self.sendMessage(callMessage)
             }
-        }.then {
-            Logger.debug("\(self.TAG) sent CallOffer message in \(self.thread)")
-            // TODO... timeout.
-            return self.waitForIceUpdates()
-        }.then {
-            // TODO... timeouts
-            Logger.debug("\(self.TAG) got ice updates in \(self.thread)")
         }.catch { error in
             Logger.error("\(self.TAG) placing call failed with error: \(error)")
         }
+
+        return newCall
     }
 
     func handleReceivedAnswer(thread: TSContactThread, callId: UInt64, sessionDescription: String) {
         Logger.debug("\(TAG) received call answer for call: \(callId) thread: \(thread)")
         Logger.error("FIXME TODO")
-        // TODO
-        // - SEND pendingIceUpdates
-        // - set remote description
-        // - etc.
+
+        if let pendingIceUpdateMessages = self.pendingIceUpdateMessages {
+            let callMessage = OWSOutgoingCallMessage(thread: thread, iceUpdateMessages: pendingIceUpdateMessages)
+            _ = sendMessage(callMessage).catch { error in
+                Logger.error("\(self.TAG) failed to send ice updates in \(#function) with error: \(error)")
+            }
+        }
+
+        guard let peerConnectionClient = self.peerConnectionClient else {
+            failCall(error: ClientFailure(description: "peerConnectionClient was unexpectedly nil in \(#function)"))
+            return
+        }
+
+        let sessionDescription = RTCSessionDescription(type: .answer, sdp: sessionDescription)
+        _ = peerConnectionClient.setRemoteSessionDescription(sessionDescription).then {
+            Logger.debug("\(self.TAG) successfully set remote description")
+        }.catch { error in
+            Logger.error("\(self.TAG) failed to set remote description with error: \(error)")
+        }
     }
 
     func handleBusyCall(thread aThread: TSContactThread, callId: UInt64) {
@@ -229,8 +246,8 @@ enum CallErrors: Error {
             return
         }
 
-        let currentCall = SignalCall(signalingId: callId, state: .answering, remotePhoneNumber: aThread.contactIdentifier())
-        call = currentCall
+        let newCall = SignalCall(signalingId: callId, state: .answering, remotePhoneNumber: aThread.contactIdentifier())
+        call = newCall
 
         _ = getIceServers().then { (iceServers: [RTCIceServer]) -> Promise<RTCSessionDescription> in
             // FIXME for first time call recipients I think we'll see mic/camera permission requests here,
@@ -246,7 +263,7 @@ enum CallErrors: Error {
             // TODO? WebRtcCallService.this.lockManager.updatePhoneState(LockManager.PhoneState.PROCESSING);
             Logger.debug("\(self.TAG) set the remote description")
 
-            let answerMessage = OWSCallAnswerMessage(callId: currentCall.signalingId, sessionDescription: negotiatedSessionDescription.sdp)
+            let answerMessage = OWSCallAnswerMessage(callId: newCall.signalingId, sessionDescription: negotiatedSessionDescription.sdp)
             let callAnswerMessage = OWSOutgoingCallMessage(thread: aThread, answerMessage: answerMessage)
 
             return self.sendMessage(callAnswerMessage)
@@ -299,17 +316,16 @@ enum CallErrors: Error {
         }
 
         let iceUpdateMessage = OWSCallIceUpdateMessage(callId: call.signalingId, sdp: iceCandidate.sdp, sdpMLineIndex: iceCandidate.sdpMLineIndex, sdpMid: iceCandidate.sdpMid)
-        let callMessage = OWSOutgoingCallMessage(thread: thread, iceUpdateMessage: iceUpdateMessage)
-
-        if pendingIceUpdates != nil {
+        if var pendingIceUpdateMessages = self.pendingIceUpdateMessages {
             // For outgoing messages, we wait to send ice updates until we're sure client received our call message.
             // e.g. if the client has blocked our message due to an identity change, we'd otherwise
             // bombard them with a bunch *more* undecipherable messages.
             Logger.debug("\(TAG) enqueuing iceUpdate until we receive call answer")
-            pendingIceUpdates!.append(callMessage)
+            pendingIceUpdateMessages.append(iceUpdateMessage)
             return
         }
 
+        let callMessage = OWSOutgoingCallMessage(thread: thread, iceUpdateMessage: iceUpdateMessage)
         _ = sendMessage(callMessage).then {
             Logger.debug("\(self.TAG) successfully sent single ice update message.")
         }
@@ -471,7 +487,12 @@ enum CallErrors: Error {
 
     }
 
-    public func terminateCall() {
+    private func failCall(error: Error) {
+        Logger.error("\(TAG) call failed with error: \(error)")
+        Logger.error("TODO: show some UI for \(#function)")
+    }
+
+    private func terminateCall() {
 //        lockManager.updatePhoneState(LockManager.PhoneState.PROCESSING);
 //        NotificationBarManager.setCallEnded(this);
 //
@@ -503,7 +524,7 @@ enum CallErrors: Error {
         peerConnectionClient = nil
         call = nil
         thread = nil
-        pendingIceUpdates = nil
+        pendingIceUpdateMessages = nil
     }
 
     // MARK: - RTCDataChannelDelegate

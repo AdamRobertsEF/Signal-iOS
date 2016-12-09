@@ -24,7 +24,7 @@ class CallViewController : UIViewController {
     var peerConnectionClient: PeerConnectionClient?
     var callDirection: CallDirection = .unspecified
     var thread: TSContactThread!
-    var callPromise: Promise<Void>?
+    var call: SignalCall?
 
     @IBOutlet weak var contactName: UILabel!
 
@@ -56,7 +56,7 @@ class CallViewController : UIViewController {
             showCallFailed(error: OWSErrorMakeAssertionError())
         case .outgoing:
             self.contactName.text = self.contactsManager.displayName(forPhoneIdentifier: thread.contactIdentifier());
-            self.callPromise = callService.handleOutgoingCall(thread: thread)
+            self.call = callService.handleOutgoingCall(thread: thread)
         case .incoming:
             Logger.error("\(TAG) TODO incoming call handling not implemented")
             // TODO for ios8 maybe? do we need our own UI for callkit?
@@ -81,7 +81,10 @@ class CallViewController : UIViewController {
     }
 
     @IBAction func didPressHangup() {
-        callService.terminateCall()
+        if call != nil {
+            callService.handleLocalHungupCall(call!)
+        }
+
         self.dismiss(animated: true)
     }
 }
