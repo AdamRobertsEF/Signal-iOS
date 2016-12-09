@@ -133,14 +133,12 @@ class PeerConnectionClient: NSObject, CallAudioManager {
 
     // MARK: - Media Streams
 
-    public func createDataChannel(label: String, delegate: RTCDataChannelDelegate) -> RTCDataChannel {
+    public func createDataChannel(label: String, delegate: RTCDataChannelDelegate) {
         let dataChannel = peerConnection.dataChannel(forLabel: label,
                                                       configuration: RTCDataChannelConfiguration())
         dataChannel.delegate = delegate
 
         self.dataChannel = dataChannel
-
-        return dataChannel
     }
 
     fileprivate func createVideoSender() -> RTCRtpSender? {

@@ -162,16 +162,14 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
     }
 
     func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
-        // Retrieve the SpeakerboxCall instance corresponding to the action's call UUID
+        Logger.debug("Received \(#function)")
         guard let call = callManager.callWithLocalId(action.callUUID) else {
             action.fail()
             return
         }
 
-        // Stop call audio whenever ending the call.
+//        // Stop call audio whenever ending the call.
 //        stopAudio()
-
-        //TODO FIXME
 //        // Trigger the call to be ended via the underlying network service.
 //        call.endSpeakerboxCall()
         callService.handleLocalHungupCall(call)
@@ -184,7 +182,7 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
     }
 
     func provider(_ provider: CXProvider, perform action: CXSetHeldCallAction) {
-        // Retrieve the SpeakerboxCall instance corresponding to the action's call UUID
+        Logger.debug("Received \(#function)")
         guard let call = callManager.callWithLocalId(action.callUUID) else {
             action.fail()
             return

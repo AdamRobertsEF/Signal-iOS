@@ -143,7 +143,7 @@ enum CallErrors: Error {
     // MARK: Ivars
 
     var peerConnectionClient: PeerConnectionClient?
-    var dataChannel: RTCDataChannel?
+    // TODO move thread into SignalCall
     var thread: TSContactThread?
     var call: SignalCall?
     var pendingIceUpdates: [OWSOutgoingCallMessage]?
@@ -171,7 +171,7 @@ enum CallErrors: Error {
             let peerConnectionClient =  PeerConnectionClient(iceServers: iceServers, peerConnectionDelegate: self)
             self.peerConnectionClient = peerConnectionClient
 
-            self.dataChannel = self.peerConnectionClient!.createDataChannel(label: CallService.DataChannelLabel, delegate: self)
+            self.peerConnectionClient!.createDataChannel(label: CallService.DataChannelLabel, delegate: self)
 
             return self.peerConnectionClient!.createOffer()
         }.then { sessionDescription -> Promise<Void> in
@@ -434,6 +434,8 @@ enum CallErrors: Error {
         }.catch { error in
             Logger.error("\(self.TAG) failed to send hangup call message to \(thread) with error: \(error)")
         }
+
+        terminateCall()
     }
 
     // MARK: Helpers
@@ -470,7 +472,38 @@ enum CallErrors: Error {
     }
 
     public func terminateCall() {
+//        lockManager.updatePhoneState(LockManager.PhoneState.PROCESSING);
+//        NotificationBarManager.setCallEnded(this);
+//
+//        incomingRinger.stop();
+//        outgoingRinger.stop();
+//        outgoingRinger.playDisconnected();
+//
+//        if (peerConnection != null) {
+//            peerConnection.dispose();
+//            peerConnection = null;
+//        }
+//
+//        if (eglBase != null && localRenderer != null && remoteRenderer != null) {
+//            localRenderer.release();
+//            remoteRenderer.release();
+//            eglBase.release();
+//        }
+//
+//        shutdownAudio();
+//
+//        this.callState         = CallState.STATE_IDLE;
+//        this.recipient         = null;
+//        this.callId            = null;
+//        this.audioEnabled      = false;
+//        this.videoEnabled      = false;
+//        this.pendingIceUpdates = null;
+//        lockManager.updatePhoneState(LockManager.PhoneState.IDLE);
         peerConnectionClient?.terminate()
+        peerConnectionClient = nil
+        call = nil
+        thread = nil
+        pendingIceUpdates = nil
     }
 
     // MARK: - RTCDataChannelDelegate
