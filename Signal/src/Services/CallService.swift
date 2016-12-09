@@ -390,7 +390,50 @@ enum CallErrors: Error {
 
     func handleConnectedCall(_ call: SignalCall) {
         Logger.debug("\(TAG) in \(#function)")
+        // Anything to do here?
+    }
 
+    func handleLocalHungupCall(_ call: SignalCall) {
+        guard self.call != nil else {
+            Logger.error("\(TAG) ignoring \(#function) since there is no current call")
+            return
+        }
+
+        guard call == self.call! else {
+            Logger.error("\(TAG) ignoring \(#function) for call other than current call")
+            return
+        }
+
+        guard let peerConnectionClient = self.peerConnectionClient else {
+            Logger.error("\(TAG) missing peerconnection client in \(#function)")
+            return
+        }
+
+        guard let thread = self.thread else {
+            Logger.error("\(TAG) missing thread in \(#function)")
+            return
+        }
+
+        // TODO something like this lifted from Signal-Android.
+        //        this.accountManager.cancelInFlightRequests();
+        //        this.messageSender.cancelInFlightRequests();
+
+        // If the call is going, we can send the hangup via the data channel.
+        let message = DataChannelMessage.forHangup(callId: call.signalingId)
+        if peerConnectionClient.sendDataChannelMessage(data: message.asData()) {
+            Logger.debug("\(TAG) sendDataChannelMessage returned true")
+        } else {
+            Logger.warn("\(TAG) sendDataChannelMessage returned false")
+        }
+
+        // If the call hasn't started yet, we don't have a data channel to communicate the hang up. Use Signal Service Message.
+        let hangupMessage = OWSCallHangupMessage(callId: call.signalingId)
+        let callMessage = OWSOutgoingCallMessage(thread: thread, hangupMessage: hangupMessage)
+        _  = sendMessage(callMessage).then {
+            Logger.debug("\(self.TAG) successfully sent hangup call message to \(thread)")
+        }.catch { error in
+            Logger.error("\(self.TAG) failed to send hangup call message to \(thread) with error: \(error)")
+        }
     }
 
     // MARK: Helpers

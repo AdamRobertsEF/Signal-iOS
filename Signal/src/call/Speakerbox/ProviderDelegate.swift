@@ -169,11 +169,12 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
         }
 
         // Stop call audio whenever ending the call.
-        stopAudio()
+//        stopAudio()
 
         //TODO FIXME
 //        // Trigger the call to be ended via the underlying network service.
 //        call.endSpeakerboxCall()
+        callService.handleLocalHungupCall(call)
 
         // Signal to the system that the action has been successfully performed.
         action.fulfill()
