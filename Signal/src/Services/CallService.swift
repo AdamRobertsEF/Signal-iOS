@@ -173,6 +173,9 @@ class ClientFailure: CallError {
         call = newCall
         pendingIceUpdateMessages = []
 
+        let callRecord = TSCall(timestamp: NSDate.ows_millisecondTimeStamp(), withCallNumber: newCall.remotePhoneNumber, callType: RPRecentCallTypeOutgoing, in: thread)
+        callRecord.save()
+
         _ = getIceServers().then { iceServers -> Promise<RTCSessionDescription> in
             Logger.debug("\(self.TAG) got ice servers:\(iceServers)")
             let peerConnectionClient =  PeerConnectionClient(iceServers: iceServers, peerConnectionDelegate: self)
