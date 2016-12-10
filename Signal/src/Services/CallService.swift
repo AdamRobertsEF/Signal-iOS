@@ -268,9 +268,7 @@ class ClientFailure: CallError {
 
             return self.sendMessage(callAnswerMessage)
         }.then { () in
-            return self.waitForIceUpdates()
-        }.then { () in
-            Logger.debug("\(self.TAG) received ICE updates")
+            Logger.debug("\(self.TAG) successfully sent callAnswerMessage")
         }
     }
 
@@ -379,21 +377,25 @@ class ClientFailure: CallError {
             return
         }
 
+        guard let thread = self.thread else {
+            Logger.error("\(TAG) ignoring \(#function) for call other than current call")
+            return
+        }
+
         guard let peerConnectionClient = self.peerConnectionClient else {
             Logger.error("\(TAG) missing peerconnection client in \(#function)")
             return
         }
 
-//        incomingRinger.stop();
+        let callRecord = TSCall(timestamp: NSDate.ows_millisecondTimeStamp(), withCallNumber: call.remotePhoneNumber, callType: RPRecentCallTypeIncoming, in: thread)
+        callRecord.save()
 
-        //FIXME TODO
-//        DatabaseFactory.getSmsDatabase(this).insertReceivedCall(recipient.getNumber());
+//        incomingRinger.stop();
 
         //FIXME TODO
 //        peerConnectionClient.audioEnabled = true
 //        peerConnectionClient.videoEnabled = true
 
-        //        this.dataChannel.send(new DataChannel.Buffer(ByteBuffer.wrap(Data.newBuilder().setConnected(Connected.newBuilder().setId(this.callId)).build().toByteArray()), false));
         let message = DataChannelMessage.forConnected(callId: call.signalingId)
         if peerConnectionClient.sendDataChannelMessage(data: message.asData()) {
             Logger.debug("\(TAG) sendDataChannelMessage returned true")
@@ -456,12 +458,6 @@ class ClientFailure: CallError {
 
     // MARK: Helpers
 
-    fileprivate func waitForIceUpdates() -> Promise<Void> {
-        return Promise { fulfill, reject in
-            // TODO, how to get handler to resolve this?
-        }
-    }
-
     fileprivate func getIceServers() -> Promise<[RTCIceServer]> {
         return accountManager.getTurnServerInfo().then { turnServerInfo -> [RTCIceServer] in
             Logger.debug("\(self.TAG) got turn server info \(turnServerInfo)")
@@ -481,10 +477,6 @@ class ClientFailure: CallError {
         return Promise { fulfill, reject in
             self.messageSender.send(message, success: fulfill, failure: reject)
         }
-    }
-
-    fileprivate func waitForIceUpdates() {
-
     }
 
     private func failCall(error: Error) {

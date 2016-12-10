@@ -29,6 +29,7 @@
 #import <SignalServiceKit/OWSOutgoingCallMessage.h>
 #import <SignalServiceKit/OWSTurnServerInfoRequest.h>
 #import <SignalServiceKit/TSAccountManager.h>
+#import <SignalServiceKit/TSCall.h>
 #import <SignalServiceKit/TSContactThread.h>
 #import <SignalServiceKit/TSErrorMessage.h>
 #import <SignalServiceKit/TSInfoMessage.h>
