@@ -92,20 +92,22 @@ class PeerConnectionClient: NSObject, CallAudioManager {
     let connectionConstraints: RTCMediaConstraints
     let configuration = RTCConfiguration()
     let factory = RTCPeerConnectionFactory()
-    let mediaStream: RTCMediaStream
 
     // DataChannel
 
-    var dataChannel: RTCDataChannel?
+    // peerConnection expects to be the sole owner of this. Otherwise, a crash when peerConnection deallocs
+    weak var dataChannel: RTCDataChannel?
 
     // Audio
 
-    var audioSender: RTCRtpSender?
+    // peerConnection expects to be the sole owner of this. Otherwise, a crash when peerConnection deallocs
+    weak var audioSender: RTCRtpSender?
     var audioConstraints: RTCMediaConstraints
 
     // Video
 
-    var videoSender: RTCRtpSender?
+    // peerConnection expects to be the sole owner of this. Otherwise, a crash when peerConnection deallocs
+    weak var videoSender: RTCRtpSender?
     var cameraConstraints: RTCMediaConstraints
 
     init(iceServers someIceServers: [RTCIceServer], peerConnectionDelegate: RTCPeerConnectionDelegate) {
@@ -121,10 +123,6 @@ class PeerConnectionClient: NSObject, CallAudioManager {
 
         audioConstraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints:nil)
         cameraConstraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
-
-        // TODO is this next line necessary? Does the stream need to be explicitly created?
-        // It doesn't seem to be in the example.
-        mediaStream = factory.mediaStream(withStreamId: Identifiers.mediaStream.rawValue)
         super.init()
 
         audioSender = createAudioSender()
@@ -135,10 +133,11 @@ class PeerConnectionClient: NSObject, CallAudioManager {
 
     public func createDataChannel(label: String, delegate: RTCDataChannelDelegate) {
         let dataChannel = peerConnection.dataChannel(forLabel: label,
-                                                      configuration: RTCDataChannelConfiguration())
+                                                     configuration: RTCDataChannelConfiguration())
         dataChannel.delegate = delegate
 
         self.dataChannel = dataChannel
+
     }
 
     fileprivate func createVideoSender() -> RTCRtpSender? {
@@ -147,7 +146,7 @@ class PeerConnectionClient: NSObject, CallAudioManager {
             return nil
         }
 
-        let sender = peerConnection.sender(withKind: kRTCMediaStreamTrackKindVideo, streamId: mediaStream.streamId)
+        let sender = peerConnection.sender(withKind: kRTCMediaStreamTrackKindVideo, streamId: Identifiers.mediaStream.rawValue)
         sender.track = videoTrack
         return sender
     }
@@ -167,7 +166,7 @@ class PeerConnectionClient: NSObject, CallAudioManager {
             Logger.warn("\(TAG) unable to create local audio track")
             return nil
         }
-        let sender = peerConnection.sender(withKind: kRTCMediaStreamTrackKindAudio, streamId: mediaStream.streamId)
+        let sender = peerConnection.sender(withKind: kRTCMediaStreamTrackKindAudio, streamId: Identifiers.mediaStream.rawValue)
         sender.track = audioTrack
         return sender
     }
@@ -304,6 +303,15 @@ class PeerConnectionClient: NSObject, CallAudioManager {
     }
 
     func terminate() {
+//        Preventing crashes
+//        from: https://groups.google.com/forum/#!searchin/discuss-webrtc/objc$20crash$20dealloc%7Csort:relevance/discuss-webrtc/7D-vk5yLjn8/rBW2D6EW4GYJ
+//        The sequence to make it work appears to be
+//
+//        [capturer stop]; // I had to add this as a method to RTCVideoCapturer
+//        [localRenderer stop];
+//        [remoteRenderer stop];
+//        [peerConnection close];
+
         peerConnection.close()
     }
 
