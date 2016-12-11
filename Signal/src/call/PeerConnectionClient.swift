@@ -95,21 +95,22 @@ class PeerConnectionClient: NSObject, CallAudioManager {
 
     // DataChannel
 
-    // peerConnection expects to be the sole owner of this. Otherwise, a crash when peerConnection deallocs
-    // This is public because on incoming calls, the call ser
+    // peerConnection expects to be the sole owner of dataChannel. Otherwise, a crash when peerConnection deallocs
+    // dataChannel public because on incoming calls, we don't explicitly create the channel, rather the call service assigns it.
     public weak var dataChannel: RTCDataChannel?
 
     // Audio
 
-    // peerConnection expects to be the sole owner of this. Otherwise, a crash when peerConnection deallocs
+    // peerConnection expects to be the final owner of audioSender. Otherwise, a crash when peerConnection deallocs
     private weak var audioSender: RTCRtpSender?
     private var audioTrack: RTCAudioTrack?
     private var audioConstraints: RTCMediaConstraints
 
     // Video
 
-    // peerConnection expects to be the sole owner of this. Otherwise, a crash when peerConnection deallocs
+    // peerConnection expects to be the final owner of videoSender. Otherwise, a crash when peerConnection deallocs
     private weak var videoSender: RTCRtpSender?
+    private var videoTrack: RTCVideoTrack?
     private var cameraConstraints: RTCMediaConstraints
 
     init(iceServers someIceServers: [RTCIceServer], peerConnectionDelegate: RTCPeerConnectionDelegate) {
@@ -128,10 +129,7 @@ class PeerConnectionClient: NSObject, CallAudioManager {
         super.init()
 
         createAudioSender()
-
-        //TODO refactor createVideoSender to just do the assignment vs. returning anything.
-        // follow audio example, more straight forward.
-        videoSender = createVideoSender()
+        createVideoSender()
     }
 
     // MARK: - Media Streams
@@ -147,25 +145,19 @@ class PeerConnectionClient: NSObject, CallAudioManager {
 
     // MARK: Video
 
-    fileprivate func createVideoSender() -> RTCRtpSender? {
-        guard let videoTrack = createLocalVideoTrack() else {
-            Logger.warn("\(TAG) unable to create local video track")
-            return nil
-        }
-
-        let sender = peerConnection.sender(withKind: kRTCMediaStreamTrackKindVideo, streamId: Identifiers.mediaStream.rawValue)
-        sender.track = videoTrack
-        return sender
-    }
-
-    fileprivate func createLocalVideoTrack() -> RTCVideoTrack? {
+    fileprivate func createVideoSender() {
         guard !Platform.isSimulator else {
             Logger.warn("\(TAG) Refusing to create local video track on simulator.")
-            return nil
+            return
         }
 
         let videoSource = factory.avFoundationVideoSource(with: cameraConstraints)
-        return factory.videoTrack(with: videoSource, trackId: Identifiers.videoTrack.rawValue)
+        let videoTrack = factory.videoTrack(with: videoSource, trackId: Identifiers.videoTrack.rawValue)
+        self.videoTrack = videoTrack
+
+        let videoSender = peerConnection.sender(withKind: kRTCMediaStreamTrackKindVideo, streamId: Identifiers.mediaStream.rawValue)
+        videoSender.track = videoTrack
+        self.videoSender = videoSender
     }
 
     // MARK: Audio
@@ -318,7 +310,7 @@ class PeerConnectionClient: NSObject, CallAudioManager {
     }
 
     func terminate() {
-//        Preventing crashes
+//        Some notes on preventing crashes
 //        from: https://groups.google.com/forum/#!searchin/discuss-webrtc/objc$20crash$20dealloc%7Csort:relevance/discuss-webrtc/7D-vk5yLjn8/rBW2D6EW4GYJ
 //        The sequence to make it work appears to be
 //
@@ -331,6 +323,7 @@ class PeerConnectionClient: NSObject, CallAudioManager {
         // become nil when it was only a weak property. So we retain it and manually nil the reference here, because
         // we are likely to crash if we retain any peer connection properties when the peerconnection is released
         audioTrack = nil
+        videoTrack = nil
 
         peerConnection.close()
     }
