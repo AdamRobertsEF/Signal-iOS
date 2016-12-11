@@ -43,22 +43,23 @@ class CallViewController : UIViewController {
 
     override func viewDidLoad() {
 
-        guard (thread != nil) else {
-            Logger.error("\(TAG) tried to call without specifying thread.")
+        guard thread != nil else {
+            Logger.error("\(TAG) tried to show call call without specifying thread.")
             showCallFailed(error: OWSErrorMakeAssertionError())
             return
         }
+
+        self.contactName.text = self.contactsManager.displayName(forPhoneIdentifier: thread.contactIdentifier());
 
         switch(callDirection) {
         case .unspecified:
             Logger.error("\(TAG) must set call direction before call starts.")
             showCallFailed(error: OWSErrorMakeAssertionError())
         case .outgoing:
-            self.contactName.text = self.contactsManager.displayName(forPhoneIdentifier: thread.contactIdentifier());
             self.call = callService.handleOutgoingCall(thread: thread)
         case .incoming:
-            Logger.error("\(TAG) Incoming call handling not implemented")
-            // Call service is already set up at this point, the result of which was presenting this viewController.
+            Logger.error("\(TAG) handling Incoming call")
+            // No-op, since call service is already set up at this point, the result of which was presenting this viewController.
         }
     }
 

@@ -3,7 +3,8 @@
 
 import Foundation
 
-class SignalCall {
+@objc(OWSSignalCall)
+class SignalCall: NSObject {
 
     var state: CallState
     let signalingId: UInt64

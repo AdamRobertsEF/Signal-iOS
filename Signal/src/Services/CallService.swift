@@ -282,8 +282,15 @@ class ClientFailure: CallError {
     }
 
     public func handleRemoteAddedIceCandidate(thread: TSContactThread, callId: UInt64, sdp: String, lineIndex: Int32, mid: String) {
+
         Logger.debug("\(TAG) received ice update")
-        guard thread == self.thread else {
+        guard self.thread != nil else {
+            // CallService.thread should have already been set at this point.
+            Logger.error("\(TAG) ignoring remote ice update for thread: \(thread) since there is no current thread. \(self.thread)")
+            return
+        }
+
+        guard thread.contactIdentifier() == self.thread!.contactIdentifier() else {
             Logger.error("\(TAG) ignoring remote ice update for thread: \(thread) since the current call is for thread: \(self.thread)")
             return
         }
@@ -399,8 +406,8 @@ class ClientFailure: CallError {
         let callRecord = TSCall(timestamp: NSDate.ows_millisecondTimeStamp(), withCallNumber: call.remotePhoneNumber, callType: RPRecentCallTypeIncoming, in: thread)
         callRecord.save()
 
-        let notificationName = type(of: self).callServiceActiveCallNotificationName()
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: notificationName), object: nil)
+        let callNotificationName = type(of: self).callServiceActiveCallNotificationName()
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: callNotificationName), object: call)
 
 //        incomingRinger.stop();
 
