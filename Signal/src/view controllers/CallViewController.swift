@@ -19,7 +19,6 @@ class CallViewController : UIViewController {
     let callService: CallService
     let contactsManager: OWSContactsManager
 
-
     // MARK: Properties
     var peerConnectionClient: PeerConnectionClient?
     var callDirection: CallDirection = .unspecified
@@ -58,16 +57,20 @@ class CallViewController : UIViewController {
             self.contactName.text = self.contactsManager.displayName(forPhoneIdentifier: thread.contactIdentifier());
             self.call = callService.handleOutgoingCall(thread: thread)
         case .incoming:
-            Logger.error("\(TAG) TODO incoming call handling not implemented")
-            // TODO for ios8 maybe? do we need our own UI for callkit?
+            Logger.error("\(TAG) Incoming call handling not implemented")
+            // Call service is already set up at this point, the result of which was presenting this viewController.
         }
     }
 
-    /**
-     * objc accessible way to set our swift enum.
-     */
+
+    // objc accessible way to set our swift enum.
     func setOutgoingCallDirection() {
         callDirection = .outgoing
+    }
+
+    // objc accessible way to set our swift enum.
+    func setIncomingCallDirection() {
+        callDirection = .incoming
     }
 
     func showCallFailed(error: Error) {

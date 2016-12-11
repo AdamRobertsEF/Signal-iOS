@@ -92,6 +92,7 @@
                         <outlet property="emptyBoxLabel" destination="Srx-i1-WhD" id="wap-un-Cz5"/>
                         <outlet property="tableView" destination="PaA-ol-uQT" id="nQU-tR-wbL"/>
                         <segue destination="Duq-aU-MmN" kind="modal" identifier="2.0_6.0_Call_Segue" modalPresentationStyle="fullScreen" modalTransitionStyle="crossDissolve" id="gHJ-y4-zWg"/>
+                        <segue destination="Tyf-mN-gzf" kind="modal" identifier="ShowIncomingCallSegue" id="G2B-Fr-Ezs"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dE8-zB-mtF" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -121,7 +122,7 @@
                     <connections>
                         <segue destination="4oU-Rv-yJi" kind="push" identifier="OWSMessagesViewControllerSeguePushConversationSettings" id="vOd-aS-6Wx"/>
                         <segue destination="urv-62-RsD" kind="modal" identifier="fingerprintSegue" id="tfr-ZV-qWs"/>
-                        <segue destination="Tyf-mN-gzf" kind="modal" identifier="initiateCallSegue" id="I6y-pT-nEd"/>
+                        <segue destination="Tyf-mN-gzf" kind="modal" identifier="initiateCallSegue" modalTransitionStyle="crossDissolve" id="I6y-pT-nEd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yXZ-iE-5va" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1722,5 +1723,6 @@
     <inferredMetricsTieBreakers>
         <segue reference="wgA-Oo-kKq"/>
         <segue reference="E8S-Yc-X7E"/>
+        <segue reference="G2B-Fr-Ezs"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -32,6 +32,8 @@
 #define CELL_HEIGHT 72.0f
 #define HEADER_HEIGHT 44.0f
 
+NSString *const SignalsViewControllerSegueShowIncomingCall = @"ShowIncomingCallSegue";
+
 @interface SignalsViewController ()
 
 @property (nonatomic, strong) YapDatabaseConnection *editingDbConnection;
@@ -127,6 +129,11 @@
         (self.traitCollection.forceTouchCapability == UIForceTouchCapabilityAvailable)) {
         [self registerForPreviewingWithDelegate:self sourceView:self.tableView];
     }
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(presentCallController)
+                                                 name:[CallService callServiceActiveCallNotificationName]
+                                               object:nil];
 }
 
 - (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext
@@ -145,6 +152,11 @@
     } else {
         return nil;
     }
+}
+
+- (void)presentCallController
+{
+    [self performSegueWithIdentifier:SignalsViewControllerSegueShowIncomingCall sender:self];
 }
 
 - (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext
@@ -427,10 +439,18 @@
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:kCallSegue]) {
+    if ([segue.identifier isEqualToString:kRedphoneCallSegue]) {
         InCallViewController *vc = [segue destinationViewController];
         [vc configureWithLatestCall:_latestCall];
         _latestCall = nil;
+    } else if ([segue.identifier isEqualToString:SignalsViewControllerSegueShowIncomingCall]) {
+        DDLogDebug(@"%@ preparing for incoming cal segue", self.tag);
+        if (![segue.destinationViewController isKindOfClass:[OWSCallViewController class]]) {
+            DDLogError(@"%@ Received unexpected destination view controller: %@", self.tag, segue.destinationViewController);
+            return;
+        }
+        OWSCallViewController *callViewController = (OWSCallViewController *)segue.destinationViewController;
+        [callViewController setIncomingCallDirection];
     }
 }
 

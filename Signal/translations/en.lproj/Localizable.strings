@@ -37,6 +37,9 @@
 /* No comment provided by engineer. */
 "APN_MESSAGE_IN_GROUP_DETAILED" = "%@ in group %@: %@";
 
+/* Name of application */
+"APPLICATION_NAME" = "Signal";
+
 /* Pressing this button moves a thread from the inbox to the archive */
 "ARCHIVE_ACTION" = "Archive";
 
@@ -234,6 +237,9 @@
 
 /* Generic server error */
 "ERROR_DESCRIPTION_SERVER_FAILURE" = "Server Error. Please try again later.";
+
+/* Worst case generic error message */
+"ERROR_DESCRIPTION_UNKNOWN_ERROR" = "An unkown error occurred.";
 
 /* Error message when attempting to send message */
 "ERROR_DESCRIPTION_UNREGISTERED_RECIPIENT" = "Recipient is no longer a Signal user.";

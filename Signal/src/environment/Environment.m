@@ -197,7 +197,7 @@ static Environment *environment = nil;
       SignalsViewController *vc = [[Environment getCurrent] signalsViewController];
       [vc dismissViewControllerAnimated:NO completion:nil];
       vc.latestCall = latestCall;
-      [vc performSegueWithIdentifier:kCallSegue sender:self];
+      [vc performSegueWithIdentifier:kRedphoneCallSegue sender:self];
     }
                                                      onThread:NSThread.mainThread
                                                untilCancelled:nil];

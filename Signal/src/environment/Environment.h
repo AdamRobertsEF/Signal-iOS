@@ -6,7 +6,7 @@
 #import "TSGroupModel.h"
 #import "TSStorageHeaders.h"
 
-static NSString *const kCallSegue = @"2.0_6.0_Call_Segue";
+static NSString *const kRedphoneCallSegue = @"2.0_6.0_Call_Segue";
 
 /**
  *

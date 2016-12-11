@@ -155,12 +155,18 @@ class ClientFailure: CallError {
     var call: SignalCall?
     var pendingIceUpdateMessages: [OWSCallIceUpdateMessage]?
 
-//    var iceUpdatesPromise: Promise<Void>
     required init(accountManager: AccountManager, messageSender: MessageSender) {
         self.accountManager = accountManager
         self.messageSender = messageSender
         super.init()
         self.callManagerAdapter = CallManagerAdapter(callService: self)
+    }
+
+    // MARK: - Class Methods
+
+    // Wrapping this class constant in a method to make it accessible to objc
+    class func callServiceActiveCallNotificationName() -> String {
+        return  "CallServiceActiveCallNotification"
     }
 
     // MARK: - Service Actions
@@ -392,6 +398,9 @@ class ClientFailure: CallError {
 
         let callRecord = TSCall(timestamp: NSDate.ows_millisecondTimeStamp(), withCallNumber: call.remotePhoneNumber, callType: RPRecentCallTypeIncoming, in: thread)
         callRecord.save()
+
+        let notificationName = type(of: self).callServiceActiveCallNotificationName()
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: notificationName), object: nil)
 
 //        incomingRinger.stop();
 
