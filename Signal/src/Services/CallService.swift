@@ -475,6 +475,14 @@ class ClientFailure: CallError {
         terminateCall()
     }
 
+    func handleToggledMute(isMuted: Bool) {
+        guard let peerConnectionClient = self.peerConnectionClient else {
+            Logger.error("\(TAG) peerConnectionClient unexpectedly nil in \(#function)")
+            return
+        }
+        peerConnectionClient.setAudioEnabled(enabled: !isMuted)
+    }
+
     // MARK: Helpers
 
     fileprivate func getIceServers() -> Promise<[RTCIceServer]> {

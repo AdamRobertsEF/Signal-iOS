@@ -30,6 +30,9 @@ class CallViewController : UIViewController {
     @IBOutlet weak var contactAvatarView: AvatarImageView!
     @IBOutlet weak var callStatusLabel: UILabel!
 
+    @IBOutlet weak var muteButton: UIButton!
+    @IBOutlet weak var speakerPhoneButton: UIButton!
+
     // MARK: Initializers
 
     required init?(coder aDecoder: NSCoder) {
@@ -67,7 +70,6 @@ class CallViewController : UIViewController {
         }
     }
 
-
     // objc accessible way to set our swift enum.
     func setOutgoingCallDirection() {
         callDirection = .outgoing
@@ -88,11 +90,24 @@ class CallViewController : UIViewController {
         Logger.info("\(TAG) new call status: \(newState)")
     }
 
-    @IBAction func didPressHangup() {
+    @IBAction func didPressHangup(sender: UIButton) {
+        Logger.debug("\(TAG) called \(#function)")
         if call != nil {
             callService.handleLocalHungupCall(call!)
         }
 
         self.dismiss(animated: true)
+    }
+
+    @IBAction func didPressMute(sender: UIButton) {
+        Logger.debug("\(TAG) called \(#function)")
+        sender.isSelected = !sender.isSelected
+        callService.handleToggledMute(isMuted: sender.isSelected)
+    }
+
+    @IBAction func didPressSpeakerphone(sender: UIButton) {
+        Logger.debug("\(TAG) called \(#function)")
+        Logger.error("TODO \(#function)")
+//        callService.handleLocalSpeakerPhone(isSpeakerphone: true)
     }
 }

@@ -87,28 +87,30 @@ class PeerConnectionClient: NSObject, CallAudioManager {
 
     // Connection
 
-    let peerConnection: RTCPeerConnection
-    let iceServers: [RTCIceServer]
-    let connectionConstraints: RTCMediaConstraints
-    let configuration = RTCConfiguration()
-    let factory = RTCPeerConnectionFactory()
+    private let peerConnection: RTCPeerConnection
+    private let iceServers: [RTCIceServer]
+    private let connectionConstraints: RTCMediaConstraints
+    private let configuration = RTCConfiguration()
+    private let factory = RTCPeerConnectionFactory()
 
     // DataChannel
 
     // peerConnection expects to be the sole owner of this. Otherwise, a crash when peerConnection deallocs
-    weak var dataChannel: RTCDataChannel?
+    // This is public because on incoming calls, the call ser
+    public weak var dataChannel: RTCDataChannel?
 
     // Audio
 
     // peerConnection expects to be the sole owner of this. Otherwise, a crash when peerConnection deallocs
-    weak var audioSender: RTCRtpSender?
-    var audioConstraints: RTCMediaConstraints
+    private weak var audioSender: RTCRtpSender?
+    private var audioTrack: RTCAudioTrack?
+    private var audioConstraints: RTCMediaConstraints
 
     // Video
 
     // peerConnection expects to be the sole owner of this. Otherwise, a crash when peerConnection deallocs
-    weak var videoSender: RTCRtpSender?
-    var cameraConstraints: RTCMediaConstraints
+    private weak var videoSender: RTCRtpSender?
+    private var cameraConstraints: RTCMediaConstraints
 
     init(iceServers someIceServers: [RTCIceServer], peerConnectionDelegate: RTCPeerConnectionDelegate) {
         iceServers = someIceServers
@@ -125,7 +127,10 @@ class PeerConnectionClient: NSObject, CallAudioManager {
         cameraConstraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
         super.init()
 
-        audioSender = createAudioSender()
+        createAudioSender()
+
+        //TODO refactor createVideoSender to just do the assignment vs. returning anything.
+        // follow audio example, more straight forward.
         videoSender = createVideoSender()
     }
 
@@ -139,6 +144,8 @@ class PeerConnectionClient: NSObject, CallAudioManager {
         self.dataChannel = dataChannel
 
     }
+
+    // MARK: Video
 
     fileprivate func createVideoSender() -> RTCRtpSender? {
         guard let videoTrack = createLocalVideoTrack() else {
@@ -161,22 +168,30 @@ class PeerConnectionClient: NSObject, CallAudioManager {
         return factory.videoTrack(with: videoSource, trackId: Identifiers.videoTrack.rawValue)
     }
 
-    fileprivate func createAudioSender() -> RTCRtpSender?  {
-        guard let audioTrack = createLocalAudioTrack() else {
-            Logger.warn("\(TAG) unable to create local audio track")
-            return nil
-        }
-        let sender = peerConnection.sender(withKind: kRTCMediaStreamTrackKindAudio, streamId: Identifiers.mediaStream.rawValue)
-        sender.track = audioTrack
-        return sender
-    }
+    // MARK: Audio
 
-    fileprivate func createLocalAudioTrack() -> RTCAudioTrack? {
+    fileprivate func createAudioSender() {
         let audioSource = factory.audioSource(with: self.audioConstraints)
-        return factory.audioTrack(with: audioSource, trackId: Identifiers.audioTrack.rawValue)
+
+        let audioTrack = factory.audioTrack(with: audioSource, trackId: Identifiers.audioTrack.rawValue)
+        self.audioTrack = audioTrack
+
+        let audioSender = peerConnection.sender(withKind: kRTCMediaStreamTrackKindAudio, streamId: Identifiers.mediaStream.rawValue)
+        audioSender.track = audioTrack
+        self.audioSender = audioSender
     }
 
-    // MARK - Session negotiation
+    public func setAudioEnabled(enabled: Bool) {
+        guard let audioTrack = self.audioTrack else {
+            let action = enabled ? "enable" : "disable"
+            Logger.error("\(TAG) trying to \(action) audioTrack which doesn't exist.")
+            return
+        }
+
+        audioTrack.isEnabled = enabled
+    }
+
+    // MARK: - Session negotiation
 
     var defaultOfferConstraints: RTCMediaConstraints {
         get {
@@ -311,6 +326,11 @@ class PeerConnectionClient: NSObject, CallAudioManager {
 //        [localRenderer stop];
 //        [remoteRenderer stop];
 //        [peerConnection close];
+
+        // audioTrack is a strong property because we need access to it to mute/unmute, but I was seeing it 
+        // become nil when it was only a weak property. So we retain it and manually nil the reference here, because
+        // we are likely to crash if we retain any peer connection properties when the peerconnection is released
+        audioTrack = nil
 
         peerConnection.close()
     }
