@@ -86,6 +86,8 @@
 		45F2B1941D9C9F48000D2C69 /* OWSOutgoingMessageCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F2B1931D9C9F48000D2C69 /* OWSOutgoingMessageCollectionViewCell.m */; };
 		45F2B1971D9CA207000D2C69 /* OWSIncomingMessageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45F2B1951D9CA207000D2C69 /* OWSIncomingMessageCollectionViewCell.xib */; };
 		45F2B1981D9CA207000D2C69 /* OWSOutgoingMessageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45F2B1961D9CA207000D2C69 /* OWSOutgoingMessageCollectionViewCell.xib */; };
+		45F3AEB61DFDE7900080CE33 /* AvatarImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F3AEB51DFDE7900080CE33 /* AvatarImageView.swift */; };
+		45F3AEB71DFDE7900080CE33 /* AvatarImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F3AEB51DFDE7900080CE33 /* AvatarImageView.swift */; };
 		45FBC5A01DF8575700E9B410 /* Array+Speakerbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC57C1DF8575700E9B410 /* Array+Speakerbox.swift */; };
 		45FBC5A11DF8575700E9B410 /* Array+Speakerbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC57C1DF8575700E9B410 /* Array+Speakerbox.swift */; };
 		45FBC5A41DF8575700E9B410 /* AudioController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 45FBC5801DF8575700E9B410 /* AudioController.mm */; };
@@ -686,6 +688,7 @@
 		45F2B1931D9C9F48000D2C69 /* OWSOutgoingMessageCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OWSOutgoingMessageCollectionViewCell.m; sourceTree = "<group>"; };
 		45F2B1951D9CA207000D2C69 /* OWSIncomingMessageCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OWSIncomingMessageCollectionViewCell.xib; sourceTree = "<group>"; };
 		45F2B1961D9CA207000D2C69 /* OWSOutgoingMessageCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OWSOutgoingMessageCollectionViewCell.xib; sourceTree = "<group>"; };
+		45F3AEB51DFDE7900080CE33 /* AvatarImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvatarImageView.swift; sourceTree = "<group>"; };
 		45FBC57C1DF8575700E9B410 /* Array+Speakerbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Speakerbox.swift"; sourceTree = "<group>"; };
 		45FBC57F1DF8575700E9B410 /* AudioController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioController.h; sourceTree = "<group>"; };
 		45FBC5801DF8575700E9B410 /* AudioController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioController.mm; sourceTree = "<group>"; };
@@ -1999,6 +2002,7 @@
 				4531C9C31DD8E6D800F08304 /* JSQMessagesCollectionViewCell+OWS.m */,
 				45E1F3A21DEF1DF000852CF1 /* NoSignalContactsView.xib */,
 				45E1F3A41DEF20A100852CF1 /* NoSignalContactsView.swift */,
+				45F3AEB51DFDE7900080CE33 /* AvatarImageView.swift */,
 			);
 			name = Views;
 			path = views;
@@ -3104,6 +3108,7 @@
 				76EB061C18170B33006006FC /* ArrayUtil.m in Sources */,
 				FCD274E81A5AFDC900202277 /* AdvancedSettingsTableViewController.m in Sources */,
 				76EB05C418170B33006006FC /* HandshakePacket.m in Sources */,
+				45F3AEB61DFDE7900080CE33 /* AvatarImageView.swift in Sources */,
 				76EB05AA18170B33006006FC /* SequenceCounter.m in Sources */,
 				7038632718F70C0700D4A43F /* CryptoTools.m in Sources */,
 				76EB058C18170B33006006FC /* DnsManager.m in Sources */,
@@ -3378,6 +3383,7 @@
 				B660F6D61C29868000687D6E /* ConversionsTest.m in Sources */,
 				B660F6C01C29868000687D6E /* RtpPacketTests.m in Sources */,
 				B660F6C71C29868000687D6E /* ShortAuthenticationStringGeneratorTest.m in Sources */,
+				45F3AEB71DFDE7900080CE33 /* AvatarImageView.swift in Sources */,
 				B660F6DA1C29868000687D6E /* ExceptionsTest.m in Sources */,
 				B660F6CC1C29868000687D6E /* SecureEndPointTest.m in Sources */,
 				45C9DEB91DF4E35A0065CA84 /* RTCCallMessageHandler.swift in Sources */,

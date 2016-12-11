@@ -20,12 +20,15 @@ class CallViewController : UIViewController {
     let contactsManager: OWSContactsManager
 
     // MARK: Properties
+    
     var peerConnectionClient: PeerConnectionClient?
     var callDirection: CallDirection = .unspecified
     var thread: TSContactThread!
     var call: SignalCall?
 
-    @IBOutlet weak var contactName: UILabel!
+    @IBOutlet weak var contactNameLabel: UILabel!
+    @IBOutlet weak var contactAvatarView: AvatarImageView!
+    @IBOutlet weak var callStatusLabel: UILabel!
 
     // MARK: Initializers
 
@@ -49,7 +52,8 @@ class CallViewController : UIViewController {
             return
         }
 
-        self.contactName.text = self.contactsManager.displayName(forPhoneIdentifier: thread.contactIdentifier());
+        contactNameLabel.text = contactsManager.displayName(forPhoneIdentifier: thread.contactIdentifier());
+        contactAvatarView.image = OWSAvatarBuilder.buildImage(for: thread, contactsManager: contactsManager)
 
         switch(callDirection) {
         case .unspecified:
