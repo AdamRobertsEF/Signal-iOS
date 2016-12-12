@@ -347,7 +347,7 @@
 "IN_CALL_TALKING" = "Secured. Active.";
 
 /* Call setup status label */
-"IN_CALL_TERMINATED" = "Done.";
+"IN_CALL_TERMINATED" = "Call Ended.";
 
 /* No comment provided by engineer. */
 "INCOMING_CALL" = "Incoming call";

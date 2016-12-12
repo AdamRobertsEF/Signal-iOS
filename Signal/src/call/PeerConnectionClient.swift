@@ -320,7 +320,7 @@ class PeerConnectionClient: NSObject, CallAudioManager {
     }
 
     func terminate() {
-//        Some notes on preventing crashes
+//        Some notes on preventing crashes while disposing of peerConnection
 //        from: https://groups.google.com/forum/#!searchin/discuss-webrtc/objc$20crash$20dealloc%7Csort:relevance/discuss-webrtc/7D-vk5yLjn8/rBW2D6EW4GYJ
 //        The sequence to make it work appears to be
 //
@@ -343,7 +343,7 @@ class PeerConnectionClient: NSObject, CallAudioManager {
 
     func sendDataChannelMessage(data: Data) -> Bool {
         guard let dataChannel = self.dataChannel else {
-            Logger.error("\(TAG) ignoring \(#function) for nil dataChannel")
+            Logger.error("\(TAG) in \(#function) ignoring sending \(data) for nil dataChannel")
             return false
         }
 

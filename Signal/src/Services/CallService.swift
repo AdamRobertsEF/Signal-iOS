@@ -109,23 +109,12 @@ class CallManagerAdapter {
 
 }
 
-class CallError: Error {
-    let description: String
-
-    init(description: String) {
-        self.description = description
-    }
-
-    class ClientFailure: CallError {
-
-    }
-
-    class Timeout: CallError {
-        
-    }
+enum CallError: Error {
+    case clientFailure(description: String)
+    case timeout(description: String)
 }
 
-fileprivate let timeoutSeconds = 60
+fileprivate let timeoutSeconds = 10
 
 
 @objc class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
@@ -223,7 +212,7 @@ fileprivate let timeoutSeconds = 60
         }
 
         guard let peerConnectionClient = self.peerConnectionClient else {
-            failCall(error: CallError.ClientFailure(description: "peerConnectionClient was unexpectedly nil in \(#function)"))
+            failCall(error: CallError.clientFailure(description: "peerConnectionClient was unexpectedly nil in \(#function)"))
             return
         }
 
@@ -291,19 +280,27 @@ fileprivate let timeoutSeconds = 60
         }.then {
             Logger.debug("\(self.TAG) successfully sent callAnswerMessage")
 
-            let (promise, fulfill, reject) = Promise<Void>.pending()
+            let (promise, fulfill, _) = Promise<Void>.pending()
 
             // Safely a no-op if promise has already been fulfilled
             let timeout: Promise<Void> = after(interval: TimeInterval(timeoutSeconds)).then { () -> Void in
-                Logger.error("\(self.TAG) Timing out waiting for call to connect.")
-                reject(CallError.Timeout(description: "Timing out waiting for call to connect."))
-                return
+                // TODO FIXME Im not sure if this is working, nor if we even want it.
+                throw CallError.timeout(description: "timed out waiting for call to connect")
             }
 
-            // This is fulfilled by delegate method
+            // This is fulfilled (potentially) by the RTCDataChannel delegate method
             self.fulfillCallConnectedPromise = fulfill
 
             return race(promise, timeout)
+        }.catch { error in
+
+            switch error {
+            case CallError.timeout:
+                Logger.error("\(self.TAG) terminating call with error: \(error)")
+                self.terminateCall()
+            default:
+                Logger.error("\(self.TAG) unknown error: \(error)")
+            }
         }
     }
 
@@ -716,13 +713,14 @@ fileprivate let timeoutSeconds = 60
 
     /** Called any time the IceConnectionState changes. */
     public func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
-        Logger.debug("\(TAG) didChange IceConnectionState:\(newState)")
+        Logger.debug("\(TAG) didChange IceConnectionState:\(newState.rawValue)")
 
         type(of: self).signalingQueue.async {
             switch(newState) {
             case .connected, .completed:
                 self.handleIceConnected()
             case .failed:
+                Logger.warn("\(self.TAG) RTCIceConnection failed. Hanging up.")
                 guard let thread = self.thread else {
                     Logger.error("\(self.TAG) refusing to hangup for failed IceConnection because there is no current thread")
                     return
