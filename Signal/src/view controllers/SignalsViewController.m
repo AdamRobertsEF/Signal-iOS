@@ -467,6 +467,7 @@ NSString *const SignalsViewControllerSegueShowIncomingCall = @"ShowIncomingCallS
         OWSSignalCall *call = (OWSSignalCall *)sender;
         TSContactThread *thread = [TSContactThread getOrCreateThreadWithContactId:call.remotePhoneNumber];
         callViewController.thread = thread;
+        callViewController.call = call;
     }
 }
 

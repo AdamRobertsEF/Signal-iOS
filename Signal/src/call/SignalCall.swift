@@ -6,11 +6,16 @@ import Foundation
 @objc(OWSSignalCall)
 class SignalCall: NSObject {
 
-    var state: CallState
+    var state: CallState {
+        didSet { stateDidChange?(state) }
+    }
+
     let signalingId: UInt64
     let remotePhoneNumber: String
     let localId: UUID
     let hasVideo = false
+
+    var stateDidChange: ((_ newState: CallState) -> Void)?
 
     init(signalingId: UInt64, state: CallState, remotePhoneNumber: String) {
         self.signalingId = signalingId

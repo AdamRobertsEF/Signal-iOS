@@ -24,7 +24,7 @@ class CallViewController : UIViewController {
     var peerConnectionClient: PeerConnectionClient?
     var callDirection: CallDirection = .unspecified
     var thread: TSContactThread!
-    var call: SignalCall?
+    var call: SignalCall!
 
     @IBOutlet weak var contactNameLabel: UILabel!
     @IBOutlet weak var contactAvatarView: AvatarImageView!
@@ -68,6 +68,10 @@ class CallViewController : UIViewController {
             Logger.error("\(TAG) handling Incoming call")
             // No-op, since call service is already set up at this point, the result of which was presenting this viewController.
         }
+
+        call.stateDidChange = updateCallStatus
+        updateCallStatus(call.state)
+
     }
 
     // objc accessible way to set our swift enum.
@@ -86,8 +90,24 @@ class CallViewController : UIViewController {
     }
 
     func updateCallStatus(_ newState: CallState) {
-        // TODO update UI
         Logger.info("\(TAG) new call status: \(newState)")
+
+        let textForState = { ()-> String in
+            switch(newState) {
+            case .idle:
+                return NSLocalizedString("IN_CALL_TERMINATED", comment: "Call setup status label")
+            case .dialing:
+                return NSLocalizedString("IN_CALL_CONNECTING", comment: "Call setup status label")
+            case .remoteRinging, .localRinging:
+                return NSLocalizedString("IN_CALL_RINGING", comment: "Call setup status label")
+            case .answering:
+                return NSLocalizedString("IN_CALL_SECURING", comment: "Call setup status label")
+            case .connected:
+                return NSLocalizedString("IN_CALL_TALKING", comment: "Call setup status label")
+            }
+        }()
+
+        callStatusLabel.text = textForState
     }
 
     @IBAction func didPressHangup(sender: UIButton) {
