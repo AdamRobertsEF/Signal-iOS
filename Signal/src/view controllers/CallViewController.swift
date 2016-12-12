@@ -49,7 +49,7 @@ class CallViewController : UIViewController {
 
     override func viewDidLoad() {
 
-        guard thread != nil else {
+        guard let thread = self.thread else {
             Logger.error("\(TAG) tried to show call call without specifying thread.")
             showCallFailed(error: OWSErrorMakeAssertionError())
             return
@@ -63,7 +63,10 @@ class CallViewController : UIViewController {
             Logger.error("\(TAG) must set call direction before call starts.")
             showCallFailed(error: OWSErrorMakeAssertionError())
         case .outgoing:
-            self.call = callService.handleOutgoingCall(thread: thread)
+            // Sync to ensure we have self.call before proceeding.
+            CallService.signalingQueue.sync {
+                self.call = self.callService.handleOutgoingCall(thread: thread)
+            }
         case .incoming:
             Logger.error("\(TAG) handling Incoming call")
             // No-op, since call service is already set up at this point, the result of which was presenting this viewController.
