@@ -155,7 +155,10 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
 //        // Trigger the call to be answered via the underlying network service.
 //        call.answerSpeakerboxCall()
 
-        callService.handleAnswerCall(call)
+        // Synchronous to ensure work is done before call is displayed as "answered"
+        CallService.signalingQueue.sync {
+            self.callService.handleAnswerCall(call)
+        }
 
         // Signal to the system that the action has been successfully performed.
         action.fulfill()
@@ -172,7 +175,11 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
 //        stopAudio()
 //        // Trigger the call to be ended via the underlying network service.
 //        call.endSpeakerboxCall()
-        callService.handleLocalHungupCall(call)
+
+        // Synchronous to ensure work is done before call is displayed as "ended"
+        CallService.signalingQueue.sync {
+            self.callService.handleLocalHungupCall(call)
+        }
 
         // Signal to the system that the action has been successfully performed.
         action.fulfill()

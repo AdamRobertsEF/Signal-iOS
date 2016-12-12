@@ -82,7 +82,8 @@ class PeerConnectionClient: NSObject, CallAudioManager {
     enum Identifiers: String {
         case mediaStream = "ARDAMS",
              videoTrack = "ARDAMSv0",
-             audioTrack = "ARDAMSa0"
+             audioTrack = "ARDAMSa0",
+             dataChannelSignalingLabel = "signaling"
     }
 
     // Connection
@@ -95,9 +96,10 @@ class PeerConnectionClient: NSObject, CallAudioManager {
 
     // DataChannel
 
-    // peerConnection expects to be the sole owner of dataChannel. Otherwise, a crash when peerConnection deallocs
-    // dataChannel public because on incoming calls, we don't explicitly create the channel, rather the call service assigns it.
-    public weak var dataChannel: RTCDataChannel?
+    // peerConnection expects to be the final owner of dataChannel. Otherwise, a crash when peerConnection deallocs
+    // `dataChannel` is public because on incoming calls, we don't explicitly create the channel, rather `CallService`
+    // assigns it when the channel is discovered due to the caller having created it.
+    public var dataChannel: RTCDataChannel?
 
     // Audio
 
@@ -134,13 +136,12 @@ class PeerConnectionClient: NSObject, CallAudioManager {
 
     // MARK: - Media Streams
 
-    public func createDataChannel(label: String, delegate: RTCDataChannelDelegate) {
-        let dataChannel = peerConnection.dataChannel(forLabel: label,
+    public func createSignalingDataChannel(delegate: RTCDataChannelDelegate) {
+        let dataChannel = peerConnection.dataChannel(forLabel: Identifiers.dataChannelSignalingLabel.rawValue,
                                                      configuration: RTCDataChannelConfiguration())
         dataChannel.delegate = delegate
 
         self.dataChannel = dataChannel
-
     }
 
     // MARK: Video
@@ -324,6 +325,7 @@ class PeerConnectionClient: NSObject, CallAudioManager {
         // we are likely to crash if we retain any peer connection properties when the peerconnection is released
         audioTrack = nil
         videoTrack = nil
+        dataChannel = nil
 
         peerConnection.close()
     }

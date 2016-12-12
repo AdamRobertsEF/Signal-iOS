@@ -90,11 +90,9 @@ class CallViewController : UIViewController {
     }
 
     func updateCallStatus(_ newState: CallState) {
-        Logger.info("\(TAG) new call status: \(newState)")
-
         let textForState = { ()-> String in
             switch(newState) {
-            case .idle:
+            case .idle, .remoteHangup, .localHangup:
                 return NSLocalizedString("IN_CALL_TERMINATED", comment: "Call setup status label")
             case .dialing:
                 return NSLocalizedString("IN_CALL_CONNECTING", comment: "Call setup status label")
@@ -107,13 +105,18 @@ class CallViewController : UIViewController {
             }
         }()
 
-        callStatusLabel.text = textForState
+        Logger.info("\(TAG) new call status: \(newState) with text: \(textForState)")
+        DispatchQueue.main.async {
+            self.callStatusLabel.text = textForState
+        }
     }
 
     @IBAction func didPressHangup(sender: UIButton) {
         Logger.debug("\(TAG) called \(#function)")
         if call != nil {
-            callService.handleLocalHungupCall(call!)
+            CallService.signalingQueue.async {
+                callService.handleLocalHungupCall(call!)
+            }
         }
 
         self.dismiss(animated: true)
@@ -122,7 +125,9 @@ class CallViewController : UIViewController {
     @IBAction func didPressMute(sender: UIButton) {
         Logger.debug("\(TAG) called \(#function)")
         sender.isSelected = !sender.isSelected
-        callService.handleToggledMute(isMuted: sender.isSelected)
+        CallService.signalingQueue.async {
+            self.callService.handleToggledMute(isMuted: sender.isSelected)
+        }
     }
 
     @IBAction func didPressSpeakerphone(sender: UIButton) {

@@ -452,7 +452,7 @@ NSString *const SignalsViewControllerSegueShowIncomingCall = @"ShowIncomingCallS
         [vc configureWithLatestCall:_latestCall];
         _latestCall = nil;
     } else if ([segue.identifier isEqualToString:SignalsViewControllerSegueShowIncomingCall]) {
-        DDLogDebug(@"%@ preparing for incoming cal segue", self.tag);
+        DDLogDebug(@"%@ preparing for incoming call segue", self.tag);
         if (![segue.destinationViewController isKindOfClass:[OWSCallViewController class]]) {
             DDLogError(@"%@ Received unexpected destination view controller: %@", self.tag, segue.destinationViewController);
             return;

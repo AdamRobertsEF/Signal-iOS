@@ -3,11 +3,31 @@
 
 import Foundation
 
+enum CallState: String {
+    case idle
+    case dialing
+    case answering
+    case remoteRinging
+    case localRinging
+    case connected
+    case localHangup
+    case remoteHangup
+}
+
+/**
+ * Data model representing a WebRTC backed call, signaled through the TextSecure service.
+ * This deprecates the existing Redphone call.
+ */
 @objc(OWSSignalCall)
 class SignalCall: NSObject {
 
+    let TAG = "[SignalCall]"
+
     var state: CallState {
-        didSet { stateDidChange?(state) }
+        didSet {
+            Logger.debug("\(TAG) state changed to:\(state)")
+            stateDidChange?(state)
+        }
     }
 
     let signalingId: UInt64

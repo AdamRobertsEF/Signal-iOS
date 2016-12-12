@@ -5,15 +5,6 @@ import Foundation
 import PromiseKit
 import WebRTC
 
-enum CallState: String {
-    case idle
-    case dialing
-    case answering
-    case remoteRinging
-    case localRinging
-    case connected
-}
-
 protocol CallUIAdaptee {
     func startOutgoingCall(_ call: SignalCall);
     func reportIncomingCall(_ call: SignalCall, audioManager: CallAudioManager) -> Promise<Void>;
@@ -124,13 +115,22 @@ class CallError: Error {
     init(description: String) {
         self.description = description
     }
+
+    class ClientFailure: CallError {
+
+    }
+
+    class Timeout: CallError {
+        
+    }
 }
 
-class ClientFailure: CallError {
+fileprivate let timeoutSeconds = 60
 
-}
 
 @objc class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
+
+    // Synchronize call signaling on the callSignalingQueue
 
     // MARK: - Properties
 
@@ -144,8 +144,8 @@ class ClientFailure: CallError {
 
     // MARK: Class
 
-    static let DataChannelLabel = "signaling"
     static let fallbackIceServer = RTCIceServer(urlStrings: ["stun:stun1.l.google.com:19302"])
+    static let signalingQueue = DispatchQueue(label: "CallServiceSignalingQueue")
 
     // MARK: Ivars
 
@@ -154,6 +154,10 @@ class ClientFailure: CallError {
     var thread: TSContactThread?
     var call: SignalCall?
     var pendingIceUpdateMessages: [OWSCallIceUpdateMessage]?
+    var outgoingCallPromise: Promise<Void>?
+
+    // Used to coordinate promises across delegate methods
+    var fulfillCallConnectedPromise: (()->())?
 
     required init(accountManager: AccountManager, messageSender: MessageSender) {
         self.accountManager = accountManager
@@ -170,8 +174,11 @@ class ClientFailure: CallError {
     }
 
     // MARK: - Service Actions
+    // All these actions expect to be called on the SignalingQueue
 
     func handleOutgoingCall(thread: TSContactThread) -> SignalCall {
+        assertOnSignalingQueue()
+
         self.thread = thread
         Logger.verbose("\(TAG) handling outgoing call to thread:\(thread)")
 
@@ -187,7 +194,8 @@ class ClientFailure: CallError {
             let peerConnectionClient =  PeerConnectionClient(iceServers: iceServers, peerConnectionDelegate: self)
             self.peerConnectionClient = peerConnectionClient
 
-            self.peerConnectionClient!.createDataChannel(label: CallService.DataChannelLabel, delegate: self)
+            // When calling, it's our responsibility to create the DataChannel. Receivers will not have to do this explicitly.
+            self.peerConnectionClient!.createSignalingDataChannel(delegate: self)
 
             return self.peerConnectionClient!.createOffer()
         }.then { sessionDescription -> Promise<Void> in
@@ -205,7 +213,7 @@ class ClientFailure: CallError {
 
     func handleReceivedAnswer(thread: TSContactThread, callId: UInt64, sessionDescription: String) {
         Logger.debug("\(TAG) received call answer for call: \(callId) thread: \(thread)")
-        Logger.error("FIXME TODO")
+        assertOnSignalingQueue()
 
         if let pendingIceUpdateMessages = self.pendingIceUpdateMessages {
             let callMessage = OWSOutgoingCallMessage(thread: thread, iceUpdateMessages: pendingIceUpdateMessages)
@@ -215,7 +223,7 @@ class ClientFailure: CallError {
         }
 
         guard let peerConnectionClient = self.peerConnectionClient else {
-            failCall(error: ClientFailure(description: "peerConnectionClient was unexpectedly nil in \(#function)"))
+            failCall(error: CallError.ClientFailure(description: "peerConnectionClient was unexpectedly nil in \(#function)"))
             return
         }
 
@@ -229,6 +237,8 @@ class ClientFailure: CallError {
 
     func handleBusyCall(thread aThread: TSContactThread, callId: UInt64) {
         Logger.debug("\(TAG) received 'busy' for call: \(callId) thread: \(thread)")
+        assertOnSignalingQueue()
+
         Logger.error("FIXME TODO")
         // TODO
 //        let busyMessage = OWSCallBusyMessage(callId: callId)
@@ -243,6 +253,8 @@ class ClientFailure: CallError {
     }
 
     func handleReceivedOffer(thread aThread: TSContactThread, callId: UInt64, sessionDescription sdpString: String) {
+        assertOnSignalingQueue()
+
         thread = aThread
         Logger.verbose("\(TAG) receivedCallOffer for thread:\(thread)")
 
@@ -258,7 +270,7 @@ class ClientFailure: CallError {
         let newCall = SignalCall(signalingId: callId, state: .answering, remotePhoneNumber: aThread.contactIdentifier())
         call = newCall
 
-        _ = getIceServers().then { (iceServers: [RTCIceServer]) -> Promise<RTCSessionDescription> in
+        outgoingCallPromise = getIceServers().then { (iceServers: [RTCIceServer]) -> Promise<RTCSessionDescription> in
             // FIXME for first time call recipients I think we'll see mic/camera permission requests here,
             // even though, from the users perspective, no incoming call is yet visible.
             self.peerConnectionClient = PeerConnectionClient(iceServers: iceServers, peerConnectionDelegate: self)
@@ -276,13 +288,27 @@ class ClientFailure: CallError {
             let callAnswerMessage = OWSOutgoingCallMessage(thread: aThread, answerMessage: answerMessage)
 
             return self.sendMessage(callAnswerMessage)
-        }.then { () in
+        }.then {
             Logger.debug("\(self.TAG) successfully sent callAnswerMessage")
+
+            let (promise, fulfill, reject) = Promise<Void>.pending()
+
+            // Safely a no-op if promise has already been fulfilled
+            let timeout: Promise<Void> = after(interval: TimeInterval(timeoutSeconds)).then { () -> Void in
+                Logger.error("\(self.TAG) Timing out waiting for call to connect.")
+                reject(CallError.Timeout(description: "Timing out waiting for call to connect."))
+                return
+            }
+
+            // This is fulfilled by delegate method
+            self.fulfillCallConnectedPromise = fulfill
+
+            return race(promise, timeout)
         }
     }
 
     public func handleRemoteAddedIceCandidate(thread: TSContactThread, callId: UInt64, sdp: String, lineIndex: Int32, mid: String) {
-
+        assertOnSignalingQueue()
         Logger.debug("\(TAG) received ice update")
         guard self.thread != nil else {
             // CallService.thread should have already been set at this point.
@@ -314,6 +340,8 @@ class ClientFailure: CallError {
     }
 
     public func handleLocalAddedIceCandidate(_ iceCandidate: RTCIceCandidate) {
+        assertOnSignalingQueue()
+
         guard let call = self.call else {
             Logger.warn("\(TAG) ignoring local ice candidate, since there is no current call.")
             return
@@ -347,6 +375,9 @@ class ClientFailure: CallError {
     }
 
     func handleIceConnected() {
+        assertOnSignalingQueue()
+
+        Logger.debug("\(TAG) in \(#function)")
 
         guard let call = self.call else {
             Logger.warn("\(TAG) ignoring \(#function) since there is no current call.")
@@ -365,22 +396,37 @@ class ClientFailure: CallError {
 
         switch (call.state) {
         case .answering:
+            self.fulfillCallConnectedPromise?()
             call.state = .localRinging
             self.callManagerAdapter.reportIncomingCall(call, thread: thread, audioManager: peerConnectionClient)
         case .dialing:
             call.state = .remoteRinging
             self.callManagerAdapter.addOutgoingCall(call, thread: thread)
         default:
-            Logger.debug("\(TAG) unexpected call state for handleIceConnected: \(call.state)")
+            Logger.debug("\(TAG) unexpected call state for \(#function): \(call.state)")
         }
     }
 
     func handleRemoteHangup() {
+        assertOnSignalingQueue()
+
         Logger.debug("\(TAG) in \(#function)")
-        Logger.error("\(TAG) TODO")
+
+        guard let call = self.call else {
+            Logger.error("\(TAG) call was unexpectedly nil in \(#function)")
+            // Still want to terminate the call to put CallService in a good state to send/receive a future call.
+            terminateCall()
+            return
+        }
+        call.state = .remoteHangup
+
+        // self.call is nil'd in `terminateCall`, so it's important we update it's state before calling `terminateCall`
+        terminateCall()
     }
 
     func handleAnswerCall(_ call: SignalCall) {
+        assertOnSignalingQueue()
+
         Logger.debug("\(TAG) in \(#function)")
 
         guard self.call != nil else {
@@ -427,10 +473,14 @@ class ClientFailure: CallError {
 
     func handleConnectedCall(_ call: SignalCall) {
         Logger.debug("\(TAG) in \(#function)")
-        // Anything to do here?
+        assertOnSignalingQueue()
+
+        call.state = .connected
     }
 
     func handleLocalHungupCall(_ call: SignalCall) {
+        assertOnSignalingQueue()
+
         guard self.call != nil else {
             Logger.error("\(TAG) ignoring \(#function) since there is no current call")
             return
@@ -455,7 +505,7 @@ class ClientFailure: CallError {
         //        this.accountManager.cancelInFlightRequests();
         //        this.messageSender.cancelInFlightRequests();
 
-        // If the call is going, we can send the hangup via the data channel.
+        // If the call is connected, we can send the hangup via the data channel.
         let message = DataChannelMessage.forHangup(callId: call.signalingId)
         if peerConnectionClient.sendDataChannelMessage(data: message.asData()) {
             Logger.debug("\(TAG) sendDataChannelMessage returned true")
@@ -476,6 +526,8 @@ class ClientFailure: CallError {
     }
 
     func handleToggledMute(isMuted: Bool) {
+        assertOnSignalingQueue()
+
         guard let peerConnectionClient = self.peerConnectionClient else {
             Logger.error("\(TAG) peerConnectionClient unexpectedly nil in \(#function)")
             return
@@ -483,7 +535,58 @@ class ClientFailure: CallError {
         peerConnectionClient.setAudioEnabled(enabled: !isMuted)
     }
 
+    private func handleDataChannelMessage(_ message: OWSWebRTCProtosData) {
+        assertOnSignalingQueue()
+
+        guard let call = self.call else {
+            Logger.error("\(TAG) received data message, but there is no current call. Ignoring.")
+            return
+        }
+
+        if message.hasConnected() {
+            Logger.debug("\(TAG) remote participant sent Connected via data channel")
+
+            let connected = message.connected!
+
+            guard connected.id == call.signalingId else {
+                Logger.error("\(TAG) received connected message for call with id:\(connected.id) but current call has id:\(call.signalingId)")
+                return
+            }
+
+            handleConnectedCall(call)
+
+        } else if message.hasHangup() {
+            Logger.debug("\(TAG) remote participant sent Hangup via data channel")
+
+            let hangup = message.hangup!
+
+            guard hangup.id == call.signalingId else {
+                Logger.error("\(TAG) received hangup message for call with id:\(hangup.id) but current call has id:\(call.signalingId)")
+                return
+            }
+
+            handleRemoteHangup()
+        } else if message.hasVideoStreamingStatus() {
+            Logger.debug("\(TAG) remote participant sent VideoStreamingStatus via data channel")
+
+            // TODO: translate from java
+            //   Intent intent = new Intent(this, WebRtcCallService.class);
+            //   intent.setAction(ACTION_REMOTE_VIDEO_MUTE);
+            //   intent.putExtra(EXTRA_CALL_ID, dataMessage.getVideoStreamingStatus().getId());
+            //   intent.putExtra(EXTRA_MUTE, !dataMessage.getVideoStreamingStatus().getEnabled());
+            //   startService(intent);
+        }
+    }
+
     // MARK: Helpers
+
+    private func assertOnSignalingQueue() {
+        if #available(iOS 10.0, *) {
+            dispatchPrecondition(condition: .onQueue(type(of: self).signalingQueue))
+        } else {
+            // Skipping check on <iOS10, since syntax is different and it's just a development convenience.
+        }
+    }
 
     fileprivate func getIceServers() -> Promise<[RTCIceServer]> {
         return accountManager.getTurnServerInfo().then { turnServerInfo -> [RTCIceServer] in
@@ -506,12 +609,17 @@ class ClientFailure: CallError {
         }
     }
 
+    //TODO rename to handle?
     private func failCall(error: Error) {
+        assertOnSignalingQueue() // necessary?
+
         Logger.error("\(TAG) call failed with error: \(error)")
         Logger.error("TODO: show some UI for \(#function)")
     }
 
     private func terminateCall() {
+        assertOnSignalingQueue()
+
 //        lockManager.updatePhoneState(LockManager.PhoneState.PROCESSING);
 //        NotificationBarManager.setCallEnded(this);
 //
@@ -543,6 +651,7 @@ class ClientFailure: CallError {
         peerConnectionClient = nil
         call = nil
         thread = nil
+        outgoingCallPromise = nil
         pendingIceUpdateMessages = nil
     }
 
@@ -551,42 +660,21 @@ class ClientFailure: CallError {
     /** The data channel state changed. */
     public func dataChannelDidChangeState(_ dataChannel: RTCDataChannel) {
         Logger.debug("\(TAG) dataChannelDidChangeState: \(dataChannel)")
+        // SignalingQueue.dispatch.async {}
     }
 
     /** The data channel successfully received a data buffer. */
     public func dataChannel(_ dataChannel: RTCDataChannel, didReceiveMessageWith buffer: RTCDataBuffer) {
         Logger.debug("\(TAG) dataChannel didReceiveMessageWith buffer:\(buffer)")
 
-        guard let dataMessage = OWSWebRTCProtosData.parse(from:buffer.data) else {
+        guard let dataChannelMessage = OWSWebRTCProtosData.parse(from:buffer.data) else {
             // TODO can't proto parsings throw an exception? Is it just being lost in the Objc->Swift?
             Logger.error("\(TAG) failed to parse dataProto")
             return
         }
 
-        if dataMessage.hasConnected() {
-            Logger.debug("\(TAG) has connected")
-            // TODO: translate from java
-            //   Intent intent = new Intent(this, WebRtcCallService.class);
-            //   intent.setAction(ACTION_CALL_CONNECTED);
-            //   intent.putExtra(EXTRA_CALL_ID, dataMessage.getConnected().getId());
-            //   startService(intent);
-
-        } else if dataMessage.hasHangup() {
-            Logger.debug("\(TAG) has hangup")
-            // TODO: translate from java
-            //   Intent intent = new Intent(this, WebRtcCallService.class);
-            //   intent.setAction(ACTION_REMOTE_HANGUP);
-            //   intent.putExtra(EXTRA_CALL_ID, dataMessage.getHangup().getId());
-            //   startService(intent);
-
-        } else if dataMessage.hasVideoStreamingStatus() {
-            Logger.debug("\(TAG) has video streaming status")
-            // TODO: translate from java
-            //   Intent intent = new Intent(this, WebRtcCallService.class);
-            //   intent.setAction(ACTION_REMOTE_VIDEO_MUTE);
-            //   intent.putExtra(EXTRA_CALL_ID, dataMessage.getVideoStreamingStatus().getId());
-            //   intent.putExtra(EXTRA_MUTE, !dataMessage.getVideoStreamingStatus().getEnabled());
-            //   startService(intent);
+        type(of: self).signalingQueue.async {
+            self.handleDataChannelMessage(dataChannelMessage)
         }
     }
 
@@ -620,13 +708,16 @@ class ClientFailure: CallError {
     /** Called any time the IceConnectionState changes. */
     public func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
         Logger.debug("\(TAG) didChange IceConnectionState:\(newState)")
-        switch(newState) {
-        case .connected, .completed:
-            handleIceConnected()
-        case .failed:
-            handleRemoteHangup()
-        default:
-            Logger.debug("\(TAG) ignoring change IceConnectionState:\(newState.rawValue)")
+
+        type(of: self).signalingQueue.async {
+            switch(newState) {
+            case .connected, .completed:
+                self.handleIceConnected()
+            case .failed:
+                self.handleRemoteHangup()
+            default:
+                Logger.debug("\(self.TAG) ignoring change IceConnectionState:\(newState.rawValue)")
+            }
         }
     }
 
@@ -638,7 +729,9 @@ class ClientFailure: CallError {
     /** New ice candidate has been found. */
     public func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
         Logger.debug("\(TAG) didGenerate IceCandidate:\(candidate)")
-        self.handleLocalAddedIceCandidate(candidate)
+        type(of: self).signalingQueue.async {
+            self.handleLocalAddedIceCandidate(candidate)
+        }
     }
 
     /** Called when a group of local Ice candidates have been removed. */
@@ -649,13 +742,15 @@ class ClientFailure: CallError {
     /** New data channel has been opened. */
     public func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
         Logger.debug("\(TAG) didOpen dataChannel:\(dataChannel)")
+        type(of: self).signalingQueue.async {
+            guard let peerConnectionClient = self.peerConnectionClient else {
+                Logger.error("\(self.TAG) surprised to find nil peerConnectionClient in \(#function)")
+                return
+            }
 
-        guard let peerConnectionClient = self.peerConnectionClient else {
-            Logger.error("\(TAG) surprised to find no peerConnectionCLient in \(#function)")
-            return
+            Logger.debug("\(self.TAG) set dataChannel")
+            peerConnectionClient.dataChannel = dataChannel
         }
-
-        peerConnectionClient.dataChannel = dataChannel
     }
 
 }
