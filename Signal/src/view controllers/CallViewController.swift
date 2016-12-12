@@ -109,6 +109,12 @@ class CallViewController : UIViewController {
         DispatchQueue.main.async {
             self.callStatusLabel.text = textForState
         }
+
+        if newState == .remoteHangup {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                self.dismiss(animated: true)
+            }
+        }
     }
 
     @IBAction func didPressHangup(sender: UIButton) {
