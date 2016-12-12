@@ -57,6 +57,9 @@ class DeviceFinderiOS10: DeviceFinderAdaptee {
     }
 }
 
+let AudioTrackType = kRTCMediaStreamTrackKindAudio
+let VideoTrackType = kRTCMediaStreamTrackKindVideo
+
 class PeerConnectionClient: NSObject, CallAudioManager {
 
     
@@ -156,7 +159,13 @@ class PeerConnectionClient: NSObject, CallAudioManager {
         let videoTrack = factory.videoTrack(with: videoSource, trackId: Identifiers.videoTrack.rawValue)
         self.videoTrack = videoTrack
 
-        let videoSender = peerConnection.sender(withKind: kRTCMediaStreamTrackKindVideo, streamId: Identifiers.mediaStream.rawValue)
+        // Occasionally seeing this crash on the next line, after a *second* call:
+//         -[__NSCFNumber length]: unrecognized selector sent to instance 0x1562c610
+        // Seems like either videoKind or videoStreamId (both of which are Strings) is being GC'd prematurely. 
+        // Not sure why, but assigned the value to local vars above in hopes of avoiding it.
+//        let videoKind = kRTCMediaStreamTrackKindVideo
+
+        let videoSender = peerConnection.sender(withKind: VideoTrackType, streamId: Identifiers.mediaStream.rawValue)
         videoSender.track = videoTrack
         self.videoSender = videoSender
     }
@@ -169,7 +178,7 @@ class PeerConnectionClient: NSObject, CallAudioManager {
         let audioTrack = factory.audioTrack(with: audioSource, trackId: Identifiers.audioTrack.rawValue)
         self.audioTrack = audioTrack
 
-        let audioSender = peerConnection.sender(withKind: kRTCMediaStreamTrackKindAudio, streamId: Identifiers.mediaStream.rawValue)
+        let audioSender = peerConnection.sender(withKind: AudioTrackType, streamId: Identifiers.mediaStream.rawValue)
         audioSender.track = audioTrack
         self.audioSender = audioSender
     }
