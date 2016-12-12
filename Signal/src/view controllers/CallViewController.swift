@@ -113,9 +113,9 @@ class CallViewController : UIViewController {
 
     @IBAction func didPressHangup(sender: UIButton) {
         Logger.debug("\(TAG) called \(#function)")
-        if call != nil {
+        if let call = self.call {
             CallService.signalingQueue.async {
-                callService.handleLocalHungupCall(call!)
+                self.callService.handleLocalHungupCall(call)
             }
         }
 

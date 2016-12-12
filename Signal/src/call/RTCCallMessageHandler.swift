@@ -62,7 +62,12 @@ class WebRTCCallMessageHandler: NSObject, OWSCallMessageHandler {
 
     public func receivedHangup(_ hangup: OWSSignalServiceProtosCallMessageHangup, from callerId: String) {
         Logger.verbose("\(TAG) handling 'hangup' from caller:\(callerId)")
-        Logger.error("TODO")
+
+        let thread = TSContactThread.getOrCreateThread(withContactId: callerId)
+
+        CallService.signalingQueue.async {
+            self.callService.handleRemoteHangup(thread: thread)
+        }
     }
 
     public func receivedBusy(_ busy: OWSSignalServiceProtosCallMessageBusy, from callerId: String) {

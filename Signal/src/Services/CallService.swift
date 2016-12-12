@@ -407,10 +407,14 @@ fileprivate let timeoutSeconds = 60
         }
     }
 
-    func handleRemoteHangup() {
+    func handleRemoteHangup(thread: TSContactThread) {
+        Logger.debug("\(TAG) in \(#function)")
         assertOnSignalingQueue()
 
-        Logger.debug("\(TAG) in \(#function)")
+        guard thread.contactIdentifier() == self.thread?.contactIdentifier() else {
+            Logger.warn("\(TAG) ignoring hangup for thread:\(thread) which is not the current thread: \(self.thread)")
+            return
+        }
 
         guard let call = self.call else {
             Logger.error("\(TAG) call was unexpectedly nil in \(#function)")
@@ -565,7 +569,12 @@ fileprivate let timeoutSeconds = 60
                 return
             }
 
-            handleRemoteHangup()
+            guard let thread = self.thread else {
+                Logger.error("\(TAG) current contact thread is unexpectedly nil when receiving hangup DataChannelMessage")
+                return
+            }
+
+            handleRemoteHangup(thread: thread)
         } else if message.hasVideoStreamingStatus() {
             Logger.debug("\(TAG) remote participant sent VideoStreamingStatus via data channel")
 
@@ -714,7 +723,11 @@ fileprivate let timeoutSeconds = 60
             case .connected, .completed:
                 self.handleIceConnected()
             case .failed:
-                self.handleRemoteHangup()
+                guard let thread = self.thread else {
+                    Logger.error("\(self.TAG) refusing to hangup for failed IceConnection because there is no current thread")
+                    return
+                }
+                self.handleRemoteHangup(thread: thread)
             default:
                 Logger.debug("\(self.TAG) ignoring change IceConnectionState:\(newState.rawValue)")
             }
