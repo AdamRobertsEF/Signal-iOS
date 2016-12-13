@@ -27,10 +27,9 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
     // It seems like a mess to reconcile this difference in cardinality. But... here we are.
     var audioManager: CallAudioManager?
 
-
     init(callManager: SpeakerboxCallManager, callService: CallService) {
-        self.callManager = callManager
         self.callService = callService
+        self.callManager = callManager
         provider = CXProvider(configuration: type(of: self).providerConfiguration)
 
         super.init()
@@ -58,8 +57,6 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
         return providerConfiguration
     }
 
-    // MARK: Incoming Calls
-
     /// Use CXProvider to report the incoming call to the system
     func reportIncomingCall(_ call: SignalCall, completion: ((NSError?) -> Void)? = nil) {
         // Construct a CXCallUpdate describing the incoming call, including the caller.
@@ -70,13 +67,13 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
         // Report the incoming call to the system
         provider.reportNewIncomingCall(with: call.localId, update: update) { error in
             /*
-                Only add incoming call to the app's list of calls if the call was allowed (i.e. there was no error)
-                since calls may be "denied" for various legitimate reasons. See CXErrorCodeIncomingCallError.
+             Only add incoming call to the app's list of calls if the call was allowed (i.e. there was no error)
+             since calls may be "denied" for various legitimate reasons. See CXErrorCodeIncomingCallError.
              */
             if error == nil {
                 self.callManager.addCall(call)
             }
-            
+
             completion?(error as? NSError)
         }
     }
@@ -84,7 +81,7 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
     // MARK: CXProviderDelegate
 
     func providerDidReset(_ provider: CXProvider) {
-        Logger.debug("Provider did reset")
+        Logger.debug("\(TAG) Provider did reset")
 
         stopAudio()
 
@@ -125,6 +122,7 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
 
         // TODO FIXME
         // Trigger the call to be started via the underlying network service.
+        // Original Speakerbox implementation
 //        call.startSpeakerboxCall { success in
 //            if success {
 //                // Signal to the system that the action has been successfully performed.
@@ -146,6 +144,7 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
             return
         }
 
+//         Original Speakerbox implementation
 //        /*
 //            Configure the audio session, but do not start call audio here, since it must be done once
 //            the audio session has been activated by the system after having its priority elevated.
@@ -165,12 +164,13 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
     }
 
     func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
-        Logger.debug("Received \(#function)")
+        Logger.debug("\(TAG) Received \(#function)")
         guard let call = callManager.callWithLocalId(action.callUUID) else {
             action.fail()
             return
         }
 
+// Original Speakerbox implementation
 //        // Stop call audio whenever ending the call.
 //        stopAudio()
 //        // Trigger the call to be ended via the underlying network service.
@@ -189,7 +189,7 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
     }
 
     func provider(_ provider: CXProvider, perform action: CXSetHeldCallAction) {
-        Logger.debug("Received \(#function)")
+        Logger.debug("\(TAG) Received \(#function)")
         guard let call = callManager.callWithLocalId(action.callUUID) else {
             action.fail()
             return
@@ -211,19 +211,19 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
     }
 
     func provider(_ provider: CXProvider, timedOutPerforming action: CXAction) {
-        Logger.debug("Timed out \(#function)")
+        Logger.debug("\(TAG) Timed out \(#function)")
 
         // React to the action timeout if necessary, such as showing an error UI.
     }
 
     func provider(_ provider: CXProvider, didActivate audioSession: AVAudioSession) {
-        Logger.debug("Received \(#function)")
+        Logger.debug("\(TAG) Received \(#function)")
 
         startAudio()
     }
 
     func provider(_ provider: CXProvider, didDeactivate audioSession: AVAudioSession) {
-        Logger.debug("Received \(#function)")
+        Logger.debug("\(TAG) Received \(#function)")
 
         /*
              Restart any non-call related audio now that the app's audio session has been

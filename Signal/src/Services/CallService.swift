@@ -5,20 +5,6 @@ import Foundation
 import PromiseKit
 import WebRTC
 
-protocol CallUIAdaptee {
-    func startOutgoingCall(_ call: SignalCall);
-    func reportIncomingCall(_ call: SignalCall, audioManager: CallAudioManager) -> Promise<Void>;
-}
-
-class CallUIiOS8Adaptee: CallUIAdaptee {
-    func startOutgoingCall(_ call: SignalCall) {}
-    func reportIncomingCall(_ call: SignalCall, audioManager: CallAudioManager) -> Promise<Void> {
-        return Promise { _ in
-            // TODO
-        }
-    }
-}
-
 /**
  * ## Key
  * - SS: Signal Service Message
@@ -54,95 +40,6 @@ class CallUIiOS8Adaptee: CallUIAdaptee {
  * Show Call is connected.
  */
 
-@available(iOS 10.0, *)
-class CallUICallKitAdaptee: CallUIAdaptee {
-    let providerDelegate: ProviderDelegate
-
-    init(callService: CallService) {
-        self.providerDelegate = ProviderDelegate(callManager: SpeakerboxCallManager(), callService: callService)
-    }
-
-    func startOutgoingCall(_ call: SignalCall) {
-        // TODO initiate video call
-        providerDelegate.callManager.startCall(handle: call.remotePhoneNumber, video: call.hasVideo)
-    }
-
-    func reportIncomingCall(_ call: SignalCall, audioManager: CallAudioManager) -> Promise<Void> {
-        return PromiseKit.wrap {
-            // FIXME weird to pass the audio manager in here.
-            // Crux is, the peerconnectionclient is what controls the audio channel.
-            // But a peerconnectionclient is per call.
-            // While this providerDelegate is an app singleton.
-            providerDelegate.audioManager = audioManager
-            providerDelegate.reportIncomingCall(call, completion: $0)
-        }
-    }
-}
-
-/**
- * I actually don't yet understand the role of these CallAudioManager methods as 
- * called in the speakerbox example. Are they redundant with what the RTC setup
- * already does for us?
- *
- * Here's the AVSessionConfig for the ARDRTC Example app, which maybe belongs 
- * in the coonfigureAudio session. and maybe the adding audio tracks is sufficient for startAudio's implenetation?
- *
- *
- 187   RTCAudioSessionConfiguration *configuration =
- 188       [[RTCAudioSessionConfiguration alloc] init];
- 189   configuration.category = AVAudioSessionCategoryAmbient;
- 190   configuration.categoryOptions = AVAudioSessionCategoryOptionDuckOthers;
- 191   configuration.mode = AVAudioSessionModeDefault;
- 192
- 193   RTCAudioSession *session = [RTCAudioSession sharedInstance];
- 194   [session lockForConfiguration];
- 195   BOOL hasSucceeded = NO;
- 196   NSError *error = nil;
- 197   if (session.isActive) {
- 198     hasSucceeded = [session setConfiguration:configuration error:&error];
- 199   } else {
- 200     hasSucceeded = [session setConfiguration:configuration
- 201                                       active:YES
- 202                                        error:&error];
- 203   }
- 204   if (!hasSucceeded) {
- 205     RTCLogError(@"Error setting configuration: %@", error.localizedDescription);
- 206   }
- 207   [session unlockForConfiguration];
- */
-protocol CallAudioManager {
-    func startAudio();
-    func stopAudio();
-    func configureAudioSession();
-}
-
-class CallManagerAdapter {
-
-    let TAG = "[CallManagerAdapter]"
-    let adaptee: CallUIAdaptee
-
-    init(callService: CallService) {
-        if #available(iOS 10.0, *) {
-            adaptee = CallUICallKitAdaptee(callService: callService)
-        } else {
-            adaptee = CallUIiOS8Adaptee()
-        }
-    }
-
-    func reportIncomingCall(_ call: SignalCall, thread: TSContactThread, audioManager: CallAudioManager) {
-        adaptee.reportIncomingCall(call, audioManager: audioManager).then {
-            Logger.info("\(self.TAG) successfully reported incoming call")
-        }.catch { error in
-            // TODO UI
-            Logger.error("\(self.TAG) reporting incoming call failed with error \(error)")
-        }
-    }
-
-    func addOutgoingCall(_ call: SignalCall, thread: TSContactThread) {
-        adaptee.startOutgoingCall(call)
-    }
-
-}
 
 enum CallError: Error {
     case clientFailure(description: String)
@@ -164,7 +61,7 @@ fileprivate let timeoutSeconds = 10
 
     let accountManager: AccountManager
     let messageSender: MessageSender
-    var callManagerAdapter: CallManagerAdapter!
+    var callUIAdapter: CallUIAdapter!
 
     // MARK: Class
 
@@ -187,7 +84,7 @@ fileprivate let timeoutSeconds = 10
         self.accountManager = accountManager
         self.messageSender = messageSender
         super.init()
-        self.callManagerAdapter = CallManagerAdapter(callService: self)
+        self.callUIAdapter = CallUIAdapter(callService: self)
     }
 
     // MARK: - Class Methods
@@ -440,10 +337,10 @@ fileprivate let timeoutSeconds = 10
         case .answering:
             self.fulfillCallConnectedPromise?()
             call.state = .localRinging
-            self.callManagerAdapter.reportIncomingCall(call, thread: thread, audioManager: peerConnectionClient)
+            self.callUIAdapter.reportIncomingCall(call, thread: thread, audioManager: peerConnectionClient)
         case .dialing:
             call.state = .remoteRinging
-            self.callManagerAdapter.addOutgoingCall(call, thread: thread)
+            self.callUIAdapter.startOutgoingCall(call, thread: thread)
         default:
             Logger.debug("\(TAG) unexpected call state for \(#function): \(call.state)")
         }
@@ -546,6 +443,8 @@ fileprivate let timeoutSeconds = 10
             Logger.error("\(TAG) missing thread in \(#function)")
             return
         }
+
+        callUIAdapter.endCall(call)
 
         // TODO something like this lifted from Signal-Android.
         //        this.accountManager.cancelInFlightRequests();
