@@ -200,6 +200,18 @@ fileprivate let timeoutSeconds = 10
         return newCall
     }
 
+   /**
+
+    * Caller                         Callee
+     ---------------------------------------
+     handleOutgoingCall
+             ---[CallOffer]---->
+                                receivedCallOffer
+             <--[CallAnswer]-----
+      receivedAnswer
+
+    * This method is called by the call initiator after receiving a response from the call offer.
+    */
     func handleReceivedAnswer(thread: TSContactThread, callId: UInt64, sessionDescription: String) {
         Logger.debug("\(TAG) received call answer for call: \(callId) thread: \(thread)")
         assertOnSignalingQueue()
@@ -241,7 +253,7 @@ fileprivate let timeoutSeconds = 10
         return false;
     }
 
-    func handleReceivedOffer(thread aThread: TSContactThread, callId: UInt64, sessionDescription sdpString: String) {
+    func handleReceivedOffer(thread aThread: TSContactThread, callId: UInt64, sessionDescription callerSessionDescription: String) {
         assertOnSignalingQueue()
 
         thread = aThread
@@ -264,11 +276,11 @@ fileprivate let timeoutSeconds = 10
             // even though, from the users perspective, no incoming call is yet visible.
             self.peerConnectionClient = PeerConnectionClient(iceServers: iceServers, peerConnectionDelegate: self)
 
-            let sessionDescription = RTCSessionDescription(type: .offer, sdp: sdpString)
+            let offerSessionDescription = RTCSessionDescription(type: .offer, sdp: callerSessionDescription)
             let constraints = RTCMediaConstraints(mandatoryConstraints: nil, optionalConstraints: nil)
 
             // Find a sessionDescription compatible with my constraints and the remote sessionDescription
-            return self.peerConnectionClient!.negotiateSessionDescription(remoteDescription: sessionDescription, constraints: constraints)
+            return self.peerConnectionClient!.negotiateSessionDescription(remoteDescription: offerSessionDescription, constraints: constraints)
         }.then { (negotiatedSessionDescription: RTCSessionDescription) in
             // TODO? WebRtcCallService.this.lockManager.updatePhoneState(LockManager.PhoneState.PROCESSING);
             Logger.debug("\(self.TAG) set the remote description")
@@ -734,12 +746,12 @@ fileprivate let timeoutSeconds = 10
 
     /** Called any time the IceGatheringState changes. */
     public func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceGatheringState) {
-        Logger.debug("\(TAG) didChange IceGatheringState:\(newState)")
+        Logger.debug("\(TAG) didChange IceGatheringState:\(newState.rawValue)")
     }
 
     /** New ice candidate has been found. */
     public func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
-        Logger.debug("\(TAG) didGenerate IceCandidate:\(candidate)")
+        Logger.debug("\(TAG) didGenerate IceCandidate:\(candidate.sdp)")
         type(of: self).signalingQueue.async {
             self.handleLocalAddedIceCandidate(candidate)
         }

@@ -94,7 +94,7 @@ class PeerConnectionClient: NSObject, CallAudioManager {
     private let peerConnection: RTCPeerConnection
     private let iceServers: [RTCIceServer]
     private let connectionConstraints: RTCMediaConstraints
-    private let configuration = RTCConfiguration()
+    private let configuration: RTCConfiguration
     private let factory = RTCPeerConnectionFactory()
 
     // DataChannel
@@ -118,9 +118,10 @@ class PeerConnectionClient: NSObject, CallAudioManager {
     private var videoTrack: RTCVideoTrack?
     private var cameraConstraints: RTCMediaConstraints
 
-    init(iceServers someIceServers: [RTCIceServer], peerConnectionDelegate: RTCPeerConnectionDelegate) {
-        iceServers = someIceServers
+    init(iceServers: [RTCIceServer], peerConnectionDelegate: RTCPeerConnectionDelegate) {
+        self.iceServers = iceServers
 
+        configuration = RTCConfiguration()
         configuration.iceServers = iceServers
         configuration.bundlePolicy = .maxBundle
         configuration.rtcpMuxPolicy = .require
