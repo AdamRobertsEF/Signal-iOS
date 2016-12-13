@@ -19,6 +19,41 @@ class CallUIiOS8Adaptee: CallUIAdaptee {
     }
 }
 
+/**
+ * ## Key
+ * - SS: Signal Service Message
+ * - DC: WebRTC Data Channel Message
+ *
+ * ## Call Flow
+ *
+ * |    Caller      |     Callee     |
+ * +----------------+----------------+
+ * handleOutgoingCall --[SS.CallOffer]-->
+ * and start storing ICE updates
+ *
+ *                       Received call offer
+ *                       Send call answer
+ *           <--[SS.CallAnswer]--
+ *                       Start sending ICE updates immediately
+ *           <--[SS.ICEUpdates]--
+ *
+ * Received CallAnswer,
+ * so send any stored ice updates
+ *           --[SS.ICEUpdates]-->
+ *
+ * Once compatible ICE updates have been exchanged...
+ *           <--[ICE Connected]-->
+ *
+ * Show remote ringing UI
+ *                       Connect to offered Data Channel
+ *                       Show incoming call UI.
+ *
+ *                       Answers Call
+ *         <--[DC.ConnecedMesage]--
+ *
+ * Show Call is connected.
+ */
+
 @available(iOS 10.0, *)
 class CallUICallKitAdaptee: CallUIAdaptee {
     let providerDelegate: ProviderDelegate
@@ -165,6 +200,9 @@ fileprivate let timeoutSeconds = 10
     // MARK: - Service Actions
     // All these actions expect to be called on the SignalingQueue
 
+    /**
+     * Initiate an outgoing call.
+     */
     func handleOutgoingCall(thread: TSContactThread) -> SignalCall {
         assertOnSignalingQueue()
 
@@ -200,18 +238,9 @@ fileprivate let timeoutSeconds = 10
         return newCall
     }
 
-   /**
-
-    * Caller                         Callee
-     ---------------------------------------
-     handleOutgoingCall
-             ---[CallOffer]---->
-                                receivedCallOffer
-             <--[CallAnswer]-----
-      receivedAnswer
-
-    * This method is called by the call initiator after receiving a response from the call offer.
-    */
+    /**
+     * Called by the CallInitiator after receiving a CallAnswer from the callee.
+     */
     func handleReceivedAnswer(thread: TSContactThread, callId: UInt64, sessionDescription: String) {
         Logger.debug("\(TAG) received call answer for call: \(callId) thread: \(thread)")
         assertOnSignalingQueue()
@@ -253,6 +282,10 @@ fileprivate let timeoutSeconds = 10
         return false;
     }
 
+    /**
+     * Receive an incoming call offer. We still have to complete setting up the Signaling channel before we can notify
+     * the user of an incoming call.
+     */
     func handleReceivedOffer(thread aThread: TSContactThread, callId: UInt64, sessionDescription callerSessionDescription: String) {
         assertOnSignalingQueue()
 
