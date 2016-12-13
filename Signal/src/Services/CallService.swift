@@ -113,7 +113,7 @@ fileprivate let timeoutSeconds = 10
         let callRecord = TSCall(timestamp: NSDate.ows_millisecondTimeStamp(), withCallNumber: newCall.remotePhoneNumber, callType: RPRecentCallTypeOutgoing, in: thread)
         callRecord.save()
 
-        _ = getIceServers().then { iceServers -> Promise<RTCSessionDescription> in
+        _ = getIceServers().then(on: CallService.signalingQueue) { iceServers -> Promise<RTCSessionDescription> in
             Logger.debug("\(self.TAG) got ice servers:\(iceServers)")
             let peerConnectionClient =  PeerConnectionClient(iceServers: iceServers, peerConnectionDelegate: self)
             self.peerConnectionClient = peerConnectionClient
@@ -122,8 +122,8 @@ fileprivate let timeoutSeconds = 10
             self.peerConnectionClient!.createSignalingDataChannel(delegate: self)
 
             return self.peerConnectionClient!.createOffer()
-        }.then { sessionDescription -> Promise<Void> in
-            return self.peerConnectionClient!.setLocalSessionDescription(sessionDescription).then {
+        }.then(on: CallService.signalingQueue) { sessionDescription -> Promise<Void> in
+            return self.peerConnectionClient!.setLocalSessionDescription(sessionDescription).then(on: CallService.signalingQueue) {
                 let offerMessage = OWSCallOfferMessage(callId: newCall.signalingId, sessionDescription: sessionDescription.sdp)
                 let callMessage = OWSOutgoingCallMessage(thread: thread, offerMessage: offerMessage)
                 return self.sendMessage(callMessage)
@@ -201,7 +201,9 @@ fileprivate let timeoutSeconds = 10
         let newCall = SignalCall(signalingId: callId, state: .answering, remotePhoneNumber: aThread.contactIdentifier())
         call = newCall
 
-        outgoingCallPromise = getIceServers().then { (iceServers: [RTCIceServer]) -> Promise<RTCSessionDescription> in
+        outgoingCallPromise = firstly {
+            return getIceServers()
+        }.then(on: CallService.signalingQueue) { (iceServers: [RTCIceServer]) -> Promise<RTCSessionDescription> in
             // FIXME for first time call recipients I think we'll see mic/camera permission requests here,
             // even though, from the users perspective, no incoming call is yet visible.
             self.peerConnectionClient = PeerConnectionClient(iceServers: iceServers, peerConnectionDelegate: self)
@@ -211,7 +213,7 @@ fileprivate let timeoutSeconds = 10
 
             // Find a sessionDescription compatible with my constraints and the remote sessionDescription
             return self.peerConnectionClient!.negotiateSessionDescription(remoteDescription: offerSessionDescription, constraints: constraints)
-        }.then { (negotiatedSessionDescription: RTCSessionDescription) in
+        }.then(on: CallService.signalingQueue) { (negotiatedSessionDescription: RTCSessionDescription) in
             // TODO? WebRtcCallService.this.lockManager.updatePhoneState(LockManager.PhoneState.PROCESSING);
             Logger.debug("\(self.TAG) set the remote description")
 
@@ -219,7 +221,7 @@ fileprivate let timeoutSeconds = 10
             let callAnswerMessage = OWSOutgoingCallMessage(thread: aThread, answerMessage: answerMessage)
 
             return self.sendMessage(callAnswerMessage)
-        }.then {
+        }.then(on: CallService.signalingQueue) {
             Logger.debug("\(self.TAG) successfully sent callAnswerMessage")
 
             let (promise, fulfill, _) = Promise<Void>.pending()
@@ -234,14 +236,11 @@ fileprivate let timeoutSeconds = 10
             self.fulfillCallConnectedPromise = fulfill
 
             return race(promise, timeout)
-        }.catch { error in
-
+        }.catch(on: CallService.signalingQueue) { error in
             switch error {
             case CallError.timeout:
                 Logger.error("\(self.TAG) terminating call with error: \(error)")
-                type(of: self).signalingQueue.async {
-                    self.terminateCall()
-                }
+                self.terminateCall()
             default:
                 Logger.error("\(self.TAG) unknown error: \(error)")
             }
@@ -309,7 +308,7 @@ fileprivate let timeoutSeconds = 10
         }
 
         let callMessage = OWSOutgoingCallMessage(thread: thread, iceUpdateMessage: iceUpdateMessage)
-        _ = sendMessage(callMessage).then {
+        _ = sendMessage(callMessage).then(on: CallService.signalingQueue) {
             Logger.debug("\(self.TAG) successfully sent single ice update message.")
         }
         // TODO catch and display server failure?
@@ -463,9 +462,9 @@ fileprivate let timeoutSeconds = 10
         // If the call hasn't started yet, we don't have a data channel to communicate the hang up. Use Signal Service Message.
         let hangupMessage = OWSCallHangupMessage(callId: call.signalingId)
         let callMessage = OWSOutgoingCallMessage(thread: thread, hangupMessage: hangupMessage)
-        _  = sendMessage(callMessage).then {
+        _  = sendMessage(callMessage).then(on: CallService.signalingQueue) {
             Logger.debug("\(self.TAG) successfully sent hangup call message to \(thread)")
-        }.catch { error in
+        }.catch(on: CallService.signalingQueue) { error in
             Logger.error("\(self.TAG) failed to send hangup call message to \(thread) with error: \(error)")
         }
 
@@ -541,7 +540,10 @@ fileprivate let timeoutSeconds = 10
     }
 
     fileprivate func getIceServers() -> Promise<[RTCIceServer]> {
-        return accountManager.getTurnServerInfo().then { turnServerInfo -> [RTCIceServer] in
+
+        return firstly {
+            accountManager.getTurnServerInfo()
+        }.then(on: CallService.signalingQueue) { turnServerInfo -> [RTCIceServer] in
             Logger.debug("\(self.TAG) got turn server info \(turnServerInfo)")
 
             return turnServerInfo.urls.map { url in
@@ -625,7 +627,7 @@ fileprivate let timeoutSeconds = 10
             return
         }
 
-        type(of: self).signalingQueue.async {
+        CallService.signalingQueue.async {
             self.handleDataChannelMessage(dataChannelMessage)
         }
     }
@@ -661,7 +663,7 @@ fileprivate let timeoutSeconds = 10
     public func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
         Logger.debug("\(TAG) didChange IceConnectionState:\(newState.rawValue)")
 
-        type(of: self).signalingQueue.async {
+        CallService.signalingQueue.async {
             switch(newState) {
             case .connected, .completed:
                 self.handleIceConnected()
@@ -686,7 +688,7 @@ fileprivate let timeoutSeconds = 10
     /** New ice candidate has been found. */
     public func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
         Logger.debug("\(TAG) didGenerate IceCandidate:\(candidate.sdp)")
-        type(of: self).signalingQueue.async {
+        CallService.signalingQueue.async {
             self.handleLocalAddedIceCandidate(candidate)
         }
     }
@@ -699,7 +701,7 @@ fileprivate let timeoutSeconds = 10
     /** New data channel has been opened. */
     public func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
         Logger.debug("\(TAG) didOpen dataChannel:\(dataChannel)")
-        type(of: self).signalingQueue.async {
+        CallService.signalingQueue.async {
             guard let peerConnectionClient = self.peerConnectionClient else {
                 Logger.error("\(self.TAG) surprised to find nil peerConnectionClient in \(#function)")
                 return
