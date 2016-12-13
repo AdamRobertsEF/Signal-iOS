@@ -46,8 +46,8 @@ enum CallError: Error {
     case timeout(description: String)
 }
 
+// FIXME TODO increase this before production release. Or should we just delete it?
 fileprivate let timeoutSeconds = 10
-
 
 @objc class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
 
@@ -239,7 +239,9 @@ fileprivate let timeoutSeconds = 10
             switch error {
             case CallError.timeout:
                 Logger.error("\(self.TAG) terminating call with error: \(error)")
-                self.terminateCall()
+                type(of: self).signalingQueue.async {
+                    self.terminateCall()
+                }
             default:
                 Logger.error("\(self.TAG) unknown error: \(error)")
             }

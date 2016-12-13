@@ -138,6 +138,7 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
     }
 
     func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) {
+        Logger.debug("\(TAG) Received \(#function) CXAnswerCallAction")
         // Retrieve the SpeakerboxCall instance corresponding to the action's call UUID
         guard let call = callManager.callWithLocalId(action.callUUID) else {
             action.fail()
@@ -164,7 +165,7 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
     }
 
     func provider(_ provider: CXProvider, perform action: CXEndCallAction) {
-        Logger.debug("\(TAG) Received \(#function)")
+        Logger.debug("\(TAG) Received \(#function) CXEndCallAction")
         guard let call = callManager.callWithLocalId(action.callUUID) else {
             action.fail()
             return
@@ -189,7 +190,7 @@ final class ProviderDelegate: NSObject, CXProviderDelegate {
     }
 
     func provider(_ provider: CXProvider, perform action: CXSetHeldCallAction) {
-        Logger.debug("\(TAG) Received \(#function)")
+        Logger.debug("\(TAG) Received \(#function) CXSetHeldCallAction")
         guard let call = callManager.callWithLocalId(action.callUUID) else {
             action.fail()
             return
