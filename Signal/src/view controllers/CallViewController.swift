@@ -74,7 +74,6 @@ class CallViewController : UIViewController {
 
         call.stateDidChange = updateCallStatus
         updateCallStatus(call.state)
-
     }
 
     // objc accessible way to set our swift enum.
@@ -108,15 +107,21 @@ class CallViewController : UIViewController {
             }
         }()
 
-        Logger.info("\(TAG) new call status: \(newState) with text: \(textForState)")
+        Logger.info("\(TAG) new call status: \(newState) aka \"\(textForState)\"")
         DispatchQueue.main.async {
             self.callStatusLabel.text = textForState
         }
 
         if newState == .remoteHangup {
+            Logger.debug("\(TAG) dismissing from remote hangup")
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 self.dismiss(animated: true)
             }
+        }
+
+        if newState == .localHangup {
+            Logger.debug("\(TAG) dismissing from local hangup")
+            self.dismiss(animated: true)
         }
     }
 

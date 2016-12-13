@@ -363,8 +363,9 @@ fileprivate let timeoutSeconds = 10
             return
         }
         call.state = .remoteHangup
+        callUIAdapter.endCall(call)
 
-        // self.call is nil'd in `terminateCall`, so it's important we update it's state before calling `terminateCall`
+        // self.call is nil'd in `terminateCall`, so it's important we update it's state *before* calling `terminateCall`
         terminateCall()
     }
 
@@ -445,6 +446,7 @@ fileprivate let timeoutSeconds = 10
             return
         }
 
+        call.state = .localHangup
         callUIAdapter.endCall(call)
 
         // TODO something like this lifted from Signal-Android.
