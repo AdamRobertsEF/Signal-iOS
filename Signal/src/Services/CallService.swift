@@ -113,6 +113,12 @@ fileprivate let timeoutSeconds = 60
         let callRecord = TSCall(timestamp: NSDate.ows_millisecondTimeStamp(), withCallNumber: newCall.remotePhoneNumber, callType: RPRecentCallTypeOutgoing, in: thread)
         callRecord.save()
 
+        guard self.peerConnectionClient == nil else {
+            Logger.error("\(TAG) peerconnection was unexpectedly already set.")
+            newCall.state = .localFailure
+            return newCall
+        }
+
         _ = getIceServers().then(on: CallService.signalingQueue) { iceServers -> Promise<RTCSessionDescription> in
             Logger.debug("\(self.TAG) got ice servers:\(iceServers)")
             let peerConnectionClient =  PeerConnectionClient(iceServers: iceServers, peerConnectionDelegate: self)
@@ -128,7 +134,7 @@ fileprivate let timeoutSeconds = 60
                 let callMessage = OWSOutgoingCallMessage(thread: thread, offerMessage: offerMessage)
                 return self.sendMessage(callMessage)
             }
-        }.catch { error in
+        }.catch(on: CallService.signalingQueue) { error in
             Logger.error("\(self.TAG) placing call failed with error: \(error)")
         }
 
@@ -163,21 +169,35 @@ fileprivate let timeoutSeconds = 60
         let sessionDescription = RTCSessionDescription(type: .answer, sdp: sessionDescription)
         _ = peerConnectionClient.setRemoteSessionDescription(sessionDescription).then {
             Logger.debug("\(self.TAG) successfully set remote description")
-        }.catch { error in
+        }.catch(on: CallService.signalingQueue) { error in
             Logger.error("\(self.TAG) failed to set remote description with error: \(error)")
         }
     }
 
-    func handleBusyCall(thread aThread: TSContactThread, callId: UInt64) {
-        Logger.debug("\(TAG) received 'busy' for call: \(callId) thread: \(thread)")
+    func handleLocalBusyCall(thread: TSContactThread, callId: UInt64) {
+        Logger.debug("\(TAG) \(#function) for call: \(callId) thread: \(thread)")
         assertOnSignalingQueue()
 
         Logger.error("FIXME TODO")
-        // TODO
-//        let busyMessage = OWSCallBusyMessage(callId: callId)
-//        let callMessage = OWSOutgoingCallMessage(thread: thread, busyMessage: busyMessage)
-//        sendMessage(callMessage)
-//        insertMissedCall(thread: thread)
+        let busyMessage = OWSCallBusyMessage(callId: callId)
+        let callMessage = OWSOutgoingCallMessage(thread: thread, busyMessage: busyMessage)
+        _ = sendMessage(callMessage)
+
+        // Insert missed call record
+        let callRecord = TSCall(timestamp: NSDate.ows_millisecondTimeStamp(), withCallNumber: thread.contactIdentifier(), callType: RPRecentCallTypeMissed, in: thread)
+        callRecord.save()
+    }
+
+    func handleRemoteBusy(thread: TSContactThread) {
+        Logger.debug("\(TAG) \(#function) for thread: \(thread)")
+        assertOnSignalingQueue()
+
+        guard let call = self.call else {
+            Logger.error("\(TAG) call unexpectedly nil in \(#function)")
+            return
+        }
+
+        call.state = .remoteBusy
     }
 
     func isBusy() -> Bool {
@@ -189,22 +209,21 @@ fileprivate let timeoutSeconds = 60
      * Receive an incoming call offer. We still have to complete setting up the Signaling channel before we can notify
      * the user of an incoming call.
      */
-    func handleReceivedOffer(thread aThread: TSContactThread, callId: UInt64, sessionDescription callerSessionDescription: String) {
+    func handleReceivedOffer(thread: TSContactThread, callId: UInt64, sessionDescription callerSessionDescription: String) {
         assertOnSignalingQueue()
 
-        thread = aThread
         Logger.verbose("\(TAG) receivedCallOffer for thread:\(thread)")
 
         guard call == nil else {
-            if (isBusy()) {
-                handleBusyCall(thread: aThread, callId: callId)
-            } else {
-                Logger.error("\(TAG) refusing to answer call because their is an unexpected existing call, yet phone is not busy.")
-            }
+            // TODO CALLKIT busy handling.
+            Logger.verbose("\(TAG) receivedCallOffer for thread: \(thread) but we're already in call: \(call)")
+
+            handleLocalBusyCall(thread: thread, callId: callId)
             return
         }
 
-        let newCall = SignalCall(signalingId: callId, state: .answering, remotePhoneNumber: aThread.contactIdentifier())
+        self.thread = thread
+        let newCall = SignalCall(signalingId: callId, state: .answering, remotePhoneNumber: thread.contactIdentifier())
         call = newCall
 
         outgoingCallPromise = firstly {
@@ -224,7 +243,7 @@ fileprivate let timeoutSeconds = 60
             Logger.debug("\(self.TAG) set the remote description")
 
             let answerMessage = OWSCallAnswerMessage(callId: newCall.signalingId, sessionDescription: negotiatedSessionDescription.sdp)
-            let callAnswerMessage = OWSOutgoingCallMessage(thread: aThread, answerMessage: answerMessage)
+            let callAnswerMessage = OWSOutgoingCallMessage(thread: thread, answerMessage: answerMessage)
 
             return self.sendMessage(callAnswerMessage)
         }.then(on: CallService.signalingQueue) {

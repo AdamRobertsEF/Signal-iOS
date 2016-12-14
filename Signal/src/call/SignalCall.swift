@@ -10,8 +10,10 @@ enum CallState: String {
     case remoteRinging
     case localRinging
     case connected
-    case localHangup
-    case remoteHangup
+    case localFailure // terminal
+    case localHangup // terminal
+    case remoteHangup // terminal
+    case remoteBusy // terminal
 }
 
 /**

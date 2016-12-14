@@ -107,6 +107,10 @@ class CallViewController : UIViewController {
                 return NSLocalizedString("IN_CALL_SECURING", comment: "Call setup status label")
             case .connected:
                 return NSLocalizedString("IN_CALL_TALKING", comment: "Call setup status label")
+            case .remoteBusy:
+                return NSLocalizedString("END_CALL_RESPONDER_IS_BUSY", comment: "Call setup status label")
+            case .localFailure:
+                return NSLocalizedString("END_CALL_UNCATEGORIZED_FAILURE", comment: "Call setup status label")
             }
         }()
 
@@ -115,8 +119,8 @@ class CallViewController : UIViewController {
             self.callStatusLabel.text = textForState
         }
 
-        if newState == .remoteHangup {
-            Logger.debug("\(TAG) dismissing from remote hangup")
+        if newState == .remoteHangup || newState == .remoteBusy {
+            Logger.debug("\(TAG) dismissing because new state is \(newState)")
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 self.dismiss(animated: true)
             }

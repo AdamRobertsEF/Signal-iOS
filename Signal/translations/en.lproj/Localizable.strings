@@ -221,13 +221,13 @@
 "END_CALL_REPLACED_BY_NEXT" = "You Made Another Call.";
 
 /* No comment provided by engineer. */
-"END_CALL_RESPONDER_IS_BUSY" = "Busy...";
+"END_CALL_RESPONDER_IS_BUSY" = "Busy.";
 
 /* No comment provided by engineer. */
 "END_CALL_STALE_SESSION" = "Missed the Call.";
 
 /* No comment provided by engineer. */
-"END_CALL_UNCATEGORIZED_FAILURE" = "Client Failed!";
+"END_CALL_UNCATEGORIZED_FAILURE" = "Client Failed.";
 
 /* Generic notice when message failed to send. */
 "ERROR_DESCRIPTION_CLIENT_SENDING_FAILURE" = "Failed to send message.";

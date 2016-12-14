@@ -72,7 +72,12 @@ class WebRTCCallMessageHandler: NSObject, OWSCallMessageHandler {
 
     public func receivedBusy(_ busy: OWSSignalServiceProtosCallMessageBusy, from callerId: String) {
         Logger.verbose("\(TAG) handling 'busy' from caller:\(callerId)")
-        Logger.error("TODO")
+
+        let thread = TSContactThread.getOrCreateThread(withContactId: callerId)
+
+        CallService.signalingQueue.async {
+            self.callService.handleRemoteBusy(thread: thread)
+        }
     }
 
 }
