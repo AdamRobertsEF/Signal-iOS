@@ -47,7 +47,7 @@ enum CallError: Error {
 }
 
 // FIXME TODO increase this before production release. Or should we just delete it?
-fileprivate let timeoutSeconds = 10
+fileprivate let timeoutSeconds = 60
 
 @objc class CallService: NSObject, RTCDataChannelDelegate, RTCPeerConnectionDelegate {
 
@@ -142,10 +142,16 @@ fileprivate let timeoutSeconds = 10
         Logger.debug("\(TAG) received call answer for call: \(callId) thread: \(thread)")
         assertOnSignalingQueue()
 
+        // Send any pending IceUpdates now that we know the recipient has accepted our identity.
         if let pendingIceUpdateMessages = self.pendingIceUpdateMessages {
-            let callMessage = OWSOutgoingCallMessage(thread: thread, iceUpdateMessages: pendingIceUpdateMessages)
-            _ = sendMessage(callMessage).catch { error in
-                Logger.error("\(self.TAG) failed to send ice updates in \(#function) with error: \(error)")
+            // Stop enqueing ice updates; we send any future ones immediately.
+            self.pendingIceUpdateMessages = nil
+
+            if pendingIceUpdateMessages.count > 0 {
+                let callMessage = OWSOutgoingCallMessage(thread: thread, iceUpdateMessages: pendingIceUpdateMessages)
+                _ = sendMessage(callMessage).catch { error in
+                    Logger.error("\(self.TAG) failed to send ice updates in \(#function) with error: \(error)")
+                }
             }
         }
 
@@ -298,12 +304,12 @@ fileprivate let timeoutSeconds = 10
         }
 
         let iceUpdateMessage = OWSCallIceUpdateMessage(callId: call.signalingId, sdp: iceCandidate.sdp, sdpMLineIndex: iceCandidate.sdpMLineIndex, sdpMid: iceCandidate.sdpMid)
-        if var pendingIceUpdateMessages = self.pendingIceUpdateMessages {
+        if self.pendingIceUpdateMessages != nil {
             // For outgoing messages, we wait to send ice updates until we're sure client received our call message.
             // e.g. if the client has blocked our message due to an identity change, we'd otherwise
             // bombard them with a bunch *more* undecipherable messages.
             Logger.debug("\(TAG) enqueuing iceUpdate until we receive call answer")
-            pendingIceUpdateMessages.append(iceUpdateMessage)
+            self.pendingIceUpdateMessages!.append(iceUpdateMessage)
             return
         }
 
@@ -643,7 +649,7 @@ fileprivate let timeoutSeconds = 10
 
     /** Called when the SignalingState changed. */
     public func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
-        Logger.debug("\(TAG) didChange signalingState:\(stateChanged)")
+        Logger.debug("\(TAG) didChange signalingState:\(stateChanged.rawValue)")
     }
 
     /** Called when media is received on a new stream from remote peer. */
@@ -663,7 +669,7 @@ fileprivate let timeoutSeconds = 10
 
     /** Called any time the IceConnectionState changes. */
     public func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
-        Logger.debug("\(TAG) didChange IceConnectionState:\(newState.rawValue)")
+        Logger.debug("\(TAG) didChange IceConnectionState:\(newState.debugDescription)")
 
         CallService.signalingQueue.async {
             switch(newState) {
@@ -721,5 +727,31 @@ fileprivate extension UInt64 {
         var random : UInt64 = 0
         arc4random_buf(&random, MemoryLayout.size(ofValue: random))
         return random
+    }
+}
+
+
+extension RTCIceConnectionState {
+    var debugDescription: String {
+        get {
+            switch(self) {
+            case .new:
+                return "new"
+            case .checking:
+                return "checking"
+            case .connected:
+                return "connected"
+            case .completed:
+                return "completed"
+            case .failed:
+                return "failed"
+            case .disconnected:
+                return "disconnected"
+            case .closed:
+                return "closed"
+            case .count:
+                return "count"
+            }
+        }
     }
 }
