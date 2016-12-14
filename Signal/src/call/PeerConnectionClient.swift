@@ -80,7 +80,6 @@ class PeerConnectionClient: NSObject, CallAudioManager {
         Logger.warn("TODO: \(#function)")
     }
 
-
     let TAG = "[PeerConnectionClient]"
     enum Identifiers: String {
         case mediaStream = "ARDAMS",
