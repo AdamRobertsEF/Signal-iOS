@@ -31,6 +31,8 @@ enum AudioProfile {
 - (void)respondToTerminationType:(enum CallTerminationType)terminationType;
 
 - (BOOL)toggleSpeakerPhone;
+- (void)toggleSpeakerPhoneIsEnabled:(BOOL)enabled NS_SWIFT_NAME(toggleSpeakerPhone(isEnabled:));
+
 - (void)cancellAllAudio;
 
 - (void)requestRequiredPermissionsIfNeededWithCompletion:(PermissionBlock)permissionBlock incoming:(BOOL)isIncoming;

@@ -55,17 +55,6 @@ AppAudioManager *sharedAppAudioManager;
     }
 }
 
-
-- (void)overrideAudioProfile {
-    isSpeakerphoneActive = YES;
-    [self updateAudioRouter];
-}
-
-- (void)resetOverride {
-    isSpeakerphoneActive = NO;
-    [self updateAudioRouter];
-}
-
 - (enum AudioProfile)getCurrentAudioProfile {
     return (isSpeakerphoneActive) ? AudioProfile_ExternalSpeaker : _audioProfile;
 }
@@ -137,6 +126,13 @@ AppAudioManager *sharedAppAudioManager;
     return isSpeakerphoneActive;
 }
 
+- (void)toggleSpeakerPhoneIsEnabled:(BOOL)enabled
+{
+    DDLogInfo(@"%@ Toggled speaker phone: %@", self.tag, enabled ? @"ON" : @"OFF");
+    isSpeakerphoneActive = enabled;
+    [self updateAudioRouter];
+}
+
 #pragma mark Audio Control
 
 - (void)cancellAllAudio {
@@ -196,10 +192,6 @@ AppAudioManager *sharedAppAudioManager;
     return (nil != e);
 }
 
-- (void)awake {
-    [_soundPlayer awake];
-}
-
 #pragma mark Sound Player Delegate
 
 - (void)didCompleteSoundInstanceOfType:(SoundInstanceType)instanceType {
@@ -209,5 +201,16 @@ AppAudioManager *sharedAppAudioManager;
     }
 }
 
+#pragma mark - Logging
+
++ (NSString *)tag
+{
+    return [NSString stringWithFormat:@"[%@]", self.class];
+}
+
+- (NSString *)tag
+{
+    return self.class.tag;
+}
 
 @end

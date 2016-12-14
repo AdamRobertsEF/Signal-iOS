@@ -3,6 +3,7 @@
 //
 #import <Foundation/Foundation.h>
 
+#import "AppAudioManager.h"
 #import "AudioController.h"
 #import "Environment.h"
 #import "OWSContactAvatarBuilder.h"

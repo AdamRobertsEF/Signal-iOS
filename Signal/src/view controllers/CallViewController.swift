@@ -18,6 +18,7 @@ class CallViewController : UIViewController {
 
     let callService: CallService
     let contactsManager: OWSContactsManager
+    let audioManager: AppAudioManager
 
     // MARK: Properties
     
@@ -38,12 +39,14 @@ class CallViewController : UIViewController {
     required init?(coder aDecoder: NSCoder) {
         contactsManager = Environment.getCurrent().contactsManager
         callService = Environment.getCurrent().callService
+        audioManager = AppAudioManager.sharedInstance()
         super.init(coder: aDecoder)
     }
 
     required init() {
         contactsManager = Environment.getCurrent().contactsManager
         callService = Environment.getCurrent().callService
+        audioManager = AppAudioManager.sharedInstance()
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -136,17 +139,17 @@ class CallViewController : UIViewController {
         self.dismiss(animated: true)
     }
 
-    @IBAction func didPressMute(sender: UIButton) {
+    @IBAction func didPressMute(sender muteButton: UIButton) {
         Logger.debug("\(TAG) called \(#function)")
-        sender.isSelected = !sender.isSelected
+        muteButton.isSelected = !muteButton.isSelected
         CallService.signalingQueue.async {
-            self.callService.handleToggledMute(isMuted: sender.isSelected)
+            self.callService.handleToggledMute(isMuted: muteButton.isSelected)
         }
     }
 
-    @IBAction func didPressSpeakerphone(sender: UIButton) {
+    @IBAction func didPressSpeakerphone(sender speakerphoneButton: UIButton) {
         Logger.debug("\(TAG) called \(#function)")
-        Logger.error("TODO \(#function)")
-//        callService.handleLocalSpeakerPhone(isSpeakerphone: true)
+        speakerphoneButton.isSelected = !speakerphoneButton.isSelected
+        audioManager.toggleSpeakerPhone(isEnabled: speakerphoneButton.isSelected)
     }
 }
